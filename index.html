@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestros Viajes ✈️</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #f0ede7;
+    --text: #1a1814;
+    --text2: #6b6860;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --lara-bg: #EEEDFE; --lara-text: #3C3489;
+    --faus-bg: #E1F5EE; --faus-text: #0F6E56;
+    --sol-bg: #FAEEDA; --sol-text: #854F0B;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1814;
+      --surface: #242220;
+      --surface2: #2e2b28;
+      --text: #f0ede7;
+      --text2: #9a9690;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --lara-bg: #26215C; --lara-text: #AFA9EC;
+      --faus-bg: #04342C; --faus-text: #5DCAA5;
+      --sol-bg: #412402; --sol-text: #FAC775;
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 720px; margin: 0 auto; }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+  .tab-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 7px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all .15s;
+  }
+  .tab-btn:hover { background: var(--surface2); color: var(--text); }
+  .tab-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .stat-value { font-size: 2rem; font-family: 'DM Serif Display', serif; font-weight: 400; }
+
+  .people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    display: inline-block;
+    margin: 2px;
+  }
+
+  .trip-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .trip-row:last-child { border-bottom: none; }
+
+  .flag { font-size: 20px; width: 32px; text-align: center; flex-shrink: 0; }
+
+  .section-label {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 500;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .form-grid { display: grid; gap: 12px; }
+  .form-group label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 5px; }
+
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s;
+  }
+  input:focus { border-color: var(--border2); }
+
+  .checkbox-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .checkbox-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 14px; cursor: pointer;
+  }
+  .checkbox-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--text); cursor: pointer; }
+
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 20px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity .15s;
+    margin-top: 4px;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-delete {
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .btn-delete:hover { background: var(--surface2); }
+
+  .error-msg { font-size: 13px; color: #A32D2D; margin-top: 4px; display: none; }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text2);
+    font-size: 14px;
+  }
+  .empty-state .emoji { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+
+  .pair-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .pair-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .solo-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+  .solo-card {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: .75rem 1rem;
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .dest-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .dest-row:last-child { border-bottom: none; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.6rem; }
+    .people-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Nuestros viajes ✈️</h1>
+  <p class="subtitle">Lara · Faus · Sol</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('resumen')">Resumen</button>
+    <button class="tab-btn" onclick="showTab('agregar')">+ Agregar viaje</button>
+    <button class="tab-btn" onclick="showTab('comparar')">Comparar</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <div id="tab-resumen">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Viajes totales</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Países únicos</div>
+        <div class="stat-value" id="stat-paises">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Las tres juntas</div>
+        <div class="stat-value" id="stat-juntas">0</div>
+      </div>
+    </div>
+
+    <div class="people-grid">
+      <div class="card" id="card-lara"></div>
+      <div class="card" id="card-faus"></div>
+      <div class="card" id="card-sol"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Todos los viajes</div>
+      <div id="lista-viajes"></div>
+      <div id="empty-state" class="empty-state">
+        <span class="emoji">🗺️</span>
+        Todavía no hay viajes. ¡Agreguen el primero!
+      </div>
+    </div>
+  </div>
+
+  <!-- AGREGAR -->
+  <div id="tab-agregar" style="display:none;">
+    <div class="card">
+      <div class="section-label">Nuevo viaje</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Destino</label>
+          <input type="text" id="input-destino" placeholder="Ej: Roma, Italia">
+        </div>
+        <div class="form-group">
+          <label>Emoji de bandera (opcional)</label>
+          <input type="text" id="input-bandera" placeholder="Ej: 🇮🇹">
+        </div>
+        <div class="form-group">
+          <label>Año</label>
+          <input type="number" id="input-anio" placeholder="Ej: 2024" min="2000" max="2030">
+        </div>
+        <div class="form-group">
+          <label>¿Quién fue?</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-lara">
+              <span class="avatar" style="background: var(--lara-bg); color: var(--lara-text);">L</span> Lara
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-faus">
+              <span class="avatar" style="background: var(--faus-bg); color: var(--faus-text);">F</span> Faus
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-sol">
+              <span class="avatar" style="background: var(--sol-bg); color: var(--sol-text);">S</span> Sol
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notas (opcional)</label>
+          <input type="text" id="input-notas" placeholder="Ej: viaje de egresadas">
+        </div>
+        <div>
+          <button class="btn-primary" onclick="agregarViaje()">Agregar viaje</button>
+          <div class="error-msg" id="msg-error">Completá el destino y marcá al menos una persona.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARAR -->
+  <div id="tab-comparar" style="display:none;">
+    <div id="comparar-content"></div>
+  </div>
+
+</div>
+
+<script>
+const PEOPLE = ['lara', 'faus', 'sol'];
+const COLORS = {
+  lara: { bgVar: 'var(--lara-bg)', textVar: 'var(--lara-text)', label: 'Lara' },
+  faus: { bgVar: 'var(--faus-bg)', textVar: 'var(--faus-text)', label: 'Faus' },
+  sol:  { bgVar: 'var(--sol-bg)',  textVar: 'var(--sol-text)',  label: 'Sol'  }
+};
+
+let viajes = [];
+try { viajes = JSON.parse(localStorage.getItem('viajes_grupo') || '[]'); } catch(e) {}
+
+function save() {
+  try { localStorage.setItem('viajes_grupo', JSON.stringify(viajes)); } catch(e) {}
+}
+
+function showTab(name) {
+  ['resumen','agregar','comparar'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['resumen','agregar','comparar'][i] === name);
+  });
+  if (name === 'comparar') renderComparar();
+  if (name === 'resumen') renderResumen();
+}
+
+function agregarViaje() {
+  const destino = document.getElementById('input-destino').value.trim();
+  const quienes = PEOPLE.filter(p => document.getElementById('chk-' + p).checked);
+  const err = document.getElementById('msg-error');
+  if (!destino || quienes.length === 0) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  viajes.push({
+    id: Date.now(),
+    destino,
+    bandera: document.getElementById('input-bandera').value.trim() || '🌍',
+    anio: document.getElementById('input-anio').value || '',
+    quienes,
+    notas: document.getElementById('input-notas').value.trim()
+  });
+  save();
+  ['input-destino','input-bandera','input-anio','input-notas'].forEach(id => document.getElementById(id).value = '');
+  PEOPLE.forEach(p => document.getElementById('chk-' + p).checked = false);
+  showTab('resumen');
+}
+
+function eliminarViaje(id) {
+  viajes = viajes.filter(v => v.id !== id);
+  save();
+  renderResumen();
+}
+
+function renderPersonCard(person) {
+  const mis = viajes.filter(v => v.quienes.includes(person));
+  const c = COLORS[person];
+  return `
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <div class="avatar" style="background:${c.bgVar}; color:${c.textVar};">${c.label[0]}</div>
+      <div>
+        <div style="font-weight:500; font-size:15px;">${c.label}</div>
+        <div style="font-size:12px; color:var(--text2);">${mis.length} viaje${mis.length !== 1 ? 's' : ''}</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap;">
+      ${mis.length === 0
+        ? '<span style="font-size:13px; color:var(--text2);">Sin viajes aún</span>'
+        : mis.map(v => `<span class="badge" style="background:${c.bgVar}; color:${c.textVar};">${v.bandera} ${v.destino}${v.anio ? ' ' + v.anio : ''}</span>`).join('')}
+    </div>`;
+}
+
+function renderResumen() {
+  const total = viajes.length;
+  const paises = new Set(viajes.map(v => v.destino.split(',').pop().trim())).size;
+  const juntas = viajes.filter(v => v.quienes.length === 3).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-paises').textContent = paises;
+  document.getElementById('stat-juntas').textContent = juntas;
+  PEOPLE.forEach(p => document.getElementById('card-' + p).innerHTML = renderPersonCard(p));
+
+  const lista = document.getElementById('lista-viajes');
+  const empty = document.getElementById('empty-state');
+  if (viajes.length === 0) { lista.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  const sorted = [...viajes].sort((a, b) => (b.anio || 0) - (a.anio || 0));
+  lista.innerHTML = sorted.map(v => `
+    <div class="trip-row">
+      <span class="flag">${v.bandera}</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:500; font-size:14px;">${v.destino}${v.anio ? ` <span style="color:var(--text2); font-weight:400; font-size:13px;">${v.anio}</span>` : ''}</div>
+        ${v.notas ? `<div style="font-size:12px; color:var(--text2);">${v.notas}</div>` : ''}
+        <div style="display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;">
+          ${v.quienes.map(p => `<span class="badge" style="background:${COLORS[p].bgVar}; color:${COLORS[p].textVar};">${COLORS[p].label}</span>`).join('')}
+        </div>
+      </div>
+      <button class="btn-delete" onclick="eliminarViaje(${v.id})" title="Eliminar">✕</button>
+    </div>`).join('');
+}
+
+function renderComparar() {
+  const el = document.getElementById('comparar-content');
+  if (viajes.length === 0) {
+    el.innerHTML = '<div class="empty-state"><span class="emoji">🗺️</span>Agregá viajes primero para poder comparar.</div>';
+    return;
+  }
+
+  const pairs = [
+    { label: 'Lara y Faus',       key: ['lara','faus'] },
+    { label: 'Lara y Sol',        key: ['lara','sol'] },
+    { label: 'Faus y Sol',        key: ['faus','sol'] },
+    { label: 'Las tres juntas',   key: ['lara','faus','sol'] }
+  ];
+
+  const pairCards = pairs.map(pair => {
+    const matches = viajes.filter(v => pair.key.every(p => v.quienes.includes(p)));
+    const avatars = pair.key.map(p =>
+      `<span class="avatar" style="background:${COLORS[p].bgVar}; color:${COLORS[p].textVar}; width:28px; height:28px; font-size:11px;">${COLORS[p].label[0]}</span>`
+    ).join('');
+    return `
+      <div class="pair-card">
+        <div class="pair-header">
+          <div style="display:flex; gap:4px;">${avatars}</div>
+          <span style="font-weight:500; font-size:14px;">${pair.label}</span>
+          <span style="margin-left:auto; font-size:13px; color:var(--text2);">${matches.length} viaje${matches.length !== 1 ? 's' : ''}</span>
+        </div>
+        ${matches.length === 0
+          ? '<span style="font-size:13px; color:var(--text2);">Sin viajes juntas todavía</span>'
+          : matches.map(v => `
+            <div class="dest-row">
+              <span style="font-size:18px;">${v.bandera}</span>
+              <span>${v.destino}</span>
+              ${v.anio ? `<span style="font-size:12px; color:var(--text2); margin-left:auto;">${v.anio}</span>` : ''}
+            </div>`).join('')
+        }
+      </div>`;
+  }).join('');
+
+  const soloCards = PEOPLE.map(p => {
+    const uniq = viajes.filter(v => v.quienes.includes(p) && v.quienes.length === 1);
+    return `
+      <div class="solo-card">
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+          <span class="avatar" style="background:${COLORS[p].bgVar}; color:${COLORS[p].textVar}; width:28px; height:28px; font-size:11px;">${COLORS[p].label[0]}</span>
+          <span style="font-size:13px; font-weight:500;">${COLORS[p].label} sola</span>
+        </div>
+        ${uniq.length === 0
+          ? '<span style="font-size:12px; color:var(--text2);">Ninguno</span>'
+          : uniq.map(v => `<div style="font-size:13px; padding:3px 0;">${v.bandera} ${v.destino}</div>`).join('')}
+      </div>`;
+  }).join('');
+
+  el.innerHTML = pairCards + `
+    <div class="card">
+      <div class="section-label">Viajes en solitario</div>
+      <div class="solo-grid">${soloCards}</div>
+    </div>`;
+}
+
+renderResumen();
+</script>
+</body>
+</html>
