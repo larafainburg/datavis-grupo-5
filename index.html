@@ -253,18 +253,16 @@
     background: var(--bg);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 16px;
-    padding: 0; z-index: 2;
+    padding: 0; z-index: 2; border-radius: 14px; overflow: hidden;
   }
-  .pp-cover-img {
-    width: 100%; height: 100%; object-fit: contain; border-radius: 8px;
-    display: block;
-  }
+  .pp-cover-svg { width: 100%; height: 100%; display: block; }
   .pp-cover-name {
     position: absolute; bottom: 0; left: 0; right: 0;
     text-align: center; padding: 14px 10px 16px;
     font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
-    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
-    letter-spacing: .03em;
+    background: linear-gradient(to top, rgba(0,0,0,.55), transparent);
+    letter-spacing: .03em; color:#fff;
+    text-shadow: 0 1px 6px rgba(0,0,0,.6);
   }
   /* interior: foto + datos ocupando toda la pestaña */
   .passport-inner {
@@ -440,9 +438,9 @@
   .cont-count { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); }
 
   /* ===== VIZ 14 - PUNTA DEL ESTE SPOTLIGHT ===== */
-  .spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  .spot-left { display: flex; flex-direction: column; gap: 20px; }
-  .spot-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+  .spot-left { display: flex; flex-direction: column; gap: 20px; justify-content: space-between; }
+  .spot-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .spot-stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; line-height: 1; }
   .spot-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
   .spot-right { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
@@ -583,7 +581,20 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-fausto')">
       <div class="passport" id="pp-fausto">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="460" fill="#5aa7e0"/>
+            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
+            <g stroke="#f5ecc9" stroke-width="7" fill="none">
+              <circle cx="160" cy="225" r="70"/>
+              <ellipse cx="160" cy="225" rx="28" ry="70"/>
+              <line x1="90" y1="225" x2="230" y2="225"/>
+              <path d="M104 183 Q160 205 216 183"/>
+              <path d="M104 267 Q160 245 216 267"/>
+            </g>
+            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
+            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
+            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
+          </svg>
           <div class="pp-cover-name" style="color:var(--fausto)">Fausto Cuello</div>
         </div>
         <div class="passport-inner">
@@ -617,7 +628,20 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-sol')">
       <div class="passport" id="pp-sol">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="460" fill="#5aa7e0"/>
+            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
+            <g stroke="#f5ecc9" stroke-width="7" fill="none">
+              <circle cx="160" cy="225" r="70"/>
+              <ellipse cx="160" cy="225" rx="28" ry="70"/>
+              <line x1="90" y1="225" x2="230" y2="225"/>
+              <path d="M104 183 Q160 205 216 183"/>
+              <path d="M104 267 Q160 245 216 267"/>
+            </g>
+            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
+            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
+            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
+          </svg>
           <div class="pp-cover-name" style="color:var(--sol)">Solana Belinky</div>
         </div>
         <div class="passport-inner">
@@ -651,7 +675,20 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-lara')">
       <div class="passport" id="pp-lara">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="320" height="460" fill="#5aa7e0"/>
+            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
+            <g stroke="#f5ecc9" stroke-width="7" fill="none">
+              <circle cx="160" cy="225" r="70"/>
+              <ellipse cx="160" cy="225" rx="28" ry="70"/>
+              <line x1="90" y1="225" x2="230" y2="225"/>
+              <path d="M104 183 Q160 205 216 183"/>
+              <path d="M104 267 Q160 245 216 267"/>
+            </g>
+            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
+            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
+            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
+          </svg>
           <div class="pp-cover-name" style="color:var(--lara)">Lara Fainburg</div>
         </div>
         <div class="passport-inner">
@@ -691,7 +728,7 @@
   <div class="map-controls">
     <label for="map-select">Mostrar viajes de:</label>
     <select class="map-dropdown" id="map-select" onchange="updateMap()">
-      <option value="all">Los tres juntos</option>
+      <option value="all">Los tres</option>
       <option value="fausto">Fausto</option>
       <option value="sol">Sol</option>
       <option value="lara">Lara</option>
@@ -726,11 +763,11 @@
           <div class="stat-card-sub">~45 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>13×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami / Florida</span><span>11×</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Sto. Domingo, R.D.</span><span>6×</span></div><div class="bar-track"><div class="bar-fill" style="width:46%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>San Pablo, Brasil</span><span>2×</span></div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>×13</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami / Florida</span><span>×11</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Sto. Domingo, R.D.</span><span>×6</span></div><div class="bar-track"><div class="bar-fill" style="width:46%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>San Pablo, Brasil</span><span>×2</span></div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--fausto)"></div></div></div>
     </div>
     <div class="stat-card">
       <div class="stat-card-header">
@@ -740,11 +777,11 @@
           <div class="stat-card-sub">~65 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>15×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>7×</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Montevideo</span><span>7×</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Los Ángeles</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta Cana, R.D.</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×15</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>×7</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Montevideo</span><span>×7</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Los Ángeles</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta Cana, R.D.</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
     </div>
     <div class="stat-card">
       <div class="stat-card-header">
@@ -754,11 +791,11 @@
           <div class="stat-card-sub">~55 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Río Negro, Arg.</span><span>12×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>10×</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>6×</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Madrid, España</span><span>2×</span></div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Río Negro, Arg.</span><span>×12</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×10</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>×6</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Madrid, España</span><span>×2</span></div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--lara)"></div></div></div>
     </div>
   </div>
 </section>
@@ -1095,55 +1132,47 @@ function togglePassport(id){
 
   let frame=0;
   function draw(){
-    frame++;
     ctx.clearRect(0,0,W,H);
-    const pulse=Math.sin(frame*0.02)*0.15+0.85;
 
-    // Edges
+    // colores pastel de relleno (como la imagen)
+    const fillCol={ fausto:'#f5ecc9', sol:'#f3d4e8', lara:'#c9f0f7' };
+    const lineCol={ fausto:'#F5C542', sol:'#F472B6', lara:'#67E8F9' };
+
+    // Edges (líneas del color, número cerca de cada nodo)
     edges.forEach(e=>{
       const na=nodes.find(n=>n.id===e.a), nb=nodes.find(n=>n.id===e.b);
-      const w=Math.max(1,e.count*0.8);
       const grad=ctx.createLinearGradient(na.x,na.y,nb.x,nb.y);
-      grad.addColorStop(0,na.color+'cc'); grad.addColorStop(1,nb.color+'cc');
+      grad.addColorStop(0,lineCol[na.id]); grad.addColorStop(1,lineCol[nb.id]);
       ctx.beginPath(); ctx.moveTo(na.x,na.y); ctx.lineTo(nb.x,nb.y);
-      ctx.strokeStyle=grad; ctx.lineWidth=w; ctx.stroke();
+      ctx.strokeStyle=grad; ctx.lineWidth=2.5; ctx.stroke();
 
-      // count badge
-      const mx=(na.x+nb.x)/2, my=(na.y+nb.y)/2;
-      ctx.beginPath(); ctx.arc(mx,my,14,0,Math.PI*2);
-      ctx.fillStyle='#0f0f1a'; ctx.fill();
-      ctx.strokeStyle=grad; ctx.lineWidth=1.5; ctx.stroke();
-      ctx.fillStyle='#e8e8ee'; ctx.font='bold 10px DM Mono, monospace';
+      // número cerca del nodo de origen de la línea (como la imagen)
+      const dx=nb.x-na.x, dy=nb.y-na.y, len=Math.hypot(dx,dy);
+      const ux=dx/len, uy=dy/len;
+      const px=na.x+ux*(na.r+22), py=na.y+uy*(na.r+22);
+      ctx.fillStyle='#e8e8ee'; ctx.font='600 13px DM Mono, monospace';
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(e.count,mx,my);
+      ctx.fillText(e.count, px, py);
     });
 
     // Nodes
     nodes.forEach(n=>{
       const isH=hoveredNode&&hoveredNode.id===n.id;
-      const scale=isH?1.08:1;
-      // glow
-      const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*scale*2);
-      grd.addColorStop(0,n.color+'30'); grd.addColorStop(1,'transparent');
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale*1.8,0,Math.PI*2);
-      ctx.fillStyle=grd; ctx.fill();
+      const scale=isH?1.05:1;
+      const R=n.r*scale;
+      // relleno pastel sólido
+      ctx.beginPath(); ctx.arc(n.x,n.y,R,0,Math.PI*2);
+      ctx.fillStyle=fillCol[n.id]; ctx.fill();
+      // borde del color
+      ctx.lineWidth=isH?4:3; ctx.strokeStyle=lineCol[n.id]; ctx.stroke();
 
-      // ring
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale,0,Math.PI*2);
-      ctx.strokeStyle=n.color+(isH?'ff':'99'); ctx.lineWidth=isH?3:2; ctx.stroke();
-
-      // fill
-      const fg=ctx.createRadialGradient(n.x-n.r*0.3,n.y-n.r*0.3,0,n.x,n.y,n.r*scale);
-      fg.addColorStop(0,n.color+'55'); fg.addColorStop(1,n.color+'18');
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale,0,Math.PI*2);
-      ctx.fillStyle=fg; ctx.fill();
-
-      // label
-      ctx.fillStyle=n.color; ctx.font=`bold ${14*scale}px Playfair Display, serif`;
+      // texto negro: nombre + N países
+      ctx.fillStyle='#1a1a2e';
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(n.label,n.x,n.y-6);
-      ctx.fillStyle='rgba(232,232,238,.7)'; ctx.font=`${11*scale}px DM Mono, monospace`;
-      ctx.fillText(`${n.count} países`,n.x,n.y+12);
+      ctx.font=`600 ${Math.max(15,R*0.26)}px Playfair Display, serif`;
+      ctx.fillText(n.label, n.x, n.y-R*0.14);
+      ctx.font=`${Math.max(11,R*0.17)}px DM Mono, monospace`;
+      ctx.fillText(`${n.count} países`, n.x, n.y+R*0.2);
     });
     requestAnimationFrame(draw);
   }
@@ -1200,7 +1229,6 @@ function togglePassport(id){
     const who=isoMap[iso]||[];
     if(filter!=='all'){ return who.includes(filter) ? colors[filter] : BASE; }
     if(who.length>=2) return colors.all;
-    if(who.length===1) return colors[who[0]];
     return BASE;
   }
 
@@ -1293,10 +1321,10 @@ function togglePassport(id){
   const wrap=document.getElementById('pie-svg-wrap');
   if(!wrap) return;
   const data=[
-    {label:'América del Sur', value:52, color:'#22d3ee'},
-    {label:'América del Norte/Caribe', value:59, color:'#34d399'},
+    {label:'América del Sur', value:52, color:'#10b981'},
+    {label:'América del Norte/Caribe', value:59, color:'#f97316'},
     {label:'Europa', value:38, color:'#a78bfa'},
-    {label:'Oriente Medio', value:8, color:'#fbbf24'},
+    {label:'Oriente Medio', value:8, color:'#ef4444'},
   ];
   const total=data.reduce((s,d)=>s+d.value,0);
   const ns='http://www.w3.org/2000/svg';
