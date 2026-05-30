@@ -222,16 +222,21 @@
 
   /* ===== VIZ 2 - PASAPORTES ===== */
   .passports-container {
-    display: flex; flex-direction: column; gap: 40px; justify-content: center;
-    padding: 20px 0 40px;
+    display: flex; flex-direction: row; gap: 28px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 20px 4px 30px; justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
   }
+  .passports-container::-webkit-scrollbar { height: 6px; }
+  .passports-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
   .passport-wrapper {
     perspective: 1600px;
     cursor: pointer;
-    width: 100%;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
   }
   .passport {
-    width: 100%; max-width: 900px; height: 480px; margin: 0 auto;
+    width: 320px; height: 460px;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(.42,0,.18,1.5);
@@ -245,73 +250,58 @@
     overflow: hidden;
   }
   .passport-front {
-    background: linear-gradient(160deg, #1a2744 0%, #0d1a36 50%, #0a1228 100%);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: var(--bg);
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 18px;
-    padding: 32px; z-index: 2;
-    box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    align-items: center; justify-content: center; gap: 16px;
+    padding: 0; z-index: 2;
   }
   .pp-cover-img {
-    height: 280px; width: auto; border-radius: 6px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.55);
+    width: 100%; height: 100%; object-fit: contain; border-radius: 8px;
     display: block;
   }
-  .pp-country {
-    font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase;
-    color: rgba(255,255,255,.55); text-align: center; line-height: 1.8;
+  .pp-cover-name {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    text-align: center; padding: 14px 10px 16px;
+    font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
+    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    letter-spacing: .03em;
   }
-  .pp-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem; font-weight: 700;
-    text-align: center; letter-spacing: 0.04em; line-height: 1.1;
-    text-shadow: 0 0 30px rgba(255,255,255,.15);
-  }
-  .pp-passport-label {
-    font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
-    color: rgba(255,255,255,.35); text-align:center;
-  }
-  .pp-bar { width: 220px; height: 6px; border-radius: 4px; margin: 6px auto 0; opacity: 0.7; }
-  /* inner face: pre-rotated 180 so it faces front when container flips */
+  /* interior: foto + datos ocupando toda la pestaña */
   .passport-inner {
     background: linear-gradient(135deg, #eee8d5 0%, #e0d8c0 100%);
     transform: rotateY(180deg);
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 28px; padding: 32px 36px;
+    display: flex; flex-direction: column;
+    gap: 14px; padding: 22px 22px 26px;
     color: #1a1a2e;
   }
-  .pp-inner-col { display: flex; flex-direction: column; }
   .pp-inner-top {
-    display: flex; gap: 18px; margin-bottom: 16px;
-    padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,.12);
+    display: flex; gap: 16px; align-items: stretch;
+    padding-bottom: 14px; border-bottom: 1px solid rgba(0,0,0,.14);
   }
   .pp-photo {
-    width: 90px; height: 112px; border-radius: 4px;
+    width: 110px; height: 140px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 2.6rem; flex-shrink: 0;
-    border: 1px solid rgba(0,0,0,.15);
+    font-size: 3.6rem; flex-shrink: 0;
+    border: 2px solid rgba(0,0,0,.2);
     background: rgba(0,0,0,.05);
   }
-  .pp-info { flex: 1; font-size: 0.72rem; line-height: 1.7; }
-  .pp-info .label, .pp-extra .label { color: rgba(0,0,0,.4); font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; margin-top:6px; }
-  .pp-info .value, .pp-extra .value { font-weight: 600; font-size: 0.78rem; color: #1a1a2e; }
-  .pp-extra { font-size: 0.72rem; }
-  .pp-extra .value { margin-bottom: 6px; }
-  .pp-mrz {
-    margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,.12);
-    font-family: 'DM Mono', monospace; font-size: 0.56rem;
-    color: rgba(0,0,0,.35); letter-spacing: 0.06em; word-break: break-all; line-height: 1.5;
-    grid-column: 1 / -1;
-  }
+  .pp-info { flex: 1; display:flex; flex-direction:column; justify-content:center; }
+  .pp-info .label, .pp-extra .label { color: rgba(0,0,0,.45); font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top:7px; }
+  .pp-info .value, .pp-extra .value { font-weight: 600; font-size: 0.92rem; color: #1a1a2e; }
+  .pp-extra { font-size: 0.85rem; }
+  .pp-extra .value { margin-bottom: 4px; font-size: 0.92rem; }
   .pp-colored-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; }
-  .pp-seals { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .pp-seals { display:flex; flex-wrap:wrap; gap:10px; margin-top:auto; justify-content:center; }
   .pp-seal {
-    font-family:'DM Mono',monospace; font-size:0.5rem; line-height:1.25;
-    text-transform:uppercase; letter-spacing:.03em;
-    border:2px solid; border-radius:50%/45%; padding:4px 7px; text-align:center;
-    transform: rotate(var(--r,-6deg)); opacity:.72;
+    font-family:'DM Mono',monospace; font-size:0.62rem; line-height:1.15;
+    text-transform:uppercase; letter-spacing:.04em; font-weight:600;
+    border:2.5px solid; border-radius:50%; width:72px; height:72px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transform: rotate(var(--r,-6deg)); opacity:.8;
+    box-shadow: inset 0 0 0 2px currentColor;
   }
-  .pp-seal b{ display:block; font-size:0.62rem; }
+  .pp-seal b{ display:block; font-size:0.82rem; margin-bottom:2px; }
+  .pp-seal i{ font-style:normal; font-size:0.5rem; opacity:.85; }
 
   /* ===== VIZ 3 - MAP ===== */
   .map-controls {
@@ -431,7 +421,7 @@
   .ct-dot { width: 8px; height: 8px; border-radius: 50%; }
 
   /* ===== VIZ 12 - PIE CHART ===== */
-  #pie-canvas { max-width: 500px; width: 100%; height: 400px; display: block; }
+  #pie-svg-wrap svg { display: block; overflow: visible; }
   .pie-legend { margin-top: 24px; }
   .pie-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
   .pie-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
@@ -513,9 +503,8 @@
     .spotlight-grid { grid-template-columns: 1fr; }
     .big-numbers { grid-template-columns: 1fr; }
     section { padding: 60px 20px; }
-    .passports-container { gap: 24px; }
-    .passport { height: auto; min-height: 560px; }
-    .passport-inner { grid-template-columns: 1fr; gap: 16px; }
+    .passports-container { gap: 20px; }
+    .passport { width: 280px; height: 440px; }
   }
 </style>
 </head>
@@ -563,7 +552,7 @@
 <!-- INTRO -->
 <section class="scrollable-reveal" data-toc="Introducción">
   <div class="eyebrow">00 — Punto de partida</div>
-  <h2 class="big-title" style="font-size:clamp(2rem,5vw,3.4rem)">Somos tres que no nos quedamos quietos.</h2>
+  <h2 class="big-title" style="font-size:clamp(2rem,5vw,3.4rem)">Somos tres que no nos quedamos quietos</h2>
   <p class="lead" style="margin-top:1.5rem">Decidimos mirar nuestros viajes no como recuerdos sueltos sino como datos: ¿cuántos países pisó cada uno? ¿Dónde volvemos una y otra vez? ¿En qué rincones del mundo nuestros caminos se cruzaron sin que lo planeáramos?</p>
   <p class="lead" style="margin-top:1rem">Lo que sigue es un recorrido. Bajá despacio: cada visualización cuenta una parte de la historia.</p>
   <div class="stat-row">
@@ -594,37 +583,31 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-fausto')">
       <div class="passport" id="pp-fausto">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=300" alt="Pasaporte argentino" onerror="this.style.display='none'">
-          <div class="pp-country">REPÚBLICA ARGENTINA</div>
-          <div class="pp-name" style="color:var(--fausto)">Fausto Cuello</div>
-          <div class="pp-passport-label">Pasaporte · Passport</div>
-          <div class="pp-bar" style="background: linear-gradient(90deg, var(--fausto), #d4a800)"></div>
+          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <div class="pp-cover-name" style="color:var(--fausto)">Fausto Cuello</div>
         </div>
         <div class="passport-inner">
-          <div class="pp-inner-col">
-            <div class="pp-inner-top">
-              <div class="pp-photo" style="border-color: var(--fausto)">👨‍🦱</div>
-              <div class="pp-info">
-                <div class="label">Apellido / Surname</div><div class="value">CUELLO</div>
-                <div class="label">Nombre / Given name</div><div class="value">FAUSTO</div>
-                <div class="label">Fecha de nacimiento</div><div class="value">16/03/2004 · 22 años</div>
-                <div class="label">Nacionalidades</div><div class="value">Argentina · Italia</div>
-              </div>
-            </div>
-            <div class="pp-seals">
-              <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-7deg"><b>USA</b>ORLANDO</div>
-              <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:5deg"><b>ESP</b>MADRID</div>
-              <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-4deg"><b>DOM</b>STO DGO</div>
-              <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:8deg"><b>BRA</b>RÍO</div>
+          <div class="pp-inner-top">
+            <div class="pp-photo" style="border-color: var(--fausto)">👨</div>
+            <div class="pp-info">
+              <div class="label">Apellido</div><div class="value">Cuello</div>
+              <div class="label">Nombre</div><div class="value">Fausto</div>
+              <div class="label">Fecha de nacimiento</div><div class="value">16/03/2004 · 22 años</div>
+              <div class="label">Nacionalidades</div><div class="value">Argentina · Italia</div>
             </div>
           </div>
-          <div class="pp-inner-col pp-extra">
+          <div class="pp-extra">
             <div class="label">Lugar favorito</div><div class="value">Madrid, España</div>
-            <div class="label">Lugar más visitado</div><div class="value">Orlando, EE.UU. (13×)</div>
+            <div class="label">Lugar más visitado</div><div class="value">Orlando, EE.UU.</div>
             <div class="label">Próximo destino</div><div class="value">San Martín de los Andes</div>
             <div class="label">Países visitados</div><div class="value">9 países</div>
           </div>
-          <div class="pp-mrz">P&lt;ARG CUELLO&lt;&lt;FAUSTO&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG040316M&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+          <div class="pp-seals">
+            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-7deg"><b>USA</b><i>Orlando</i></div>
+            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:5deg"><b>ESP</b><i>Madrid</i></div>
+            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-4deg"><b>DOM</b><i>Sto Dgo</i></div>
+            <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:8deg"><b>BRA</b><i>Río</i></div>
+          </div>
           <div class="pp-colored-bar" style="background: var(--fausto)"></div>
         </div>
       </div>
@@ -634,37 +617,31 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-sol')">
       <div class="passport" id="pp-sol">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=300" alt="Pasaporte argentino" onerror="this.style.display='none'">
-          <div class="pp-country">REPÚBLICA ARGENTINA</div>
-          <div class="pp-name" style="color:var(--sol)">Solana Belinky</div>
-          <div class="pp-passport-label">Pasaporte · Passport</div>
-          <div class="pp-bar" style="background: linear-gradient(90deg, var(--sol), #ec4899)"></div>
+          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <div class="pp-cover-name" style="color:var(--sol)">Solana Belinky</div>
         </div>
         <div class="passport-inner">
-          <div class="pp-inner-col">
-            <div class="pp-inner-top">
-              <div class="pp-photo" style="border-color: var(--sol)">👩‍🦱</div>
-              <div class="pp-info">
-                <div class="label">Apellido / Surname</div><div class="value">BELINKY</div>
-                <div class="label">Nombre / Given name</div><div class="value">SOLANA</div>
-                <div class="label">Fecha de nacimiento</div><div class="value">07/11/2005 · 20 años</div>
-                <div class="label">Nacionalidades</div><div class="value">Argentina · Bulgaria</div>
-              </div>
-            </div>
-            <div class="pp-seals">
-              <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-6deg"><b>URY</b>PDE</div>
-              <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:6deg"><b>ITA</b>MILANO</div>
-              <div class="pp-seal" style="color:#7a3a5a;border-color:#7a3a5a;--r:-3deg"><b>ISR</b>TEL AVIV</div>
-              <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:7deg"><b>MEX</b>CANCÚN</div>
+          <div class="pp-inner-top">
+            <div class="pp-photo" style="border-color: var(--sol)">👩</div>
+            <div class="pp-info">
+              <div class="label">Apellido</div><div class="value">Belinky</div>
+              <div class="label">Nombre</div><div class="value">Solana</div>
+              <div class="label">Fecha de nacimiento</div><div class="value">07/11/2005 · 20 años</div>
+              <div class="label">Nacionalidades</div><div class="value">Argentina · Bulgaria</div>
             </div>
           </div>
-          <div class="pp-inner-col pp-extra">
+          <div class="pp-extra">
             <div class="label">Lugar favorito</div><div class="value">Milán, Italia</div>
-            <div class="label">Lugar más visitado</div><div class="value">Punta del Este (15×)</div>
+            <div class="label">Lugar más visitado</div><div class="value">Punta del Este</div>
             <div class="label">Próximo destino</div><div class="value">Punta del Este, Uruguay</div>
             <div class="label">Países visitados</div><div class="value">13 países</div>
           </div>
-          <div class="pp-mrz">P&lt;ARG BELINKY&lt;&lt;SOLANA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG051107F&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+          <div class="pp-seals">
+            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-6deg"><b>URY</b><i>P. del Este</i></div>
+            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:6deg"><b>ITA</b><i>Milano</i></div>
+            <div class="pp-seal" style="color:#7a3a5a;border-color:#7a3a5a;--r:-3deg"><b>ISR</b><i>Tel Aviv</i></div>
+            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:7deg"><b>MEX</b><i>Cancún</i></div>
+          </div>
           <div class="pp-colored-bar" style="background: var(--sol)"></div>
         </div>
       </div>
@@ -674,44 +651,37 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-lara')">
       <div class="passport" id="pp-lara">
         <div class="passport-front">
-          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=300" alt="Pasaporte argentino" onerror="this.style.display='none'">
-          <div class="pp-country">REPÚBLICA ARGENTINA</div>
-          <div class="pp-name" style="color:var(--lara)">Lara Fainburg</div>
-          <div class="pp-passport-label">Pasaporte · Passport</div>
-          <div class="pp-bar" style="background: linear-gradient(90deg, var(--lara), #0ea5e9)"></div>
+          <img class="pp-cover-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pasaporte%20Rep%C3%BAblica%20Argentina%20%E2%80%93%20portada%202018.png?width=320" alt="Pasaporte argentino" onerror="this.style.display='none'">
+          <div class="pp-cover-name" style="color:var(--lara)">Lara Fainburg</div>
         </div>
         <div class="passport-inner">
-          <div class="pp-inner-col">
-            <div class="pp-inner-top">
-              <div class="pp-photo" style="border-color: var(--lara)">👩</div>
-              <div class="pp-info">
-                <div class="label">Apellido / Surname</div><div class="value">FAINBURG</div>
-                <div class="label">Nombre / Given name</div><div class="value">LARA</div>
-                <div class="label">Fecha de nacimiento</div><div class="value">12/04/2006 · 20 años</div>
-                <div class="label">Nacionalidades</div><div class="value">Argentina · España</div>
-              </div>
-            </div>
-            <div class="pp-seals">
-              <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-7deg"><b>ARG</b>BARILOCHE</div>
-              <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:5deg"><b>GRC</b>MYKONOS</div>
-              <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-4deg"><b>USA</b>MIAMI</div>
-              <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:8deg"><b>NLD</b>ÁMSTERDAM</div>
+          <div class="pp-inner-top">
+            <div class="pp-photo" style="border-color: var(--lara)">👧</div>
+            <div class="pp-info">
+              <div class="label">Apellido</div><div class="value">Fainburg</div>
+              <div class="label">Nombre</div><div class="value">Lara</div>
+              <div class="label">Fecha de nacimiento</div><div class="value">12/04/2006 · 20 años</div>
+              <div class="label">Nacionalidades</div><div class="value">Argentina · España</div>
             </div>
           </div>
-          <div class="pp-inner-col pp-extra">
+          <div class="pp-extra">
             <div class="label">Lugar favorito</div><div class="value">Ámsterdam, Países Bajos</div>
-            <div class="label">Lugar más visitado</div><div class="value">Bariloche, Argentina (12×)</div>
+            <div class="label">Lugar más visitado</div><div class="value">Bariloche, Argentina</div>
             <div class="label">Próximo destino</div><div class="value">Bariloche, Argentina</div>
             <div class="label">Países visitados</div><div class="value">11 países</div>
           </div>
-          <div class="pp-mrz">P&lt;ARG FAINBURG&lt;&lt;LARA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG060412F&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+          <div class="pp-seals">
+            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-7deg"><b>ARG</b><i>Bariloche</i></div>
+            <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:5deg"><b>GRC</b><i>Mykonos</i></div>
+            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-4deg"><b>USA</b><i>Miami</i></div>
+            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:8deg"><b>NLD</b><i>Ámsterdam</i></div>
+          </div>
           <div class="pp-colored-bar" style="background: var(--lara)"></div>
         </div>
       </div>
     </div>
   </div>
-  <p style="text-align:center; color:var(--muted); font-size:0.82rem; margin-top:16px">Hacé click en cada pasaporte para abrirlo</p>
-</section>
+  <p style="text-align:center; color:var(--muted); font-size:0.82rem; margin-top:16px">DeslizÃ¡ y hacÃ© click en cada pasaporte para abrirlo</p></section>
 
 <!-- VIZ 3 - WORLD MAP -->
 <section id="mapa" class="scrollable-reveal">
@@ -872,14 +842,15 @@
   <div class="section-label">Visualización 08 · Distribución</div>
   <h2 class="section-title">¿A qué continente viajamos más?</h2>
   <p class="section-desc">La distribución de visitas totales (contando repeticiones) por continente entre los tres.</p>
-  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
-    <canvas id="pie-canvas"></canvas>
+  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:center">
+    <div id="pie-svg-wrap" style="position:relative;width:360px;max-width:100%"></div>
     <div class="pie-legend" id="pie-legend" style="flex:1;min-width:200px"></div>
   </div>
 </section>
 
 <!-- PERFIL FAUSTO -->
 <div class="person-band scrollable-reveal" data-toc="Fausto · perfil">
+  <div class="eyebrow">Visualización 09 · Historia personal · Fausto</div>
   <div class="person-tag c-fausto"><span class="pdot" style="background:var(--fausto)"></span>Fausto Cuello</div>
   <div class="numbig c-fausto">El que vuelve a sus lugares.</div>
   <div class="grid3">
@@ -898,7 +869,7 @@
   </div>
 </div>
 <section class="scrollable-reveal" data-toc="Fausto · España">
-  <div class="eyebrow">Visualización 09 · Fausto · Capítulo europeo</div>
+  <div class="eyebrow">Fausto · Capítulo europeo</div>
   <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">España, ciudad por ciudad.</h2>
   <p class="lead" style="margin:1rem 0">Su lugar favorito —Madrid— ancla un recorrido ibérico de norte a sur.</p>
   <div class="foods">
@@ -914,6 +885,7 @@
 
 <!-- PERFIL SOL -->
 <div class="person-band scrollable-reveal" data-toc="Sol · perfil">
+  <div class="eyebrow">Visualización 10 · Historia personal · Sol</div>
   <div class="person-tag c-sol"><span class="pdot" style="background:var(--sol)"></span>Solana Belinky</div>
   <div class="numbig c-sol">La más global de las tres.</div>
   <div class="grid3">
@@ -932,7 +904,7 @@
   </div>
 </div>
 <section class="scrollable-reveal" data-toc="Sol · Europa">
-  <div class="eyebrow">Visualización 10 · Sol · Italia y más allá</div>
+  <div class="eyebrow">Sol · Italia y más allá</div>
   <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">Cinco ciudades italianas, una favorita: Milán.</h2>
   <p class="lead" style="margin:1rem 0">Italia, Francia, Inglaterra, Bélgica, Países Bajos e Israel dibujan el tramo más internacional del grupo.</p>
   <div class="foods">
@@ -946,6 +918,7 @@
 
 <!-- PERFIL LARA -->
 <div class="person-band scrollable-reveal" data-toc="Lara · perfil">
+  <div class="eyebrow">Visualización 11 · Historia personal · Lara</div>
   <div class="person-tag c-lara"><span class="pdot" style="background:var(--lara)"></span>Lara Fainburg</div>
   <div class="numbig c-lara">Entre la montaña y el mar.</div>
   <div class="grid3">
@@ -964,7 +937,7 @@
   </div>
 </div>
 <section class="scrollable-reveal" data-toc="Lara · exclusivos">
-  <div class="eyebrow">Visualización 11 · Lara · Solo ella</div>
+  <div class="eyebrow">Lara · Solo ella</div>
   <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">Destinos que solo Lara pisó.</h2>
   <p class="lead" style="margin:1rem 0">Grecia es el único país del proyecto visitado por una sola integrante.</p>
   <div class="foods">
@@ -1314,11 +1287,10 @@ function togglePassport(id){
   });
 })();
 
-// ===== VIZ 08 DONUT (canvas, dibujado por código) =====
+// ===== VIZ 08 DONUT (SVG interactivo) =====
 (function(){
-  const canvas=document.getElementById('pie-canvas');
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
+  const wrap=document.getElementById('pie-svg-wrap');
+  if(!wrap) return;
   const data=[
     {label:'América del Sur', value:52, color:'#22d3ee'},
     {label:'América del Norte/Caribe', value:59, color:'#34d399'},
@@ -1326,45 +1298,85 @@ function togglePassport(id){
     {label:'Oriente Medio', value:8, color:'#fbbf24'},
   ];
   const total=data.reduce((s,d)=>s+d.value,0);
+  const ns='http://www.w3.org/2000/svg';
+  const SZ=360, cx=SZ/2, cy=SZ/2, R=150, RIN=84;
 
-  function drawPie(){
-    let W=canvas.clientWidth||canvas.offsetWidth||420; const H=400;
-    canvas.width=W*devicePixelRatio; canvas.height=H*devicePixelRatio;
-    canvas.style.height=H+'px';
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-    ctx.clearRect(0,0,W,H);
-    const cx=W/2, cy=H/2, R=Math.min(W,H)/2-40;
-    let start=-Math.PI/2;
-    data.forEach(d=>{
-      const angle=d.value/total*Math.PI*2;
-      ctx.beginPath(); ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,R,start,start+angle);
-      ctx.closePath(); ctx.fillStyle=d.color+'cc'; ctx.fill();
-      ctx.strokeStyle='#0a0a0f'; ctx.lineWidth=3; ctx.stroke();
-      const mid=start+angle/2;
-      const lx=cx+Math.cos(mid)*(R*0.72), ly=cy+Math.sin(mid)*(R*0.72);
-      ctx.fillStyle='#0a0a0f';
-      ctx.font='bold 12px DM Mono, monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(Math.round(d.value/total*100)+'%',lx,ly);
-      start+=angle;
-    });
-    ctx.beginPath(); ctx.arc(cx,cy,R*0.45,0,Math.PI*2);
-    ctx.fillStyle='#0a0a0f'; ctx.fill();
-    ctx.fillStyle='rgba(232,232,238,.85)'; ctx.font='bold 16px DM Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(total, cx, cy-8); ctx.font='10px DM Sans'; ctx.fillStyle='rgba(232,232,238,.6)'; ctx.fillText('visitas',cx,cy+10);
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox',`0 0 ${SZ} ${SZ}`);
+  svg.setAttribute('width','100%'); svg.style.display='block';
+
+  function arcPath(a0,a1){
+    const x0=cx+Math.cos(a0)*R, y0=cy+Math.sin(a0)*R;
+    const x1=cx+Math.cos(a1)*R, y1=cy+Math.sin(a1)*R;
+    const xi1=cx+Math.cos(a1)*RIN, yi1=cy+Math.sin(a1)*RIN;
+    const xi0=cx+Math.cos(a0)*RIN, yi0=cy+Math.sin(a0)*RIN;
+    const large=(a1-a0)>Math.PI?1:0;
+    return `M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1} L ${xi1} ${yi1} A ${RIN} ${RIN} 0 ${large} 0 ${xi0} ${yi0} Z`;
   }
 
-  const leg=document.getElementById('pie-legend');
-  data.forEach(d=>{
-    const row=document.createElement('div'); row.className='pie-row';
-    row.innerHTML=`<div class="pie-dot" style="background:${d.color}"></div><span style="flex:1">${d.label}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:.78rem">${d.value} visitas</span>`;
-    leg.appendChild(row);
-  });
+  // centro
+  const centerVal=document.createElementNS(ns,'text');
+  centerVal.setAttribute('x',cx); centerVal.setAttribute('y',cy-4);
+  centerVal.setAttribute('text-anchor','middle'); centerVal.setAttribute('fill','#e8e8ee');
+  centerVal.setAttribute('font-family','DM Mono, monospace'); centerVal.setAttribute('font-size','26'); centerVal.setAttribute('font-weight','700');
+  centerVal.textContent=total;
+  const centerLbl=document.createElementNS(ns,'text');
+  centerLbl.setAttribute('x',cx); centerLbl.setAttribute('y',cy+18);
+  centerLbl.setAttribute('text-anchor','middle'); centerLbl.setAttribute('fill','rgba(232,232,238,.6)');
+  centerLbl.setAttribute('font-family','DM Sans, sans-serif'); centerLbl.setAttribute('font-size','12');
+  centerLbl.textContent='visitas totales';
 
-  drawPie();
-  window.addEventListener('resize',drawPie);
-  const sec=canvas.closest('section');
-  if(sec){ const io=new IntersectionObserver(es=>{es.forEach(x=>{if(x.isIntersecting) drawPie();});},{threshold:.1}); io.observe(sec); }
+  let start=-Math.PI/2;
+  const segs=[];
+  data.forEach((d,i)=>{
+    const angle=d.value/total*Math.PI*2;
+    const a0=start, a1=start+angle;
+    const p=document.createElementNS(ns,'path');
+    p.setAttribute('d',arcPath(a0,a1));
+    p.setAttribute('fill',d.color);
+    p.setAttribute('stroke','#0a0a0f'); p.setAttribute('stroke-width','3');
+    p.style.cursor='pointer'; p.style.transition='opacity .2s, transform .2s';
+    p.style.transformOrigin=`${cx}px ${cy}px`;
+    const mid=(a0+a1)/2;
+    function on(){
+      segs.forEach(s=>s.style.opacity=.35); p.style.opacity=1;
+      p.style.transform=`translate(${Math.cos(mid)*8}px, ${Math.sin(mid)*8}px)`;
+      centerVal.textContent=`${Math.round(d.value/total*100)}%`;
+      centerLbl.textContent=d.label;
+      legRows[i].style.background='rgba(255,255,255,.06)';
+    }
+    function off(){
+      segs.forEach(s=>{s.style.opacity=1; s.style.transform='none';});
+      centerVal.textContent=total; centerLbl.textContent='visitas totales';
+      legRows[i].style.background='transparent';
+    }
+    p.addEventListener('mouseenter',on); p.addEventListener('mouseleave',off);
+    svg.appendChild(p); segs.push(p);
+    // % label
+    const lx=cx+Math.cos(mid)*((R+RIN)/2), ly=cy+Math.sin(mid)*((R+RIN)/2);
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',lx); t.setAttribute('y',ly); t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle'); t.setAttribute('fill','#0a0a0f');
+    t.setAttribute('font-family','DM Mono, monospace'); t.setAttribute('font-size','12'); t.setAttribute('font-weight','700');
+    t.style.pointerEvents='none';
+    t.textContent=Math.round(d.value/total*100)+'%';
+    svg.appendChild(t);
+    start=a1;
+  });
+  svg.appendChild(centerVal); svg.appendChild(centerLbl);
+  wrap.appendChild(svg);
+
+  // leyenda interactiva
+  const leg=document.getElementById('pie-legend');
+  const legRows=[];
+  data.forEach((d,i)=>{
+    const row=document.createElement('div'); row.className='pie-row';
+    row.style.cursor='pointer'; row.style.transition='background .2s'; row.style.borderRadius='8px'; row.style.padding='6px 8px';
+    row.innerHTML=`<div class="pie-dot" style="background:${d.color}"></div><span style="flex:1">${d.label}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:.78rem">${d.value} visitas</span>`;
+    row.addEventListener('mouseenter',()=>segs[i].dispatchEvent(new Event('mouseenter')));
+    row.addEventListener('mouseleave',()=>segs[i].dispatchEvent(new Event('mouseleave')));
+    leg.appendChild(row); legRows.push(row);
+  });
 })();
 
 // ===== CELL GRID (EE.UU.) =====
