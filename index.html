@@ -14,13 +14,28 @@
     --fausto: #F5C542;
     --sol: #F472B6;
     --lara: #67E8F9;
+    --fausto-soft: rgba(245,197,66,0.14);
+    --sol-soft: rgba(244,114,182,0.14);
+    --lara-soft: rgba(103,232,249,0.14);
     --bg: #0a0a0f;
     --bg2: #0f0f1a;
     --bg3: #13131f;
     --text: #e8e8ee;
     --muted: #6b6b88;
     --border: rgba(255,255,255,0.08);
+    /* sistema de diseño compartido */
+    --card-radius: 16px;
+    --card-bg: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    --card-border: 1px solid rgba(255,255,255,0.09);
+    --card-shadow: 0 18px 40px -22px rgba(0,0,0,0.8);
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
   }
+  /* utilidades de identidad por persona */
+  .accent-fausto { --accent: var(--fausto); --accent-soft: var(--fausto-soft); }
+  .accent-sol { --accent: var(--sol); --accent-soft: var(--sol-soft); }
+  .accent-lara { --accent: var(--lara); --accent-soft: var(--lara-soft); }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
@@ -94,9 +109,9 @@
     font-weight: 900; line-height: 1;
     margin-bottom: 12px;
   }
-  .hero h1 .word1 { color: var(--text); display: block; }
+  .hero h1 .word1 { color: var(--fausto); display: block; }
   .hero h1 .word2 { color: var(--text); display: block; }
-  .hero h1 .word3 { color: var(--text); display: block; font-style: italic; font-weight: 400; }
+  .hero h1 .word3 { color: var(--lara); display: block; font-style: italic; font-weight: 400; }
   .hero-sub {
     max-width: 520px; font-size: 1.05rem;
     color: rgba(232,232,238,.7); margin: 24px auto 40px;
@@ -112,7 +127,19 @@
     padding: 10px 24px; border-radius: 40px;
     border: 1.5px solid currentColor;
     animation: float var(--fd, 3s) ease-in-out infinite var(--fd2, 0s);
+    text-decoration: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background-color .3s, color .3s, transform .2s, box-shadow .3s;
   }
+  .hero-name:hover {
+    background: currentColor;
+    transform: translateY(-4px) scale(1.04);
+  }
+  .hero-name.f:hover { box-shadow: 0 8px 28px -8px var(--fausto); }
+  .hero-name.s:hover { box-shadow: 0 8px 28px -8px var(--sol); }
+  .hero-name.l:hover { box-shadow: 0 8px 28px -8px var(--lara); }
+  .hero-name:hover .hn-label { color: var(--bg); }
+  .hn-label { transition: color .3s; }
   .hero-name.f { color: var(--fausto); }
   .hero-name.s { color: var(--sol); }
   .hero-name.l { color: var(--lara); }
@@ -168,36 +195,6 @@
     font-style: italic;
   }
 
-  /* ===== NUEVOS BLOQUES (intro, perfiles, barras) ===== */
-  .eyebrow{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-  h2.big-title{font-family:'Playfair Display',serif;font-weight:700;line-height:1.1;color:var(--text)}
-  .lead{font-size:1.15rem;color:rgba(232,232,238,.72);max-width:62ch;line-height:1.7}
-  .stat-row{display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:2.5rem}
-  .stat{border-left:2px solid var(--border);padding-left:1rem}
-  .stat .num{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700}
-  .stat .lbl{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
-  .person-band{padding:80px 40px;max-width:1200px;margin:0 auto;border-top:1px solid var(--border)}
-  .person-tag{display:inline-flex;align-items:center;gap:.6rem;font-family:'DM Mono',monospace;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
-  .person-tag .pdot{width:14px;height:14px;border-radius:50%}
-  .numbig{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:700;line-height:1}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
-  @media(max-width:640px){.grid3{grid-template-columns:1fr}}
-  .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.4rem}
-  .kpi .num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700}
-  .kpi .lbl{font-family:'DM Mono',monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
-  .bars{display:flex;flex-direction:column;gap:.7rem;margin-top:1.5rem}
-  .bars .bar-row{display:grid;grid-template-columns:140px 1fr 64px;align-items:center;gap:1rem;font-family:'DM Mono',monospace;font-size:.74rem;margin-bottom:.7rem}
-  .bars .bar-track{height:32px;background:rgba(255,255,255,.05);border-radius:8px;overflow:hidden}
-  .bars .bar-fill{height:100%;border-radius:8px;width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
-  .visible .bars .bar-fill{width:var(--w)}
-  @media(max-width:760px){.bars .bar-row{grid-template-columns:96px 1fr 50px}}
-  .foods{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
-  .food{font-family:'DM Mono',monospace;font-size:.74rem;border:1px solid var(--border);border-radius:30px;padding:.4rem .9rem}
-  .c-fausto{color:var(--fausto)}.c-sol{color:var(--sol)}.c-lara{color:var(--lara)}
-  .cell-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(16px,1fr));gap:4px;margin-top:1.5rem}
-  .cell{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.06);transition:transform .2s}
-  .cell:hover{transform:scale(1.35);z-index:2}
-
   /* ===== VIZ 1 - BUBBLE NETWORK ===== */
   #viz1 { background: var(--bg); }
   #bubble-canvas { width: 100%; height: 560px; cursor: pointer; }
@@ -222,84 +219,133 @@
 
   /* ===== VIZ 2 - PASAPORTES ===== */
   .passports-container {
-    display: flex; flex-direction: row; gap: 28px;
-    overflow-x: auto; scroll-snap-type: x mandatory;
-    padding: 20px 4px 30px; justify-content: flex-start;
-    -webkit-overflow-scrolling: touch;
+    display: flex; gap: 32px; justify-content: center;
+    flex-wrap: wrap; padding: 20px 0 40px;
   }
-  .passports-container::-webkit-scrollbar { height: 6px; }
-  .passports-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
   .passport-wrapper {
-    perspective: 1600px;
+    perspective: 1200px;
     cursor: pointer;
-    flex: 0 0 auto;
-    scroll-snap-align: center;
   }
   .passport {
     width: 320px; height: 460px;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(.42,0,.18,1.5);
+    transition: transform 0.7s cubic-bezier(.42,0,.18,1.5);
   }
-  .passport.open { transform: rotateY(180deg); }
-  .passport-front, .passport-inner {
-    position: absolute; inset: 0;
-    border-radius: 14px;
+  .passport.open { transform: rotateY(-170deg); }
+  .passport-front, .passport-back, .passport-inside-left, .passport-inside-right {
+    position: absolute; width: 100%; height: 100%;
+    border-radius: 12px 4px 4px 12px;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    overflow: hidden;
   }
   .passport-front {
-    background: var(--bg);
+    background: linear-gradient(160deg, #1a2744 0%, #0d1a36 50%, #0a1228 100%);
+    border: 2px solid rgba(255,255,255,0.08);
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 16px;
-    padding: 0; z-index: 2; border-radius: 14px; overflow: hidden;
+    align-items: center; justify-content: space-between;
+    padding: 28px 24px; z-index: 2;
+    box-shadow: 0 20px 60px rgba(0,0,0,.7);
   }
-  .pp-cover-svg { width: 100%; height: 100%; display: block; }
-  .pp-cover-name {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    text-align: center; padding: 14px 10px 16px;
-    font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
-    background: linear-gradient(to top, rgba(0,0,0,.55), transparent);
-    letter-spacing: .03em; color:#fff;
-    text-shadow: 0 1px 6px rgba(0,0,0,.6);
+  .pp-emblem {
+    width: 64px; height: 64px;
+    background: radial-gradient(circle, rgba(255,220,50,.9) 0%, rgba(200,160,0,.8) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; box-shadow: 0 0 20px rgba(255,220,50,.3);
+    margin-bottom: 8px;
   }
-  /* interior: foto + datos ocupando toda la pestaña */
-  .passport-inner {
-    background: linear-gradient(135deg, #eee8d5 0%, #e0d8c0 100%);
+  .pp-country {
+    font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,.5); text-align: center; line-height: 1.8;
+  }
+  .pp-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 700;
+    text-align: center; letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-shadow: 0 0 30px rgba(255,255,255,.15);
+  }
+  .pp-passport-label {
+    font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(255,255,255,.3);
+  }
+  .pp-bar {
+    width: 100%; height: 8px; border-radius: 4px; margin-top: 8px;
+    opacity: 0.6;
+  }
+  .pp-flag-strip {
+    width: 100%; display: flex; height: 4px; border-radius: 2px; overflow: hidden; margin-top: 12px;
+  }
+  .pp-flag-strip span { flex: 1; }
+  .passport-inside-left {
+    background: linear-gradient(135deg, #f0ebe0 0%, #e8e0d0 100%);
     transform: rotateY(180deg);
+    border-radius: 4px 12px 12px 4px;
     display: flex; flex-direction: column;
-    gap: 10px; padding: 16px 16px 20px;
+    align-items: center; justify-content: flex-end;
+    padding: 20px;
+    color: #1a1a2e;
+    font-size: 0.7rem;
+    z-index: 1;
+  }
+  .pp-stamps {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-bottom: 12px;
+  }
+  .pp-stamp {
+    border: 1.5px solid rgba(80,0,80,.25);
+    border-radius: 6px; padding: 6px 8px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(80,0,80,.6);
+  }
+  .pp-stamp span { display: block; font-size: 0.9rem; }
+  .passport-inside-right {
+    background: linear-gradient(135deg, #e8e0d0 0%, #ddd4c0 100%);
+    transform: rotateY(180deg);
+    border-radius: 12px 4px 4px 12px;
+    overflow: hidden;
+    z-index: 1;
+  }
+  /* the inner face that shows when opened */
+  .passport-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #eee8d5 0%, #e0d8c0 100%);
+    border-radius: 12px 4px 4px 12px;
+    transform: rotateY(0deg);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column;
+    padding: 24px 20px;
     color: #1a1a2e;
   }
   .pp-inner-top {
-    display: flex; gap: 12px; align-items: stretch;
-    padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,.14);
+    display: flex; gap: 14px; margin-bottom: 16px;
+    padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,.1);
   }
   .pp-photo {
-    width: 78px; height: 98px; border-radius: 4px;
+    width: 72px; height: 92px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 2.6rem; flex-shrink: 0;
-    border: 2px solid rgba(0,0,0,.2);
+    font-size: 2.2rem; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,.15);
     background: rgba(0,0,0,.05);
   }
-  .pp-info { flex: 1; display:flex; flex-direction:column; justify-content:center; }
-  .pp-info .label, .pp-extra .label { color: rgba(0,0,0,.45); font-family: 'DM Mono', monospace; font-size: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase; margin-top:4px; }
-  .pp-info .value, .pp-extra .value { font-weight: 600; font-size: 0.74rem; color: #1a1a2e; line-height:1.25; }
-  .pp-extra { font-size: 0.72rem; }
-  .pp-extra .value { margin-bottom: 2px; font-size: 0.74rem; }
-  .pp-colored-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; }
-  .pp-seals { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; justify-content:center; }
-  .pp-seal {
-    font-family:'DM Mono',monospace; font-size:0.55rem; line-height:1.1;
-    text-transform:uppercase; letter-spacing:.03em; font-weight:600;
-    border:2px solid; border-radius:50%; width:58px; height:58px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    transform: rotate(var(--r,-6deg)); opacity:.82;
-    box-shadow: inset 0 0 0 2px currentColor;
+  .pp-info { flex: 1; font-size: 0.68rem; line-height: 1.9; }
+  .pp-info .label { color: rgba(0,0,0,.35); font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .pp-info .value { font-weight: 500; font-size: 0.72rem; color: #1a1a2e; }
+  .pp-extra { font-size: 0.65rem; }
+  .pp-extra .label { color: rgba(0,0,0,.35); font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .pp-extra .value { font-weight: 500; margin-bottom: 8px; color: #1a1a2e; font-size: 0.68rem; }
+  .pp-mrz {
+    margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(0,0,0,.1);
+    font-family: 'DM Mono', monospace; font-size: 0.52rem;
+    color: rgba(0,0,0,.3); letter-spacing: 0.06em; word-break: break-all;
+    line-height: 1.4;
   }
-  .pp-seal b{ display:block; font-size:0.72rem; margin-bottom:1px; }
-  .pp-seal i{ font-style:normal; font-size:0.44rem; opacity:.85; }
+  .pp-colored-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 6px; border-radius: 0 0 12px 0;
+  }
 
   /* ===== VIZ 3 - MAP ===== */
   .map-controls {
@@ -337,10 +383,11 @@
   /* ===== VIZ 4-6 STATS BARS ===== */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
   .stat-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px; transition: transform .2s, border-color .3s;
+    background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius);
+    padding: 28px; transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
+    box-shadow: var(--card-shadow);
   }
-  .stat-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.15); }
+  .stat-card:hover { transform: translateY(-5px); box-shadow: 0 24px 44px -22px rgba(0,0,0,.85); }
   .stat-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
   .stat-avatar {
     width: 40px; height: 40px; border-radius: 50%;
@@ -392,34 +439,50 @@
 
   /* ===== VIZ 11 - CITY CARDS ===== */
   .city-cards {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px;
   }
   .city-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
-    overflow: hidden; transition: transform .25s, border-color .25s;
-    cursor: default;
+    background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius);
+    overflow: hidden; transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s, box-shadow .3s;
+    cursor: default; position: relative; box-shadow: var(--card-shadow);
   }
-  .city-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.2); }
+  .city-card::after {
+    content:''; position:absolute; inset:0; border-radius:var(--card-radius);
+    padding:1px; background:linear-gradient(160deg, var(--cc, #fff)44, transparent 60%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; opacity:.6;
+  }
+  .city-card:hover { transform: translateY(-6px); box-shadow: 0 26px 50px -24px var(--cc, #000); }
   .city-card-top {
-    height: 100px; display: flex; align-items: flex-end;
+    height: 110px; display: flex; align-items: flex-end;
     padding: 16px; position: relative;
     background: linear-gradient(135deg, var(--c1), var(--c2));
   }
-  .city-emoji { font-size: 2.8rem; line-height: 1; }
+  .city-card-top::before {
+    content:''; position:absolute; inset:0;
+    background-image:radial-gradient(circle at 80% 20%, rgba(255,255,255,.25), transparent 50%);
+  }
+  .city-emoji { font-size: 3rem; line-height: 1; position:relative; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
+  .city-rank {
+    position:absolute; top:12px; left:14px; font-family:var(--font-display);
+    font-size:1.6rem; font-weight:900; color:rgba(255,255,255,.35); line-height:1;
+  }
   .city-visits {
     position: absolute; top: 12px; right: 12px;
-    background: rgba(0,0,0,.4); border-radius: 20px;
-    padding: 3px 10px; font-size: 0.72rem;
-    font-family: 'DM Mono', monospace; color: white;
+    background: rgba(0,0,0,.45); border-radius: 20px; backdrop-filter: blur(4px);
+    padding: 4px 11px; font-size: 0.72rem;
+    font-family: 'DM Mono', monospace; color: white; font-weight:500;
   }
-  .city-body { padding: 16px; }
-  .city-name { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
-  .city-meta { font-size: 0.78rem; color: var(--muted); }
-  .city-travellers { display: flex; gap: 5px; margin-top: 10px; }
-  .ct-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .city-body { padding: 16px 18px 18px; }
+  .city-name { font-family:var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 2px; }
+  .city-meta { font-size: 0.78rem; color: var(--muted); font-family:var(--font-mono); }
+  .city-fact { font-size: 0.8rem; color: rgba(232,232,238,.7); margin-top: 12px; line-height:1.5; border-top:1px solid var(--border); padding-top:12px; }
+  .city-travellers { display: flex; gap: 6px; margin-top: 12px; align-items:center; }
+  .city-travellers .ct-label { font-size:0.62rem; color:var(--muted); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.1em; margin-right:2px; }
+  .ct-dot { width: 14px; height: 14px; border-radius: 50%; border:2px solid var(--bg2); }
 
   /* ===== VIZ 12 - PIE CHART ===== */
-  #pie-svg-wrap svg { display: block; overflow: visible; }
+  #pie-canvas { max-width: 500px; width: 100%; height: 400px; display: block; }
   .pie-legend { margin-top: 24px; }
   .pie-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
   .pie-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
@@ -427,23 +490,23 @@
   /* ===== VIZ 13 - CONTINENTS ===== */
   .continents-wrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
   .continent-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px 16px; text-align: center;
-    transition: transform .2s, border-color .3s;
+    background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius);
+    padding: 20px 16px; text-align: center; box-shadow: var(--card-shadow);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
   }
-  .continent-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.15); }
+  .continent-card:hover { transform: translateY(-5px); box-shadow: 0 22px 40px -22px rgba(0,0,0,.85); }
   .cont-icon { font-size: 2.2rem; margin-bottom: 10px; }
-  .cont-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+  .cont-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; font-family: var(--font-display); }
   .cont-pips { display: flex; gap: 5px; justify-content: center; margin-bottom: 8px; }
   .cont-count { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); }
 
   /* ===== VIZ 14 - PUNTA DEL ESTE SPOTLIGHT ===== */
   .spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
   .spot-left { display: flex; flex-direction: column; gap: 20px; justify-content: space-between; }
-  .spot-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .spot-stat { background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius); padding: 20px; box-shadow: var(--card-shadow); flex:1; display:flex; flex-direction:column; justify-content:center; }
   .spot-stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; line-height: 1; }
   .spot-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
-  .spot-right { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+  .spot-right { background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius); padding: 28px; box-shadow: var(--card-shadow); }
   .spot-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 16px; }
 
   /* ===== VIZ 15 - PERSONAL SANKEY ===== */
@@ -473,7 +536,8 @@
     font-family: 'Playfair Display', serif;
     font-size: clamp(3rem, 6vw, 5rem);
     font-weight: 900; line-height: 1;
-    color: var(--text);
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .bn-label { font-size: 0.8rem; color: var(--muted); margin-top: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
 
@@ -494,6 +558,7 @@
     transition: opacity .6s ease, transform .6s ease;
   }
   .scrollable-reveal.visible { opacity: 1; transform: translateY(0); }
+  section[id], header[id] { scroll-margin-top: 80px; }
 
   /* RESPONSIVE */
   @media(max-width:768px){
@@ -502,8 +567,36 @@
     .big-numbers { grid-template-columns: 1fr; }
     section { padding: 60px 20px; }
     .passports-container { gap: 20px; }
-    .passport { width: 280px; height: 440px; }
+    .passport { width: 280px; height: 400px; }
   }
+  /* ===== VIZ 16 - FACTS POR PAÍS ===== */
+  .facts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  .fact-card {
+    background: var(--card-bg); border: var(--card-border); border-radius: var(--card-radius);
+    padding: 20px; box-shadow: var(--card-shadow); position: relative; overflow: hidden;
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
+  }
+  .fact-card:hover { transform: translateY(-5px); box-shadow: 0 24px 44px -22px rgba(0,0,0,.85); }
+  .fact-flag { font-size: 2.4rem; line-height: 1; }
+  .fact-country { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin: 10px 0 2px; }
+  .fact-rows { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .fact-row { display: flex; justify-content: space-between; gap: 10px; font-size: 0.76rem; }
+  .fact-row .fk { color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .08em; font-size: 0.62rem; }
+  .fact-row .fv { color: var(--text); text-align: right; }
+  .fact-curio { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 0.78rem; color: rgba(232,232,238,.7); line-height: 1.5; font-style: italic; }
+  .fact-who { position:absolute; top:16px; right:16px; display:flex; gap:5px; }
+  .fact-who .fw-dot { width: 11px; height: 11px; border-radius: 50%; border:2px solid var(--bg2); }
+
+  /* ===== VIZ 17 - DISTANCIAS ===== */
+  .dist-chart { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+  .dist-row { display: grid; grid-template-columns: 140px 1fr auto; align-items: center; gap: 16px; }
+  .dist-city { font-family: var(--font-mono); font-size: 0.82rem; }
+  .dist-city small { color: var(--muted); display:block; font-size:0.68rem; }
+  .dist-bar-track { background: rgba(255,255,255,.05); border-radius: 8px; height: 26px; overflow: hidden; }
+  .dist-bar-fill { height: 100%; width: 0; border-radius: 8px; transition: width 1.3s cubic-bezier(.2,.8,.2,1); }
+  .scrollable-reveal.visible .dist-bar-fill { width: var(--w); }
+  .dist-km { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text); min-width: 74px; text-align: right; }
+
 </style>
 </head>
 <body>
@@ -517,9 +610,10 @@
   </div>
   <div class="links">
     <a href="#conexiones">Conexiones</a>
-    <a href="#pasaportes">Pasaportes</a>
     <a href="#mapa">Mapa</a>
-    <a href="#historias">Historias</a>
+    <a href="#fausto" style="color:var(--fausto)">Fausto</a>
+    <a href="#sol" style="color:var(--sol)">Sol</a>
+    <a href="#lara" style="color:var(--lara)">Lara</a>
   </div>
 </nav>
 
@@ -527,19 +621,19 @@
 <header class="hero" id="inicio">
   <div class="hero-bg"></div>
   <div class="hero-stars" id="stars"></div>
-  <span class="hero-tag">Visualización de Datos · 2026</span>
+  <span class="hero-tag">Visualización de Datos · 2024</span>
   <h1>
     <span class="word1">Tres</span>
     <span class="word2">Pasaportes</span>
     <span class="word3">mil aventuras</span>
   </h1>
   <p class="hero-sub">
-    Tres personas, tres pasaportes, decenas de fronteras cruzadas. Esta es la historia de los viajes de Fausto, Sol y Lara — contada con los lugares que pisaron, los que repitieron y los que, sin saberlo, compartieron.
+    Una narrativa visual sobre los viajes de tres amigos argentinos: los países que cruzaron, las ciudades que marcaron su historia, y los destinos que los conectan.
   </p>
   <div class="hero-names">
-    <span class="hero-name f" style="--fd:3.2s;--fd2:0s">Fausto ✦</span>
-    <span class="hero-name s" style="--fd:3.5s;--fd2:.3s">Sol ✦</span>
-    <span class="hero-name l" style="--fd:3.1s;--fd2:.6s">Lara ✦</span>
+    <a href="#fausto" class="hero-name f" style="--fd:3.2s;--fd2:0s"><span class="hn-label">Fausto</span> ✦</a>
+    <a href="#sol" class="hero-name s" style="--fd:3.5s;--fd2:.3s"><span class="hn-label">Sol</span> ✦</a>
+    <a href="#lara" class="hero-name l" style="--fd:3.1s;--fd2:.6s"><span class="hn-label">Lara</span> ✦</a>
   </div>
   <div class="scroll-hint">
     <span>Scrolleá para explorar</span>
@@ -547,19 +641,11 @@
   </div>
 </header>
 
-<!-- INTRO -->
-<section class="scrollable-reveal" data-toc="Introducción">
-  <div class="eyebrow">00 — Punto de partida</div>
-  <h2 class="big-title" style="font-size:clamp(2rem,5vw,3.4rem)">Somos tres que no nos quedamos quietos</h2>
-  <p class="lead" style="margin-top:1.5rem">Decidimos mirar nuestros viajes no como recuerdos sueltos sino como datos: ¿cuántos países pisó cada uno? ¿Dónde volvemos una y otra vez? ¿En qué rincones del mundo nuestros caminos se cruzaron sin que lo planeáramos?</p>
-  <p class="lead" style="margin-top:1rem">Lo que sigue es un recorrido. Bajá despacio: cada visualización cuenta una parte de la historia.</p>
-  <div class="stat-row">
-    <div class="stat"><div class="num">17</div><div class="lbl">Países distintos</div></div>
-    <div class="stat"><div class="num">81</div><div class="lbl">Ciudades registradas</div></div>
-    <div class="stat"><div class="num">189</div><div class="lbl">Visitas totales</div></div>
-    <div class="stat"><div class="num">5</div><div class="lbl">Países en común</div></div>
-  </div>
-</section>
+<!-- INTRO TEXT -->
+<div class="narrative scrollable-reveal">
+  <p>Antes de cumplir los 23 años, <strong>Fausto, Sol y Lara</strong> ya habían pisado cuatro continentes. Entre los tres, acumularon visitas a <strong>más de 20 países</strong> y decenas de ciudades que dejaron huella.</p>
+  <p>Esta es la historia de sus viajes, contada en datos, colores y coordenadas.</p>
+</div>
 
 <!-- VIZ 1 - BUBBLE NETWORK -->
 <section id="conexiones" class="scrollable-reveal">
@@ -567,6 +653,11 @@
   <h2 class="section-title">El universo de nuestros viajes</h2>
   <p class="section-desc">Cada círculo somos nosotros. Su tamaño refleja cuántos países visitó cada uno. Las líneas conectan los países que compartimos — hacé click en un círculo para explorar.</p>
   <canvas id="bubble-canvas"></canvas>
+  <div class="bubble-legend">
+    <div class="bl-item"><div class="bl-dot" style="background:var(--fausto)"></div>Fausto · 10 países</div>
+    <div class="bl-item"><div class="bl-dot" style="background:var(--sol)"></div>Sol · 14 países</div>
+    <div class="bl-item"><div class="bl-dot" style="background:var(--lara)"></div>Lara · 11 países</div>
+  </div>
 </section>
 <div class="bubble-tooltip" id="bubble-tooltip"></div>
 
@@ -581,44 +672,43 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-fausto')">
       <div class="passport" id="pp-fausto">
         <div class="passport-front">
-          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect width="320" height="460" fill="#5aa7e0"/>
-            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
-            <g stroke="#f5ecc9" stroke-width="7" fill="none">
-              <circle cx="160" cy="225" r="70"/>
-              <ellipse cx="160" cy="225" rx="28" ry="70"/>
-              <line x1="90" y1="225" x2="230" y2="225"/>
-              <path d="M104 183 Q160 205 216 183"/>
-              <path d="M104 267 Q160 245 216 267"/>
-            </g>
-            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
-            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
-            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
-          </svg>
-          <div class="pp-cover-name" style="color:var(--fausto)">Fausto Cuello</div>
+          <div style="text-align:center">
+            <div class="pp-emblem">🇦🇷</div>
+            <div class="pp-country">REPÚBLICA ARGENTINA<br>MERCOSUR</div>
+          </div>
+          <div class="pp-name" style="color:var(--fausto)">FAUSTO</div>
+          <div style="text-align:center">
+            <div class="pp-passport-label">PASAPORTE · PASSPORT</div>
+            <div class="pp-bar" style="background: linear-gradient(90deg, var(--fausto), #d4a800)"></div>
+          </div>
         </div>
         <div class="passport-inner">
           <div class="pp-inner-top">
-            <div class="pp-photo" style="border-color: var(--fausto)">👨</div>
+            <div class="pp-photo" style="border-color: var(--fausto)">👨‍🦱</div>
             <div class="pp-info">
-              <div class="label">Apellido</div><div class="value">Cuello</div>
-              <div class="label">Nombre</div><div class="value">Fausto</div>
-              <div class="label">Fecha de nacimiento</div><div class="value">16/03/2004 · 22 años</div>
-              <div class="label">Nacionalidades</div><div class="value">Argentina · Italia</div>
+              <div class="label">Apellido / Surname</div>
+              <div class="value">CUELLO</div>
+              <div class="label">Nombre / Given name</div>
+              <div class="value">FAUSTO</div>
+              <div class="label">Fecha de Nacimiento</div>
+              <div class="value">16/03/2004</div>
+              <div class="label">Nacionalidades</div>
+              <div class="value">Argentino · Italiano</div>
+              <div class="label">Edad</div>
+              <div class="value">22 años</div>
             </div>
           </div>
           <div class="pp-extra">
-            <div class="label">Lugar favorito</div><div class="value">Madrid, España</div>
-            <div class="label">Lugar más visitado</div><div class="value">Orlando, EE.UU.</div>
-            <div class="label">Próximo destino</div><div class="value">San Martín de los Andes</div>
-            <div class="label">Países visitados</div><div class="value">9 países</div>
+            <div class="label">Lugar favorito</div>
+            <div class="value">📍 Madrid, España</div>
+            <div class="label">Lugar más visitado</div>
+            <div class="value">🔁 Miami, EE.UU. (11×)</div>
+            <div class="label">Próximo destino</div>
+            <div class="value">✈️ San Martín de los Andes</div>
+            <div class="label">Países visitados</div>
+            <div class="value">🌍 10 países</div>
           </div>
-          <div class="pp-seals">
-            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-7deg"><b>USA</b><i>Orlando</i></div>
-            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:5deg"><b>ESP</b><i>Madrid</i></div>
-            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-4deg"><b>DOM</b><i>Sto Dgo</i></div>
-            <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:8deg"><b>BRA</b><i>Río</i></div>
-          </div>
+          <div class="pp-mrz">P&lt;ARG CUELLO&lt;&lt;FAUSTO&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG040316M&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
           <div class="pp-colored-bar" style="background: var(--fausto)"></div>
         </div>
       </div>
@@ -628,44 +718,43 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-sol')">
       <div class="passport" id="pp-sol">
         <div class="passport-front">
-          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect width="320" height="460" fill="#5aa7e0"/>
-            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
-            <g stroke="#f5ecc9" stroke-width="7" fill="none">
-              <circle cx="160" cy="225" r="70"/>
-              <ellipse cx="160" cy="225" rx="28" ry="70"/>
-              <line x1="90" y1="225" x2="230" y2="225"/>
-              <path d="M104 183 Q160 205 216 183"/>
-              <path d="M104 267 Q160 245 216 267"/>
-            </g>
-            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
-            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
-            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
-          </svg>
-          <div class="pp-cover-name" style="color:var(--sol)">Solana Belinky</div>
+          <div style="text-align:center">
+            <div class="pp-emblem">🇦🇷</div>
+            <div class="pp-country">REPÚBLICA ARGENTINA<br>MERCOSUR</div>
+          </div>
+          <div class="pp-name" style="color:var(--sol)">SOL</div>
+          <div style="text-align:center">
+            <div class="pp-passport-label">PASAPORTE · PASSPORT</div>
+            <div class="pp-bar" style="background: linear-gradient(90deg, var(--sol), #ec4899)"></div>
+          </div>
         </div>
         <div class="passport-inner">
           <div class="pp-inner-top">
-            <div class="pp-photo" style="border-color: var(--sol)">👩</div>
+            <div class="pp-photo" style="border-color: var(--sol)">👩‍🦱</div>
             <div class="pp-info">
-              <div class="label">Apellido</div><div class="value">Belinky</div>
-              <div class="label">Nombre</div><div class="value">Solana</div>
-              <div class="label">Fecha de nacimiento</div><div class="value">07/11/2005 · 20 años</div>
-              <div class="label">Nacionalidades</div><div class="value">Argentina · Bulgaria</div>
+              <div class="label">Apellido / Surname</div>
+              <div class="value">BELINKY</div>
+              <div class="label">Nombre / Given name</div>
+              <div class="value">SOLANA</div>
+              <div class="label">Fecha de Nacimiento</div>
+              <div class="value">07/11/2005</div>
+              <div class="label">Nacionalidades</div>
+              <div class="value">Argentina · Búlgara</div>
+              <div class="label">Edad</div>
+              <div class="value">20 años</div>
             </div>
           </div>
           <div class="pp-extra">
-            <div class="label">Lugar favorito</div><div class="value">Milán, Italia</div>
-            <div class="label">Lugar más visitado</div><div class="value">Punta del Este</div>
-            <div class="label">Próximo destino</div><div class="value">Punta del Este, Uruguay</div>
-            <div class="label">Países visitados</div><div class="value">13 países</div>
+            <div class="label">Lugar favorito</div>
+            <div class="value">📍 Milán, Italia</div>
+            <div class="label">Lugar más visitado</div>
+            <div class="value">🔁 Punta del Este (15×)</div>
+            <div class="label">Próximo destino</div>
+            <div class="value">✈️ Punta del Este, Uruguay</div>
+            <div class="label">Países visitados</div>
+            <div class="value">🌍 14 países</div>
           </div>
-          <div class="pp-seals">
-            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-6deg"><b>URY</b><i>P. del Este</i></div>
-            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:6deg"><b>ITA</b><i>Milano</i></div>
-            <div class="pp-seal" style="color:#7a3a5a;border-color:#7a3a5a;--r:-3deg"><b>ISR</b><i>Tel Aviv</i></div>
-            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:7deg"><b>MEX</b><i>Cancún</i></div>
-          </div>
+          <div class="pp-mrz">P&lt;ARG BELINKY&lt;&lt;SOLANA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG051107F&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
           <div class="pp-colored-bar" style="background: var(--sol)"></div>
         </div>
       </div>
@@ -675,49 +764,49 @@
     <div class="passport-wrapper" onclick="togglePassport('pp-lara')">
       <div class="passport" id="pp-lara">
         <div class="passport-front">
-          <svg class="pp-cover-svg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect width="320" height="460" fill="#5aa7e0"/>
-            <text x="160" y="92" text-anchor="middle" fill="#f5ecc9" font-family="Playfair Display, Georgia, serif" font-size="34" font-weight="700" letter-spacing="2">PASSPORT</text>
-            <g stroke="#f5ecc9" stroke-width="7" fill="none">
-              <circle cx="160" cy="225" r="70"/>
-              <ellipse cx="160" cy="225" rx="28" ry="70"/>
-              <line x1="90" y1="225" x2="230" y2="225"/>
-              <path d="M104 183 Q160 205 216 183"/>
-              <path d="M104 267 Q160 245 216 267"/>
-            </g>
-            <rect x="135" y="360" width="50" height="34" rx="5" fill="#f5ecc9"/>
-            <rect x="143" y="370" width="34" height="14" rx="3" fill="#5aa7e0"/>
-            <circle cx="160" cy="377" r="5" fill="#5aa7e0"/>
-          </svg>
-          <div class="pp-cover-name" style="color:var(--lara)">Lara Fainburg</div>
+          <div style="text-align:center">
+            <div class="pp-emblem">🇦🇷</div>
+            <div class="pp-country">REPÚBLICA ARGENTINA<br>MERCOSUR</div>
+          </div>
+          <div class="pp-name" style="color:var(--lara)">LARA</div>
+          <div style="text-align:center">
+            <div class="pp-passport-label">PASAPORTE · PASSPORT</div>
+            <div class="pp-bar" style="background: linear-gradient(90deg, var(--lara), #0ea5e9)"></div>
+          </div>
         </div>
         <div class="passport-inner">
           <div class="pp-inner-top">
-            <div class="pp-photo" style="border-color: var(--lara)">👧</div>
+            <div class="pp-photo" style="border-color: var(--lara)">👩</div>
             <div class="pp-info">
-              <div class="label">Apellido</div><div class="value">Fainburg</div>
-              <div class="label">Nombre</div><div class="value">Lara</div>
-              <div class="label">Fecha de nacimiento</div><div class="value">12/04/2006 · 20 años</div>
-              <div class="label">Nacionalidades</div><div class="value">Argentina · España</div>
+              <div class="label">Apellido / Surname</div>
+              <div class="value">FAINBURG</div>
+              <div class="label">Nombre / Given name</div>
+              <div class="value">LARA</div>
+              <div class="label">Fecha de Nacimiento</div>
+              <div class="value">12/04/2006</div>
+              <div class="label">Nacionalidades</div>
+              <div class="value">Argentina · Española</div>
+              <div class="label">Edad</div>
+              <div class="value">20 años</div>
             </div>
           </div>
           <div class="pp-extra">
-            <div class="label">Lugar favorito</div><div class="value">Ámsterdam, Países Bajos</div>
-            <div class="label">Lugar más visitado</div><div class="value">Bariloche, Argentina</div>
-            <div class="label">Próximo destino</div><div class="value">Bariloche, Argentina</div>
-            <div class="label">Países visitados</div><div class="value">11 países</div>
+            <div class="label">Lugar favorito</div>
+            <div class="value">📍 Ámsterdam, Países Bajos</div>
+            <div class="label">Lugar más visitado</div>
+            <div class="value">🔁 Bariloche, Argentina (12×)</div>
+            <div class="label">Próximo destino</div>
+            <div class="value">✈️ Bariloche, Argentina</div>
+            <div class="label">Países visitados</div>
+            <div class="value">🌍 11 países</div>
           </div>
-          <div class="pp-seals">
-            <div class="pp-seal" style="color:#36506e;border-color:#36506e;--r:-7deg"><b>ARG</b><i>Bariloche</i></div>
-            <div class="pp-seal" style="color:#7a5a2e;border-color:#7a5a2e;--r:5deg"><b>GRC</b><i>Mykonos</i></div>
-            <div class="pp-seal" style="color:#b03030;border-color:#b03030;--r:-4deg"><b>USA</b><i>Miami</i></div>
-            <div class="pp-seal" style="color:#2f6f4f;border-color:#2f6f4f;--r:8deg"><b>NLD</b><i>Ámsterdam</i></div>
-          </div>
+          <div class="pp-mrz">P&lt;ARG FAINBURG&lt;&lt;LARA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>ARG060412F&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
           <div class="pp-colored-bar" style="background: var(--lara)"></div>
         </div>
       </div>
     </div>
   </div>
+  <p style="text-align:center; color:var(--muted); font-size:0.82rem; margin-top:16px">👆 Hacé click en cada pasaporte para abrirlo</p>
 </section>
 
 <!-- VIZ 3 - WORLD MAP -->
@@ -728,7 +817,7 @@
   <div class="map-controls">
     <label for="map-select">Mostrar viajes de:</label>
     <select class="map-dropdown" id="map-select" onchange="updateMap()">
-      <option value="all">Los tres</option>
+      <option value="all">Los tres juntos</option>
       <option value="fausto">Fausto</option>
       <option value="sol">Sol</option>
       <option value="lara">Lara</option>
@@ -736,10 +825,13 @@
   </div>
   <div id="world-map"></div>
   <div class="map-legend" id="map-legend">
-    <div class="ml-item"><div class="ml-dot" style="background:var(--fausto)"></div>Fausto</div>
-    <div class="ml-item"><div class="ml-dot" style="background:var(--sol)"></div>Sol</div>
-    <div class="ml-item"><div class="ml-dot" style="background:var(--lara)"></div>Lara</div>
-    <div class="ml-item"><div class="ml-dot" style="background:#fff"></div>Compartido</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--fausto)"></div>Solo Fausto</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--sol)"></div>Solo Sol</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--lara)"></div>Solo Lara</div>
+    <div class="ml-item"><div class="ml-dot" style="background:#b985ff"></div>Fausto + Sol</div>
+    <div class="ml-item"><div class="ml-dot" style="background:#7df0a0"></div>Fausto + Lara</div>
+    <div class="ml-item"><div class="ml-dot" style="background:#ff9e7d"></div>Sol + Lara</div>
+    <div class="ml-item"><div class="ml-dot" style="background:#fff"></div>Los tres</div>
   </div>
 </section>
 <div class="map-tooltip" id="map-tooltip"></div>
@@ -757,45 +849,45 @@
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-card-header">
-        <div class="stat-avatar" style="color:var(--fausto)">●</div>
+        <div class="stat-avatar" style="color:var(--fausto)">🌎</div>
         <div>
           <div class="stat-card-name" style="color:var(--fausto)">Fausto</div>
           <div class="stat-card-sub">~45 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>×13</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami / Florida</span><span>×11</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Sto. Domingo, R.D.</span><span>×6</span></div><div class="bar-track"><div class="bar-fill" style="width:46%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--fausto)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>San Pablo, Brasil</span><span>×2</span></div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>13×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami / Florida</span><span>11×</span></div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Sto. Domingo, R.D.</span><span>6×</span></div><div class="bar-track"><div class="bar-fill" style="width:46%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:23%;background:var(--fausto)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>San Pablo, Brasil</span><span>2×</span></div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--fausto)"></div></div></div>
     </div>
     <div class="stat-card">
       <div class="stat-card-header">
-        <div class="stat-avatar" style="color:var(--sol)">●</div>
+        <div class="stat-avatar" style="color:var(--sol)">🌍</div>
         <div>
           <div class="stat-card-name" style="color:var(--sol)">Sol</div>
           <div class="stat-card-sub">~65 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×15</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>×7</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Montevideo</span><span>×7</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Los Ángeles</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta Cana, R.D.</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>15×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>7×</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Montevideo</span><span>7×</span></div><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Los Ángeles</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta Cana, R.D.</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--sol)"></div></div></div>
     </div>
     <div class="stat-card">
       <div class="stat-card-header">
-        <div class="stat-avatar" style="color:var(--lara)">●</div>
+        <div class="stat-avatar" style="color:var(--lara)">🌏</div>
         <div>
           <div class="stat-card-name" style="color:var(--lara)">Lara</div>
           <div class="stat-card-sub">~55 visitas totales a ciudades</div>
         </div>
       </div>
-      <div class="bar-row"><div class="bar-label"><span>Río Negro, Arg.</span><span>×12</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>×10</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>×6</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>×3</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--lara)"></div></div></div>
-      <div class="bar-row"><div class="bar-label"><span>Madrid, España</span><span>×2</span></div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Punta del Este</span><span>10×</span></div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Río Negro, Arg.</span><span>12×</span></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Miami, EEUU</span><span>6×</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Madrid, España</span><span>2×</span></div><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--lara)"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Orlando, EEUU</span><span>3×</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--lara)"></div></div></div>
     </div>
   </div>
 </section>
@@ -821,53 +913,90 @@
   </div>
 </section>
 
+<!-- VIZ 6 - PAISES POR CONTINENTE -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 06 · Continentes</div>
+  <h2 class="section-title">Por continente</h2>
+  <p class="section-desc">¿Dónde se concentraron nuestros viajes? Europa fue la gran conquista del grupo, mientras que América del Sur es nuestro hogar.</p>
+  <div class="continents-wrap" id="continents-wrap"></div>
+</section>
+
 <!-- VIZ 7 - HEATMAP VISITAS -->
 <section class="scrollable-reveal">
-  <div class="section-label">Visualización 06 · Intensidad</div>
+  <div class="section-label">Visualización 07 · Intensidad</div>
   <h2 class="section-title">Mapa de calor de visitas</h2>
   <p class="section-desc">Intensidad de visitas a países clave para cada viajero. Más oscuro = más veces visitado.</p>
   <div class="heatmap-grid" id="heatmap"></div>
 </section>
 
+<!-- VIZ 8 - PAÍSES COMPARTIDOS -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 08 · Intersecciones</div>
+  <h2 class="section-title">¿Qué compartimos?</h2>
+  <p class="section-desc">Los países que visitaron dos o más de nosotros son los puntos donde nuestros mapas mentales se cruzan.</p>
+  <div class="shared-wrap" id="shared-countries"></div>
+</section>
+
+<!-- VIZ 9 - RADAR POR REGIÓN -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 09 · Perfil Viajero</div>
+  <h2 class="section-title">Perfil de viajero</h2>
+  <p class="section-desc">Un radar que compara nuestros perfiles según diferentes dimensiones: países europeos, américas, repeticiones, variedad.</p>
+  <canvas id="radar-canvas"></canvas>
+</section>
+
+<!-- NARRATIVE INTERLUDE -->
+<div class="inter-title scrollable-reveal">
+  <p>Algunos lugares se convierten en <em>parte de quiénes somos</em></p>
+</div>
+
+<!-- VIZ 10 - CIUDADES MÁS VISITADAS (individual) -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 10 · Momentos Personales</div>
+  <h2 class="section-title">Las ciudades que nos marcaron</h2>
+  <p class="section-desc">Los destinos con más visitas de cada uno. Un reflejo de las rutinas, familias y amores geográficos de cada viajero.</p>
+  <div class="city-cards" id="city-cards"></div>
+</section>
+
 <!-- VIZ 11 - SPOTLIGHT PUNTA DEL ESTE -->
 <section class="scrollable-reveal">
-  <div class="section-label">Visualización 07 · Lugar en Común</div>
+  <div class="section-label">Visualización 11 · Lugar en Común</div>
   <h2 class="section-title">Punta del Este: nuestro lugar</h2>
-  <p class="section-desc" style="color:var(--text)">El único destino que los tres conocemos bien. Entre Sol, Lara y Fausto, acumulamos más de 28 visitas a esta ciudad uruguaya.</p>
+  <p class="section-desc">El único destino que los tres conocemos bien. Entre Sol, Lara y Fausto, acumulamos más de 28 visitas a esta ciudad uruguaya.</p>
   <div class="spotlight-grid">
     <div class="spot-left">
       <div class="spot-stat">
-        <div class="spot-stat-num" style="color:var(--text)">28+</div>
-        <div class="spot-stat-label" style="color:var(--text)">visitas totales entre los tres</div>
+        <div class="spot-stat-num" style="color:var(--sol)">28+</div>
+        <div class="spot-stat-label">visitas totales entre los tres</div>
       </div>
       <div class="spot-stat">
-        <div class="spot-stat-num" style="color:var(--text)">3</div>
-        <div class="spot-stat-label" style="color:var(--text)">viajeros que conocen Punta del Este</div>
+        <div class="spot-stat-num" style="color:var(--lara)">3</div>
+        <div class="spot-stat-label">viajeros que conocen Punta del Este</div>
       </div>
       <div class="spot-stat">
-        <div class="spot-stat-num" style="color:var(--text)">Sol</div>
-        <div class="spot-stat-label" style="color:var(--text)">la visitó más veces (15 veces)</div>
+        <div class="spot-stat-num" style="background:linear-gradient(135deg,var(--sol),var(--lara));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Sol</div>
+        <div class="spot-stat-label">la visitó más veces (15 veces)</div>
       </div>
     </div>
     <div class="spot-right">
-      <div class="spot-title" style="color:var(--text)">¿Qué tiene Punta del Este?</div>
-      <p style="font-size:.9rem;color:var(--text);line-height:1.8;margin-bottom:16px">Es el clásico de los veranos: a tres horas de Buenos Aires, playa, amigos y noches que no terminan más. Acá van algunos datos sueltos del lugar al que siempre volvemos.</p>
+      <div class="spot-title">¿Qué tiene Punta del Este?</div>
+      <p style="font-size:.9rem;color:var(--muted);line-height:1.8;margin-bottom:16px">A solo 3 horas de Buenos Aires, Punta del Este es el destino de verano por excelencia del Cono Sur. Sus playas, su gastronomía y su ambiente cosmopolita la convierten en un imán para los jóvenes porteños.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
-          <div style="font-size:1.6rem;font-weight:700;color:var(--text)">~9 mil</div>
-          <div style="font-size:.75rem;color:var(--text)">habitantes estables, pero más de 500 mil en verano</div>
+          <div style="font-size:1.6rem;font-weight:700;color:var(--sol)">15×</div>
+          <div style="font-size:.75rem;color:var(--muted)">Sol estuvo</div>
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
-          <div style="font-size:1.6rem;font-weight:700;color:var(--text)">1907</div>
-          <div style="font-size:.75rem;color:var(--text)">año en que se fundó oficialmente la ciudad</div>
+          <div style="font-size:1.6rem;font-weight:700;color:var(--lara)">10×</div>
+          <div style="font-size:.75rem;color:var(--muted)">Lara estuvo</div>
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
-          <div style="font-size:1.6rem;font-weight:700;color:var(--text)">La Mano</div>
-          <div style="font-size:.75rem;color:var(--text)">la escultura en la arena, su ícono más fotografiado</div>
+          <div style="font-size:1.6rem;font-weight:700;color:var(--fausto)">3×</div>
+          <div style="font-size:.75rem;color:var(--muted)">Fausto estuvo</div>
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid var(--border)">
-          <div style="font-size:1.6rem;font-weight:700;color:var(--text)">2</div>
-          <div style="font-size:.75rem;color:var(--text)">aguas que la rodean: el Río de la Plata y el Atlántico</div>
+          <div style="font-size:1.6rem;font-weight:700;color:var(--text)">🇺🇾 UY</div>
+          <div style="font-size:.75rem;color:var(--muted)">País favorito compartido</div>
         </div>
       </div>
     </div>
@@ -876,150 +1005,68 @@
 
 <!-- VIZ 12 - DONUT DISTRIBUCIÓN CONTINENTAL -->
 <section class="scrollable-reveal">
-  <div class="section-label">Visualización 08 · Distribución</div>
+  <div class="section-label">Visualización 12 · Distribución</div>
   <h2 class="section-title">¿A qué continente viajamos más?</h2>
   <p class="section-desc">La distribución de visitas totales (contando repeticiones) por continente entre los tres.</p>
-  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:center">
-    <div id="pie-svg-wrap" style="position:relative;width:360px;max-width:100%"></div>
+  <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+    <canvas id="pie-canvas"></canvas>
     <div class="pie-legend" id="pie-legend" style="flex:1;min-width:200px"></div>
   </div>
 </section>
 
-<!-- PERFIL FAUSTO -->
-<div class="person-band scrollable-reveal" data-toc="Fausto · perfil">
-  <div class="eyebrow">Visualización 09 · Historia personal · Fausto</div>
-  <div class="person-tag c-fausto"><span class="pdot" style="background:var(--fausto)"></span>Fausto Cuello</div>
-  <div class="numbig c-fausto">El que vuelve a sus lugares.</div>
-  <div class="grid3">
-    <div class="kpi"><div class="num c-fausto">9</div><div class="lbl">Países</div></div>
-    <div class="kpi"><div class="num c-fausto">61</div><div class="lbl">Visitas totales</div></div>
-    <div class="kpi"><div class="num c-fausto">24</div><div class="lbl">Veces en Orlando</div></div>
-  </div>
-  <p class="lead" style="margin-top:2rem">Orlando y Florida concentran buena parte de su historia de viajes: un patrón de destino-base al que se vuelve cada año. Lejos de ahí, España aparece como su gran capítulo europeo, con siete ciudades recorridas.</p>
-  <div class="bars">
-    <div class="bar-row"><span style="color:var(--muted)">Orlando</span><div class="bar-track"><div class="bar-fill" style="--w:100%;background:var(--fausto)"></div></div><span>13 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Florida</span><div class="bar-track"><div class="bar-fill" style="--w:85%;background:var(--fausto)"></div></div><span>11 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Santo Domingo</span><div class="bar-track"><div class="bar-fill" style="--w:46%;background:var(--fausto)"></div></div><span>6 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Neuquén</span><div class="bar-track"><div class="bar-fill" style="--w:23%;background:var(--fausto)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Río Negro</span><div class="bar-track"><div class="bar-fill" style="--w:23%;background:var(--fausto)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Punta del Este</span><div class="bar-track"><div class="bar-fill" style="--w:23%;background:var(--fausto)"></div></div><span>3 visitas</span></div>
-  </div>
-</div>
-<section class="scrollable-reveal" data-toc="Fausto · España">
-  <div class="eyebrow">Fausto · Capítulo europeo</div>
-  <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">España, ciudad por ciudad.</h2>
-  <p class="lead" style="margin:1rem 0">Su lugar favorito —Madrid— ancla un recorrido ibérico de norte a sur.</p>
-  <div class="foods">
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Madrid</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Barcelona</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Toledo</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Córdoba</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Salamanca</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">Sevilla</span>
-    <span class="food" style="border-color:var(--fausto);color:var(--fausto)">San Sebastián</span>
+<!-- VIZ 13 - TIMELINE FAUSTO -->
+<section class="scrollable-reveal accent-fausto" id="fausto">
+  <div class="section-label">Visualización 13 · Historia Personal · Fausto</div>
+  <h2 class="section-title" style="color:var(--fausto)">El circuito de Fausto</h2>
+  <p class="section-desc">Fausto tiene dos grandes imanes: <strong>EEUU</strong> (Florida y Orlando) y <strong>Europa</strong> (especialmente España). Una mezcla de herencia italiana y amor por la familia en República Dominicana.</p>
+  <div class="timeline-wrapper">
+    <svg id="timeline-fausto" width="100%" height="300"></svg>
   </div>
 </section>
 
-<!-- PERFIL SOL -->
-<div class="person-band scrollable-reveal" data-toc="Sol · perfil">
-  <div class="eyebrow">Visualización 10 · Historia personal · Sol</div>
-  <div class="person-tag c-sol"><span class="pdot" style="background:var(--sol)"></span>Solana Belinky</div>
-  <div class="numbig c-sol">La más global de las tres.</div>
-  <div class="grid3">
-    <div class="kpi"><div class="num c-sol">13</div><div class="lbl">Países</div></div>
-    <div class="kpi"><div class="num c-sol">4</div><div class="lbl">Continentes</div></div>
-    <div class="kpi"><div class="num c-sol">15</div><div class="lbl">Veces en Punta del Este</div></div>
-  </div>
-  <p class="lead" style="margin-top:2rem">Su pasaporte toca América, Europa, Medio Oriente. Pero su corazón viajero late en Uruguay: Punta del Este, Montevideo y Colonia suman una fidelidad que ningún destino lejano le discute.</p>
-  <div class="bars">
-    <div class="bar-row"><span style="color:var(--muted)">Punta del Este</span><div class="bar-track"><div class="bar-fill" style="--w:100%;background:var(--sol)"></div></div><span>15 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Miami</span><div class="bar-track"><div class="bar-fill" style="--w:47%;background:var(--sol)"></div></div><span>7 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Montevideo</span><div class="bar-track"><div class="bar-fill" style="--w:47%;background:var(--sol)"></div></div><span>7 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Los Ángeles</span><div class="bar-track"><div class="bar-fill" style="--w:20%;background:var(--sol)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Punta Cana</span><div class="bar-track"><div class="bar-fill" style="--w:20%;background:var(--sol)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Río de Janeiro</span><div class="bar-track"><div class="bar-fill" style="--w:20%;background:var(--sol)"></div></div><span>3 visitas</span></div>
-  </div>
-</div>
-<section class="scrollable-reveal" data-toc="Sol · Europa">
-  <div class="eyebrow">Sol · Italia y más allá</div>
-  <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">Cinco ciudades italianas, una favorita: Milán.</h2>
-  <p class="lead" style="margin:1rem 0">Italia, Francia, Inglaterra, Bélgica, Países Bajos e Israel dibujan el tramo más internacional del grupo.</p>
-  <div class="foods">
-    <span class="food" style="border-color:var(--sol);color:var(--sol)">Milán</span>
-    <span class="food" style="border-color:var(--sol);color:var(--sol)">Roma</span>
-    <span class="food" style="border-color:var(--sol);color:var(--sol)">Sorrento</span>
-    <span class="food" style="border-color:var(--sol);color:var(--sol)">Venecia</span>
-    <span class="food" style="border-color:var(--sol);color:var(--sol)">Florencia</span>
+<!-- VIZ 14 - SOL EUROPA -->
+<section class="scrollable-reveal accent-sol" id="sol">
+  <div class="section-label">Visualización 14 · Historia Personal · Sol</div>
+  <h2 class="section-title" style="color:var(--sol)">Sol conquista Europa</h2>
+  <p class="section-desc">Sol es la más viajera del grupo en términos de países distintos. Su gran hito: el Grand Tour europeo, visitando Italia (5 ciudades), Bélgica, Países Bajos, Francia e Inglaterra.</p>
+  <div class="stats-grid" id="sol-europe-grid"></div>
+</section>
+
+<!-- VIZ 15 - LARA Y LA PATAGONIA -->
+<section class="scrollable-reveal accent-lara" id="lara">
+  <div class="section-label">Visualización 15 · Historia Personal · Lara</div>
+  <h2 class="section-title" style="color:var(--lara)">Lara y la Patagonia</h2>
+  <p class="section-desc">Lara tiene el récord de visitas a la Patagonia argentina — Río Negro 12 veces — lo que habla de un amor profundo por los paisajes del sur. También es la única que visitó Grecia.</p>
+  <div style="display:flex;gap:32px;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px" id="lara-unique"></div>
+    <div style="flex:1;min-width:280px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:16px;color:var(--lara)">Destinos únicos de Lara</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="lara-excl"></div>
+    </div>
   </div>
 </section>
 
-<!-- PERFIL LARA -->
-<div class="person-band scrollable-reveal" data-toc="Lara · perfil">
-  <div class="eyebrow">Visualización 11 · Historia personal · Lara</div>
-  <div class="person-tag c-lara"><span class="pdot" style="background:var(--lara)"></span>Lara Fainburg</div>
-  <div class="numbig c-lara">Entre la montaña y el mar.</div>
-  <div class="grid3">
-    <div class="kpi"><div class="num c-lara">11</div><div class="lbl">Países</div></div>
-    <div class="kpi"><div class="num c-lara">12</div><div class="lbl">Veces en Río Negro</div></div>
-    <div class="kpi"><div class="num c-lara">10</div><div class="lbl">Veces en Punta del Este</div></div>
-  </div>
-  <p class="lead" style="margin-top:2rem">Bariloche (Río Negro) es su lugar de regreso permanente, y también su próximo destino. Pero su pasaporte guarda joyas griegas —Mykonos y Santorini— que ni Fausto ni Sol tienen.</p>
-  <div class="bars">
-    <div class="bar-row"><span style="color:var(--muted)">Río Negro</span><div class="bar-track"><div class="bar-fill" style="--w:100%;background:var(--lara)"></div></div><span>12 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Punta del Este</span><div class="bar-track"><div class="bar-fill" style="--w:83%;background:var(--lara)"></div></div><span>10 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Miami</span><div class="bar-track"><div class="bar-fill" style="--w:50%;background:var(--lara)"></div></div><span>6 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Río de Janeiro</span><div class="bar-track"><div class="bar-fill" style="--w:25%;background:var(--lara)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Bahía</span><div class="bar-track"><div class="bar-fill" style="--w:25%;background:var(--lara)"></div></div><span>3 visitas</span></div>
-    <div class="bar-row"><span style="color:var(--muted)">Orlando</span><div class="bar-track"><div class="bar-fill" style="--w:25%;background:var(--lara)"></div></div><span>3 visitas</span></div>
-  </div>
-</div>
-<section class="scrollable-reveal" data-toc="Lara · exclusivos">
-  <div class="eyebrow">Lara · Solo ella</div>
-  <h2 class="big-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">Destinos que solo Lara pisó.</h2>
-  <p class="lead" style="margin:1rem 0">Grecia es el único país del proyecto visitado por una sola integrante.</p>
-  <div class="foods">
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">Mykonos</span>
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">Santorini</span>
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">Mallorca</span>
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">Bahía</span>
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">San Diego</span>
-    <span class="food" style="border-color:var(--lara);color:var(--lara)">Mendoza</span>
-  </div>
+<!-- VIZ 16 - DATOS POR PAÍS -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 16 · El mundo en cifras</div>
+  <h2 class="section-title">Cada país, un dato</h2>
+  <p class="section-desc">Más allá de cuántas veces fuimos, cada destino tiene su propia identidad: idioma, moneda y una curiosidad que lo hace único.</p>
+  <div class="facts-grid" id="facts-grid"></div>
 </section>
 
-<!-- CAMINOS CRUZADOS -->
-<section class="scrollable-reveal" data-toc="Lo compartido">
-  <div class="eyebrow">Visualización 12 · Caminos cruzados</div>
-  <h2 class="big-title" style="font-size:clamp(1.8rem,4.5vw,3rem)">Sin planearlo, coincidieron en cinco países.</h2>
-  <p class="lead" style="margin:1rem 0 2rem">Argentina, Brasil, Chile, Estados Unidos y Uruguay: los cinco lugares donde los tres pasaportes se tocan. Una geografía común que habla de raíces rioplatenses y vacaciones que se repiten.</p>
-  <div class="grid3">
-    <div class="kpi" style="text-align:center"><div class="num" style="font-size:1.4rem">Argentina</div></div>
-    <div class="kpi" style="text-align:center"><div class="num" style="font-size:1.4rem">Brasil</div></div>
-    <div class="kpi" style="text-align:center"><div class="num" style="font-size:1.4rem">Chile</div></div>
-    <div class="kpi" style="text-align:center"><div class="num" style="font-size:1.4rem">Estados Unidos</div></div>
-    <div class="kpi" style="text-align:center"><div class="num" style="font-size:1.4rem">Uruguay</div></div>
-  </div>
-</section>
-
-<!-- EEUU EN COMÚN -->
-<section class="scrollable-reveal" data-toc="EE.UU. en común">
-  <div class="eyebrow">Visualización 13 · Países compartidos · Estados Unidos</div>
-  <h2 class="big-title" style="font-size:clamp(1.7rem,4vw,2.6rem)">Todos pasaron por Estados Unidos.</h2>
-  <p class="lead" style="margin:1rem 0">Orlando y Miami funcionan como imanes: Fausto vuelve a Orlando, Sol y Lara a Miami. Cada celda es una visita registrada.</p>
-  <div class="cell-grid" id="cellgrid"></div>
-  <div class="legend" style="display:flex;gap:1.5rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:1rem;flex-wrap:wrap">
-    <span style="display:flex;align-items:center;gap:.4rem"><i style="width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--fausto)"></i>Fausto</span>
-    <span style="display:flex;align-items:center;gap:.4rem"><i style="width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--sol)"></i>Sol</span>
-    <span style="display:flex;align-items:center;gap:.4rem"><i style="width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--lara)"></i>Lara</span>
-  </div>
+<!-- VIZ 17 - DISTANCIAS -->
+<section class="scrollable-reveal">
+  <div class="section-label">Visualización 17 · Distancias</div>
+  <h2 class="section-title">¿Qué tan lejos llegamos?</h2>
+  <p class="section-desc">Distancia aproximada en línea recta desde Buenos Aires hasta cada destino. Cuanto más larga la barra, más lejos del punto de partida.</p>
+  <div class="dist-chart" id="dist-chart"></div>
 </section>
 
 <!-- CIERRE -->
-<section class="scrollable-reveal" style="text-align:center; padding-top:60px; padding-bottom:80px">
-  <div class="eyebrow" style="text-align:center">Fin del recorrido</div>
-  <h2 class="big-title" style="font-size:clamp(2.2rem,6vw,4rem); margin:1rem 0 1.5rem">Una vida en movimiento.</h2>
-  <p class="lead" style="margin:0 auto; max-width:46ch">Fausto, Sol y Lara — y el mapa que dibujaron sin darse cuenta.</p>
-</section>
+<div class="narrative scrollable-reveal">
+  <p>Tres personas, <strong>tres miradas distintas</strong> sobre el mundo. Algunos caminos se cruzaron, otros fueron propios. Pero todos llevaron a la misma certeza:</p>
+  <p><em>viajar es la forma más bella de crecer.</em></p>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1029,7 +1076,7 @@
     <span class="foot-name" style="color:var(--sol)">Solana Belinky</span>
     <span class="foot-name" style="color:var(--lara)">Lara Fainburg</span>
   </div>
-  <p>Visualización de Datos · UTDT · 2026</p>
+  <p>Visualización de Datos · UTDT · 2024</p>
   <p style="margin-top:8px">Datos: elaboración propia · Mapa: Natural Earth / TopoJSON · Tipografías: Google Fonts</p>
 </footer>
 
@@ -1038,8 +1085,8 @@
 const TRAVELERS = {
   fausto: {
     name: 'Fausto', color: '#F5C542', emoji: '👨‍🦱',
-    countries: ['Argentina','Uruguay','Costa Rica','Panama','Brazil','Chile','Dominican Republic','Spain','United States'],
-    visits: { 'Argentina':8,'Uruguay':4,'Costa Rica':1,'Panama':1,'Brazil':4,'Chile':1,'Dominican Republic':6,'Spain':7,'United States':24 },
+    countries: ['Argentina','Uruguay','Costa Rica','Panama','Brazil','Chile','Dominican Republic','Spain','United States','Italy'],
+    visits: { 'Argentina':8,'Uruguay':4,'Costa Rica':1,'Panama':1,'Brazil':4,'Chile':1,'Dominican Republic':6,'Spain':7,'United States':24,'Italy':1 },
     cities: ['Buenos Aires','Neuquén','Río Negro','Punta del Este','San José','Panamá City','Río de Janeiro','Madrid','Florida','Orlando']
   },
   sol: {
@@ -1109,16 +1156,14 @@ function togglePassport(id){
     W=canvas.offsetWidth; H=560;
     canvas.width=W*devicePixelRatio; canvas.height=H*devicePixelRatio;
     canvas.style.height=H+'px';
-    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    ctx.scale(devicePixelRatio,devicePixelRatio);
 
+    const r=Math.min(W,H)*0.28;
     const cx=W/2,cy=H/2;
-    const minC=Math.min(...Object.values(countOf));
-    const sizeFor=c=>34+((c-minC)/(maxCount-minC||1))*70;
-    const spread=Math.min(W,H)*0.30;
     nodes=[
-      {id:'fausto',x:cx-spread,y:cy+spread*0.55,r:sizeFor(countOf.fausto),color:'#F5C542',label:'Fausto',count:countOf.fausto},
-      {id:'sol',   x:cx+spread,y:cy+spread*0.55,r:sizeFor(countOf.sol),  color:'#F472B6',label:'Sol',   count:countOf.sol},
-      {id:'lara',  x:cx,       y:cy-spread*0.7, r:sizeFor(countOf.lara), color:'#67E8F9',label:'Lara',  count:countOf.lara},
+      {id:'fausto',x:cx-r*0.7,y:cy+r*0.3,r:Math.sqrt(countOf.fausto/maxCount)*70+20,color:'#F5C542',label:'Fausto',count:countOf.fausto,angle:0},
+      {id:'sol',x:cx+r*0.7,y:cy+r*0.3,r:Math.sqrt(countOf.sol/maxCount)*70+20,color:'#F472B6',label:'Sol',count:countOf.sol,angle:0},
+      {id:'lara',x:cx,y:cy-r*0.5,r:Math.sqrt(countOf.lara/maxCount)*70+20,color:'#67E8F9',label:'Lara',count:countOf.lara,angle:0},
     ];
 
     edges=[];
@@ -1132,47 +1177,55 @@ function togglePassport(id){
 
   let frame=0;
   function draw(){
+    frame++;
     ctx.clearRect(0,0,W,H);
+    const pulse=Math.sin(frame*0.02)*0.15+0.85;
 
-    // colores pastel de relleno (como la imagen)
-    const fillCol={ fausto:'#f5ecc9', sol:'#f3d4e8', lara:'#c9f0f7' };
-    const lineCol={ fausto:'#F5C542', sol:'#F472B6', lara:'#67E8F9' };
-
-    // Edges (líneas del color, número cerca de cada nodo)
+    // Edges
     edges.forEach(e=>{
       const na=nodes.find(n=>n.id===e.a), nb=nodes.find(n=>n.id===e.b);
+      const w=Math.max(1,e.count*0.8);
       const grad=ctx.createLinearGradient(na.x,na.y,nb.x,nb.y);
-      grad.addColorStop(0,lineCol[na.id]); grad.addColorStop(1,lineCol[nb.id]);
+      grad.addColorStop(0,na.color+'cc'); grad.addColorStop(1,nb.color+'cc');
       ctx.beginPath(); ctx.moveTo(na.x,na.y); ctx.lineTo(nb.x,nb.y);
-      ctx.strokeStyle=grad; ctx.lineWidth=2.5; ctx.stroke();
+      ctx.strokeStyle=grad; ctx.lineWidth=w; ctx.stroke();
 
-      // número cerca del nodo de origen de la línea (como la imagen)
-      const dx=nb.x-na.x, dy=nb.y-na.y, len=Math.hypot(dx,dy);
-      const ux=dx/len, uy=dy/len;
-      const px=na.x+ux*(na.r+22), py=na.y+uy*(na.r+22);
-      ctx.fillStyle='#e8e8ee'; ctx.font='600 13px DM Mono, monospace';
+      // count badge
+      const mx=(na.x+nb.x)/2, my=(na.y+nb.y)/2;
+      ctx.beginPath(); ctx.arc(mx,my,14,0,Math.PI*2);
+      ctx.fillStyle='#0f0f1a'; ctx.fill();
+      ctx.strokeStyle=grad; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle='#e8e8ee'; ctx.font='bold 10px DM Mono, monospace';
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(e.count, px, py);
+      ctx.fillText(e.count,mx,my);
     });
 
     // Nodes
     nodes.forEach(n=>{
       const isH=hoveredNode&&hoveredNode.id===n.id;
-      const scale=isH?1.05:1;
-      const R=n.r*scale;
-      // relleno pastel sólido
-      ctx.beginPath(); ctx.arc(n.x,n.y,R,0,Math.PI*2);
-      ctx.fillStyle=fillCol[n.id]; ctx.fill();
-      // borde del color
-      ctx.lineWidth=isH?4:3; ctx.strokeStyle=lineCol[n.id]; ctx.stroke();
+      const scale=isH?1.08:1;
+      // glow
+      const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*scale*2);
+      grd.addColorStop(0,n.color+'30'); grd.addColorStop(1,'transparent');
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale*1.8,0,Math.PI*2);
+      ctx.fillStyle=grd; ctx.fill();
 
-      // texto negro: nombre + N países
-      ctx.fillStyle='#1a1a2e';
+      // ring
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale,0,Math.PI*2);
+      ctx.strokeStyle=n.color+(isH?'ff':'99'); ctx.lineWidth=isH?3:2; ctx.stroke();
+
+      // fill
+      const fg=ctx.createRadialGradient(n.x-n.r*0.3,n.y-n.r*0.3,0,n.x,n.y,n.r*scale);
+      fg.addColorStop(0,n.color+'55'); fg.addColorStop(1,n.color+'18');
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*scale,0,Math.PI*2);
+      ctx.fillStyle=fg; ctx.fill();
+
+      // label
+      ctx.fillStyle=n.color; ctx.font=`bold ${14*scale}px Playfair Display, serif`;
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.font=`600 ${Math.max(15,R*0.26)}px Playfair Display, serif`;
-      ctx.fillText(n.label, n.x, n.y-R*0.14);
-      ctx.font=`${Math.max(11,R*0.17)}px DM Mono, monospace`;
-      ctx.fillText(`${n.count} países`, n.x, n.y+R*0.2);
+      ctx.fillText(n.label,n.x,n.y-6);
+      ctx.fillStyle='rgba(232,232,238,.7)'; ctx.font=`${11*scale}px DM Mono, monospace`;
+      ctx.fillText(`${n.count} países`,n.x,n.y+12);
     });
     requestAnimationFrame(draw);
   }
@@ -1208,77 +1261,112 @@ function togglePassport(id){
 
 // ===== VIZ 3 WORLD MAP =====
 (function(){
-  const container=document.querySelector('#world-map');
+  const sel='#world-map';
+  const width=document.querySelector(sel).offsetWidth||900;
   const height=500;
-  let width=container.offsetWidth||container.getBoundingClientRect().width||900;
-  const svg=d3.select('#world-map').append('svg').attr('width','100%').attr('height',height).attr('viewBox',`0 0 ${width} ${height}`).attr('preserveAspectRatio','xMidYMid meet');
-  let proj=d3.geoNaturalEarth1().scale(width/6.2).translate([width/2,height/1.85]);
-  let path=d3.geoPath().projection(proj);
+  const svg=d3.select(sel).append('svg').attr('width','100%').attr('height',height).attr('viewBox',`0 0 ${width} ${height}`);
+  const proj=d3.geoNaturalEarth1().scale(width/6.5).translate([width/2,height/2]);
+  const path=d3.geoPath().projection(proj);
   const tt=document.getElementById('map-tooltip');
 
+  // map ISO to traveler
   const isoMap={
-    'ARG':['fausto','sol','lara'],'URY':['fausto','sol','lara'],'BRA':['fausto','sol','lara'],
-    'CHL':['fausto','sol','lara'],'USA':['fausto','sol','lara'],'DOM':['fausto','sol'],
-    'CRI':['fausto'],'PAN':['fausto'],'ESP':['fausto','lara'],'ITA':['sol'],
-    'FRA':['sol','lara'],'GBR':['sol','lara'],'BEL':['sol'],'NLD':['sol','lara'],
-    'ISR':['sol','lara'],'MEX':['sol'],'GRC':['lara'],
+    'ARG':['fausto','sol','lara'],
+    'URY':['fausto','sol','lara'],
+    'BRA':['fausto','sol','lara'],
+    'CHL':['fausto','sol','lara'],
+    'USA':['fausto','sol','lara'],
+    'DOM':['fausto','sol'],
+    'CRI':['fausto'],
+    'PAN':['fausto'],
+    'ESP':['fausto','lara'],
+    'ITA':['fausto','sol'],
+    'FRA':['sol','lara'],
+    'GBR':['sol','lara'],
+    'BEL':['sol'],
+    'NLD':['sol','lara'],
+    'ISR':['sol','lara'],
+    'MEX':['sol'],
+    'GRC':['lara'],
   };
-  const colors={ fausto:'#F5C542', sol:'#F472B6', lara:'#67E8F9', all:'#ffffff' };
-  const BASE='#23222e';
+  const colors={
+    fausto: '#F5C542', sol: '#F472B6', lara: '#67E8F9',
+    fausto_sol: '#b985ff', fausto_lara: '#7df0a0', sol_lara: '#ff9e7d', all: '#ffffff'
+  };
   function getColor(iso,filter){
     const who=isoMap[iso]||[];
-    if(filter!=='all'){ return who.includes(filter) ? colors[filter] : BASE; }
-    if(who.length>=2) return colors.all;
-    return BASE;
+    if(filter!=='all'){
+      return who.includes(filter) ? TRAVELERS[filter].color+'dd' : '#ffffff15';
+    }
+    if(who.length===3) return colors.all+'cc';
+    if(who.length===2){
+      const k=who.sort().join('_');
+      return (colors[k]||'#aaa')+'cc';
+    }
+    if(who.length===1) return TRAVELERS[who[0]].color+'cc';
+    return '#ffffff10';
   }
 
-  const isoNumMap={'32':'ARG','858':'URY','76':'BRA','152':'CHL','840':'USA','214':'DOM','188':'CRI','591':'PAN','724':'ESP','380':'ITA','250':'FRA','826':'GBR','56':'BEL','528':'NLD','376':'ISR','484':'MEX','300':'GRC'};
-  function isoNum(id){ return isoNumMap[String(parseInt(id,10))]||''; }
-  function isoToName(iso){ const m={'ARG':'Argentina','URY':'Uruguay','BRA':'Brasil','CHL':'Chile','USA':'EE.UU.','DOM':'Rep. Dominicana','CRI':'Costa Rica','PAN':'Panamá','ESP':'España','ITA':'Italia','FRA':'Francia','GBR':'Inglaterra','BEL':'Bélgica','NLD':'Países Bajos','ISR':'Israel','MEX':'México','GRC':'Grecia'}; return m[iso]||iso; }
-
-  let features=null;
+  let geoData;
   d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world=>{
-    features=topojson.feature(world,world.objects.countries).features;
-    render();
-  }).catch(()=>{
-    svg.append('text').attr('x',width/2).attr('y',height/2).attr('text-anchor','middle')
-       .attr('fill','#6b6b88').attr('font-family','DM Mono, monospace').attr('font-size',13)
-       .text('No se pudo cargar el mapa base (revisá la conexión al CDN).');
-  });
-
-  function render(){
-    const v=(document.getElementById('map-select')||{}).value||'all';
-    svg.selectAll('path').data(features).join('path')
+    geoData=world;
+    const countries=topojson.feature(world,world.objects.countries);
+    svg.append('g').selectAll('path').data(countries.features).join('path')
       .attr('d',path).attr('class','country-path')
-      .attr('stroke','rgba(255,255,255,.10)').attr('stroke-width',.4)
-      .style('cursor',d=> (isoMap[isoNum(d.id)]?'pointer':'default'))
+      .attr('fill',d=>getColor(isoNum(d.id),'all'))
+      .attr('stroke','rgba(255,255,255,.12)').attr('stroke-width',.4)
       .on('mousemove',function(event,d){
-        const iso=isoNum(d.id); const who=isoMap[iso]||[];
+        const iso=isoNum(d.id);
+        const who=isoMap[iso]||[];
         if(!who.length){tt.style.display='none';return;}
-        let html=`<strong>${isoToName(iso)}</strong><br>`;
+        const name=isoToName(iso)||iso;
+        let html=`<strong>${name}</strong><br>`;
         who.forEach(t=>{ html+=`<span style="color:${TRAVELERS[t].color}">● ${TRAVELERS[t].name}</span><br>`; });
         tt.innerHTML=html; tt.style.display='block';
         tt.style.left=(event.clientX+14)+'px'; tt.style.top=(event.clientY-10)+'px';
       })
-      .on('mouseleave',()=>tt.style.display='none')
-      .transition().duration(400).attr('fill',d=>getColor(isoNum(d.id),v));
-  }
+      .on('mouseleave',()=>tt.style.display='none');
+  }).catch(()=>{
+    svg.append('text').attr('x',width/2).attr('y',height/2).attr('text-anchor','middle')
+       .attr('fill','#6b6b88').text('Cargando mapa...');
+  });
 
   window.updateMap=function(){
-    if(!features) return;
-    render();
     const v=document.getElementById('map-select').value;
-    document.getElementById('map-legend').style.display = (v==='all')?'flex':'none';
+    d3.selectAll('.country-path').transition().duration(400)
+      .attr('fill',d=>getColor(isoNum(d.id),v));
+    // legend
+    const leg=document.getElementById('map-legend');
+    if(v==='all'){
+      leg.style.display='flex';
+    } else {
+      leg.style.display='none';
+    }
   };
 
-  function resize(){
-    width=container.offsetWidth||width;
-    svg.attr('viewBox',`0 0 ${width} ${height}`);
-    proj=d3.geoNaturalEarth1().scale(width/6.2).translate([width/2,height/1.85]);
-    path=d3.geoPath().projection(proj);
-    if(features) svg.selectAll('path').attr('d',path);
-  }
-  window.addEventListener('resize',resize);
+  const isoNumMap={'032':'ARG','858':'URY','076':'BRA','152':'CHL','840':'USA','214':'DOM','188':'CRI','591':'PAN','724':'ESP','380':'ITA','250':'FRA','826':'GBR','056':'BEL','528':'NLD','376':'ISR','484':'MEX','300':'GRC'};
+  function isoNum(id){ return isoNumMap[String(id).padStart(3,'0')]||''; }
+  function isoToName(iso){ const m={'ARG':'Argentina','URY':'Uruguay','BRA':'Brasil','CHL':'Chile','USA':'EEUU','DOM':'Rep. Dominicana','CRI':'Costa Rica','PAN':'Panamá','ESP':'España','ITA':'Italia','FRA':'Francia','GBR':'Inglaterra','BEL':'Bélgica','NLD':'Países Bajos','ISR':'Israel','MEX':'México','GRC':'Grecia'}; return m[iso]||iso; }
+})();
+
+// ===== VIZ 6 CONTINENTS =====
+(function(){
+  const data=[
+    {name:'América del Sur',icon:'🌎',travelers:['fausto','sol','lara'],countries:5},
+    {name:'América del Norte',icon:'🗽',travelers:['fausto','sol','lara'],countries:4},
+    {name:'Europa',icon:'🏰',travelers:['fausto','sol','lara'],countries:8},
+    {name:'Oriente Medio',icon:'🕌',travelers:['sol','lara'],countries:1},
+    {name:'Caribe',icon:'🏝️',travelers:['fausto','sol'],countries:2},
+    {name:'Oceanía',icon:'🦘',travelers:[],countries:0},
+  ];
+  const wrap=document.getElementById('continents-wrap');
+  data.forEach(d=>{
+    const c=document.createElement('div');
+    c.className='continent-card';
+    const pips=d.travelers.map(t=>`<div class="pip" style="background:${TRAVELERS[t].color}"></div>`).join('');
+    c.innerHTML=`<div class="cont-icon">${d.icon}</div><div class="cont-name">${d.name}</div><div class="cont-pips">${pips||'<span style="color:var(--muted);font-size:.7rem">No visitado</span>'}</div><div class="cont-count">${d.countries} países</div>`;
+    wrap.appendChild(c);
+  });
 })();
 
 // ===== VIZ 7 HEATMAP =====
@@ -1316,114 +1404,351 @@ function togglePassport(id){
   });
 })();
 
-// ===== VIZ 08 DONUT (SVG interactivo) =====
+// ===== VIZ 8 SHARED COUNTRIES =====
 (function(){
-  const wrap=document.getElementById('pie-svg-wrap');
-  if(!wrap) return;
-  const data=[
-    {label:'América del Sur', value:52, color:'#10b981'},
-    {label:'América del Norte/Caribe', value:59, color:'#f97316'},
-    {label:'Europa', value:38, color:'#a78bfa'},
-    {label:'Oriente Medio', value:8, color:'#ef4444'},
-  ];
-  const total=data.reduce((s,d)=>s+d.value,0);
-  const ns='http://www.w3.org/2000/svg';
-  const SZ=360, cx=SZ/2, cy=SZ/2, R=150, RIN=84;
+  const wrap=document.getElementById('shared-countries');
+  const sharedAll=Object.entries(SHARED).filter(([c,t])=>t.length===3);
+  const shared2=Object.entries(SHARED).filter(([c,t])=>t.length===2);
 
-  const svg=document.createElementNS(ns,'svg');
-  svg.setAttribute('viewBox',`0 0 ${SZ} ${SZ}`);
-  svg.setAttribute('width','100%'); svg.style.display='block';
+  const makeList=(title,entries)=>{
+    const div=document.createElement('div'); div.className='shared-list';
+    div.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;color:var(--text)">${title}</div>`;
+    entries.forEach(([country,travelers])=>{
+      const nameEs=COUNTRY_NAMES_ES[country]||country;
+      const flags={'Argentina':'🇦🇷','Uruguay':'🇺🇾','United States':'🇺🇸','Brazil':'🇧🇷','Chile':'🇨🇱','Dominican Republic':'🇩🇴','Spain':'🇪🇸','France':'🇫🇷','Israel':'🇮🇱','Netherlands':'🇳🇱','United Kingdom':'🇬🇧'};
+      const row=document.createElement('div'); row.className='shared-country';
+      row.innerHTML=`<span class="shared-flag">${flags[country]||'🌍'}</span><span style="flex:1">${nameEs}</span><div class="shared-pips">${travelers.map(t=>`<div class="pip" style="background:${TRAVELERS[t].color}"></div>`).join('')}</div>`;
+      div.appendChild(row);
+    });
+    wrap.appendChild(div);
+  };
+  makeList('Los tres estuvimos 🌍',sharedAll);
+  makeList('Destinos en pareja ✌️',shared2);
+})();
 
-  function arcPath(a0,a1){
-    const x0=cx+Math.cos(a0)*R, y0=cy+Math.sin(a0)*R;
-    const x1=cx+Math.cos(a1)*R, y1=cy+Math.sin(a1)*R;
-    const xi1=cx+Math.cos(a1)*RIN, yi1=cy+Math.sin(a1)*RIN;
-    const xi0=cx+Math.cos(a0)*RIN, yi0=cy+Math.sin(a0)*RIN;
-    const large=(a1-a0)>Math.PI?1:0;
-    return `M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1} L ${xi1} ${yi1} A ${RIN} ${RIN} 0 ${large} 0 ${xi0} ${yi0} Z`;
+// ===== VIZ 9 RADAR =====
+(function(){
+  const canvas=document.getElementById('radar-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||600; const H=500;
+  canvas.width=W*devicePixelRatio; canvas.height=H*devicePixelRatio;
+  canvas.style.height=H+'px'; ctx.scale(devicePixelRatio,devicePixelRatio);
+
+  const axes=['Países en total','Repeticiones','América','Europa','Oriente Medio','Variedad cultural'];
+  const maxVals=[14,25,5,8,1,14];
+  const data={
+    fausto:[10,34,5,1,0,10],
+    sol:[13,24,5,7,1,13],
+    lara:[11,24,4,6,1,11]
+  };
+  const cx=W/2, cy=H/2, R=Math.min(W,H)/2-60;
+  const n=axes.length;
+
+  // grid
+  for(let ring=1;ring<=5;ring++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const ang=-Math.PI/2+i*(Math.PI*2/n);
+      const r=R*ring/5;
+      const x=cx+Math.cos(ang)*r, y=cy+Math.sin(ang)*r;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1; ctx.stroke();
   }
-
-  // centro
-  const centerVal=document.createElementNS(ns,'text');
-  centerVal.setAttribute('x',cx); centerVal.setAttribute('y',cy-4);
-  centerVal.setAttribute('text-anchor','middle'); centerVal.setAttribute('fill','#e8e8ee');
-  centerVal.setAttribute('font-family','DM Mono, monospace'); centerVal.setAttribute('font-size','26'); centerVal.setAttribute('font-weight','700');
-  centerVal.textContent=total;
-  const centerLbl=document.createElementNS(ns,'text');
-  centerLbl.setAttribute('x',cx); centerLbl.setAttribute('y',cy+18);
-  centerLbl.setAttribute('text-anchor','middle'); centerLbl.setAttribute('fill','rgba(232,232,238,.6)');
-  centerLbl.setAttribute('font-family','DM Sans, sans-serif'); centerLbl.setAttribute('font-size','12');
-  centerLbl.textContent='visitas totales';
-
-  let start=-Math.PI/2;
-  const segs=[];
-  data.forEach((d,i)=>{
-    const angle=d.value/total*Math.PI*2;
-    const a0=start, a1=start+angle;
-    const p=document.createElementNS(ns,'path');
-    p.setAttribute('d',arcPath(a0,a1));
-    p.setAttribute('fill',d.color);
-    p.setAttribute('stroke','#0a0a0f'); p.setAttribute('stroke-width','3');
-    p.style.cursor='pointer'; p.style.transition='opacity .2s, transform .2s';
-    p.style.transformOrigin=`${cx}px ${cy}px`;
-    const mid=(a0+a1)/2;
-    function on(){
-      segs.forEach(s=>s.style.opacity=.35); p.style.opacity=1;
-      p.style.transform=`translate(${Math.cos(mid)*8}px, ${Math.sin(mid)*8}px)`;
-      centerVal.textContent=`${d.value}`;
-      centerLbl.textContent=`${d.label} · visitas`;
-      legRows[i].style.background='rgba(255,255,255,.06)';
-    }
-    function off(){
-      segs.forEach(s=>{s.style.opacity=1; s.style.transform='none';});
-      centerVal.textContent=total; centerLbl.textContent='visitas totales';
-      legRows[i].style.background='transparent';
-    }
-    p.addEventListener('mouseenter',on); p.addEventListener('mouseleave',off);
-    svg.appendChild(p); segs.push(p);
-    // % label
-    const lx=cx+Math.cos(mid)*((R+RIN)/2), ly=cy+Math.sin(mid)*((R+RIN)/2);
-    const t=document.createElementNS(ns,'text');
-    t.setAttribute('x',lx); t.setAttribute('y',ly); t.setAttribute('text-anchor','middle');
-    t.setAttribute('dominant-baseline','middle'); t.setAttribute('fill','#0a0a0f');
-    t.setAttribute('font-family','DM Mono, monospace'); t.setAttribute('font-size','12'); t.setAttribute('font-weight','700');
-    t.style.pointerEvents='none';
-    t.textContent=Math.round(d.value/total*100)+'%';
-    svg.appendChild(t);
-    start=a1;
+  // axes
+  for(let i=0;i<n;i++){
+    const ang=-Math.PI/2+i*(Math.PI*2/n);
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(ang)*R, cy+Math.sin(ang)*R);
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1; ctx.stroke();
+    // label
+    const lx=cx+Math.cos(ang)*(R+20), ly=cy+Math.sin(ang)*(R+20);
+    ctx.fillStyle='rgba(232,232,238,.6)'; ctx.font='11px DM Sans,sans-serif';
+    ctx.textAlign=lx<cx-5?'right':lx>cx+5?'left':'center';
+    ctx.textBaseline=ly<cy-5?'bottom':ly>cy+5?'top':'middle';
+    ctx.fillText(axes[i],lx,ly);
+  }
+  // each traveler
+  Object.entries(data).forEach(([t,vals])=>{
+    ctx.beginPath();
+    vals.forEach((v,i)=>{
+      const norm=v/maxVals[i];
+      const ang=-Math.PI/2+i*(Math.PI*2/n);
+      const px=cx+Math.cos(ang)*R*norm, py=cy+Math.sin(ang)*R*norm;
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    });
+    ctx.closePath();
+    ctx.strokeStyle=TRAVELERS[t].color; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=TRAVELERS[t].color+'25'; ctx.fill();
   });
-  svg.appendChild(centerVal); svg.appendChild(centerLbl);
-  wrap.appendChild(svg);
-
-  // leyenda interactiva
-  const leg=document.getElementById('pie-legend');
-  const legRows=[];
-  data.forEach((d,i)=>{
-    const row=document.createElement('div'); row.className='pie-row';
-    row.style.cursor='pointer'; row.style.transition='background .2s'; row.style.borderRadius='8px'; row.style.padding='6px 8px';
-    row.innerHTML=`<div class="pie-dot" style="background:${d.color}"></div><span style="flex:1">${d.label}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:.78rem">${d.value} visitas</span>`;
-    row.addEventListener('mouseenter',()=>segs[i].dispatchEvent(new Event('mouseenter')));
-    row.addEventListener('mouseleave',()=>segs[i].dispatchEvent(new Event('mouseleave')));
-    leg.appendChild(row); legRows.push(row);
+  // legend
+  ['fausto','sol','lara'].forEach((t,i)=>{
+    ctx.beginPath(); ctx.rect(W-120, 20+i*22, 14, 14);
+    ctx.fillStyle=TRAVELERS[t].color+'66'; ctx.fill();
+    ctx.strokeStyle=TRAVELERS[t].color; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle=TRAVELERS[t].color; ctx.font='bold 12px DM Sans';
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText(TRAVELERS[t].name, W-100, 27+i*22);
   });
 })();
 
-// ===== CELL GRID (EE.UU.) =====
+// ===== VIZ 10 CITY CARDS =====
 (function(){
-  const g=document.getElementById('cellgrid'); if(!g) return;
-  const usa={
-    fausto:{'Orlando':13,'Florida':11},
-    sol:{'Miami':7,'Los Ángeles':3,'Orlando':2},
-    lara:{'Miami':6,'San Diego':1,'Los Ángeles':1,'Orlando':3}
-  };
-  const colors={fausto:'#F5C542',sol:'#F472B6',lara:'#67E8F9'};
-  const cells=[];
-  for(const p in usa){ for(const city in usa[p]){ for(let i=0;i<usa[p][city];i++) cells.push({p,city}); } }
-  cells.forEach(o=>{
-    const d=document.createElement('div');
-    d.className='cell'; d.style.background=colors[o.p];
-    d.title=`${o.p.charAt(0).toUpperCase()+o.p.slice(1)} · ${o.city}`;
-    g.appendChild(d);
+  const cities=[
+    {name:'Punta del Este',country:'Uruguay',emoji:'🏖️',visits:28,travelers:['fausto','sol','lara'],c1:'#00a3b4',c2:'#006e7f',fact:'El punto de encuentro del grupo: los tres veranearon acá. La Mano en la playa Brava es su sello.'},
+    {name:'Miami',country:'EE.UU.',emoji:'🌴',visits:24,travelers:['fausto','sol','lara'],c1:'#e0505a',c2:'#b02030',fact:'Escala obligada hacia Disney y las playas del sur de Florida. Imán de los tres.'},
+    {name:'Orlando',country:'EE.UU.',emoji:'🎡',visits:13,travelers:['fausto','lara'],c1:'#e06c00',c2:'#c44b00',fact:'La capital mundial de los parques temáticos. Fausto volvió año tras año.'},
+    {name:'Río Negro',country:'Argentina',emoji:'🏔️',visits:18,travelers:['fausto','lara'],c1:'#065f46',c2:'#064e3b',fact:'Bariloche y la Patagonia: nieve, chocolate y lagos. El refugio sureño de Lara.'},
+    {name:'Madrid',country:'España',emoji:'🏰',visits:9,travelers:['fausto','lara'],c1:'#b91c1c',c2:'#7f1717',fact:'Puerta de entrada a Europa. El lugar favorito de Fausto entre todos sus viajes.'},
+    {name:'Río de Janeiro',country:'Brasil',emoji:'🌅',visits:6,travelers:['fausto','sol','lara'],c1:'#16a34a',c2:'#0d6830',fact:'Playas, samba y el Pan de Azúcar. Otro destino que comparten los tres.'},
+    {name:'Tel Aviv',country:'Israel',emoji:'🕍',visits:3,travelers:['sol','lara'],c1:'#1e40af',c2:'#1e3a8a',fact:'Mediterráneo, historia milenaria y vida nocturna. Sol y Lara la recorrieron.'},
+    {name:'Milán',country:'Italia',emoji:'👗',visits:1,travelers:['sol'],c1:'#7c3aed',c2:'#5b21b6',fact:'La capital de la moda y el lugar favorito de Sol en todo el mundo.'},
+    {name:'Ámsterdam',country:'Países Bajos',emoji:'🚲',visits:2,travelers:['sol','lara'],c1:'#6d28d9',c2:'#4c1d95',fact:'Canales, bicis y museos. El rincón europeo preferido de Lara.'},
+  ];
+  const labelFor=ts=> ts.length===3?'Los tres':ts.map(t=>TRAVELERS[t].name).join(' y ');
+  const container=document.getElementById('city-cards');
+  cities.forEach((c,i)=>{
+    const card=document.createElement('div'); card.className='city-card';
+    const cc = c.travelers.length===1 ? TRAVELERS[c.travelers[0]].color : '#ffffff';
+    card.style.setProperty('--cc', cc);
+    const pips=c.travelers.map(t=>`<div class="ct-dot" style="background:${TRAVELERS[t].color}"></div>`).join('');
+    card.innerHTML=`
+      <div class="city-card-top" style="--c1:${c.c1};--c2:${c.c2}">
+        <span class="city-rank">#${i+1}</span>
+        <span class="city-emoji">${c.emoji}</span>
+        <span class="city-visits">×${c.visits}</span>
+      </div>
+      <div class="city-body">
+        <div class="city-name">${c.name}</div>
+        <div class="city-meta">${c.country}</div>
+        <div class="city-fact">${c.fact}</div>
+        <div class="city-travellers"><span class="ct-label">${labelFor(c.travelers)}</span>${pips}</div>
+      </div>`;
+    container.appendChild(card);
+  });
+})();
+
+// ===== VIZ 12 PIE/DONUT =====
+(function(){
+  const canvas=document.getElementById('pie-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||500; const H=400;
+  canvas.width=W*devicePixelRatio; canvas.height=H*devicePixelRatio;
+  canvas.style.height=H+'px'; ctx.scale(devicePixelRatio,devicePixelRatio);
+
+  const data=[
+    {label:'América del Sur', value:52, color:'#22d3ee'},
+    {label:'América del Norte/Caribe', value:59, color:'#34d399'},
+    {label:'Europa', value:38, color:'#a78bfa'},
+    {label:'Oriente Medio', value:8, color:'#fbbf24'},
+  ];
+  const total=data.reduce((s,d)=>s+d.value,0);
+  const cx=W/2, cy=H/2, R=Math.min(W,H)/2-40;
+
+  let start=-Math.PI/2;
+  data.forEach(d=>{
+    const angle=d.value/total*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,R,start,start+angle);
+    ctx.closePath(); ctx.fillStyle=d.color+'cc'; ctx.fill();
+    ctx.strokeStyle='#0a0a0f'; ctx.lineWidth=3; ctx.stroke();
+
+    // label
+    const mid=start+angle/2;
+    const lx=cx+Math.cos(mid)*(R*0.65), ly=cy+Math.sin(mid)*(R*0.65);
+    ctx.fillStyle='rgba(10,10,15,.8)';
+    ctx.font='bold 12px DM Mono, monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(Math.round(d.value/total*100)+'%',lx,ly);
+    start+=angle;
+  });
+  // center hole
+  ctx.beginPath(); ctx.arc(cx,cy,R*0.45,0,Math.PI*2);
+  ctx.fillStyle='#0a0a0f'; ctx.fill();
+  ctx.fillStyle='rgba(232,232,238,.7)'; ctx.font='bold 14px DM Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(total, cx, cy-8); ctx.font='10px DM Sans'; ctx.fillText('visitas',cx,cy+10);
+
+  // legend
+  const leg=document.getElementById('pie-legend');
+  data.forEach(d=>{
+    const row=document.createElement('div'); row.className='pie-row';
+    row.innerHTML=`<div class="pie-dot" style="background:${d.color}"></div><span style="flex:1">${d.label}</span><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:.78rem">${d.value} visitas</span>`;
+    leg.appendChild(row);
+  });
+})();
+
+// ===== VIZ 13 TIMELINE FAUSTO =====
+(function(){
+  const svg=document.getElementById('timeline-fausto');
+  const W=Math.max(svg.parentElement.offsetWidth||900, 900);
+  const H=300;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.setAttribute('width','100%');
+
+  const regions=[
+    {label:'Argentina',value:8,x:60},{label:'Uruguay',value:4,x:160},
+    {label:'R.Dom.',value:6,x:260},{label:'EEUU',value:24,x:360},
+    {label:'Brasil',value:4,x:460},{label:'España',value:7,x:560},
+    {label:'Chile',value:1,x:640},{label:'Costa Rica',value:1,x:710},
+    {label:'Panamá',value:1,x:780},{label:'Italia',value:1,x:850},
+  ];
+  const max=Math.max(...regions.map(d=>d.value));
+  const ns='http://www.w3.org/2000/svg';
+
+  // baseline
+  const line=document.createElementNS(ns,'line');
+  line.setAttribute('x1',40); line.setAttribute('x2',W-20);
+  line.setAttribute('y1',H-60); line.setAttribute('y2',H-60);
+  line.setAttribute('stroke','rgba(255,255,255,.1)'); line.setAttribute('stroke-width','1');
+  svg.appendChild(line);
+
+  regions.forEach(d=>{
+    const bh=(d.value/max)*(H-120);
+    const bw=55;
+    // bar
+    const rect=document.createElementNS(ns,'rect');
+    rect.setAttribute('x',d.x); rect.setAttribute('y',H-60-bh);
+    rect.setAttribute('width',bw); rect.setAttribute('height',bh);
+    rect.setAttribute('rx','4');
+    rect.setAttribute('fill','#F5C54288');
+    rect.setAttribute('stroke','#F5C542'); rect.setAttribute('stroke-width','1');
+    svg.appendChild(rect);
+
+    // value
+    const t1=document.createElementNS(ns,'text');
+    t1.setAttribute('x',d.x+bw/2); t1.setAttribute('y',H-65-bh);
+    t1.setAttribute('text-anchor','middle'); t1.setAttribute('fill','#F5C542');
+    t1.setAttribute('font-size','11'); t1.setAttribute('font-family','DM Mono,monospace');
+    t1.textContent=d.value+'×'; svg.appendChild(t1);
+
+    // label
+    const t2=document.createElementNS(ns,'text');
+    t2.setAttribute('x',d.x+bw/2); t2.setAttribute('y',H-40);
+    t2.setAttribute('text-anchor','middle'); t2.setAttribute('fill','rgba(232,232,238,.6)');
+    t2.setAttribute('font-size','10'); t2.setAttribute('font-family','DM Sans,sans-serif');
+    t2.textContent=d.label; svg.appendChild(t2);
+  });
+
+  const title=document.createElementNS(ns,'text');
+  title.setAttribute('x',40); title.setAttribute('y',30);
+  title.setAttribute('fill','#F5C542'); title.setAttribute('font-size','13');
+  title.setAttribute('font-family','DM Mono,monospace');
+  title.textContent='Visitas por destino — Fausto'; svg.appendChild(title);
+})();
+
+// ===== VIZ 14 SOL EUROPE =====
+(function(){
+  const grid=document.getElementById('sol-europe-grid');
+  const europeData=[
+    {city:'Milán',country:'Italia',emoji:'👗',note:'Su lugar favorito'},
+    {city:'Roma',country:'Italia',emoji:'🏛️',note:'Historia pura'},
+    {city:'Florencia',country:'Italia',emoji:'🎨',note:'Arte y gastronomía'},
+    {city:'Venecia',country:'Italia',emoji:'🚤',note:'La ciudad flotante'},
+    {city:'Sorrento',country:'Italia',emoji:'🍋',note:'Costa Amalfitana'},
+    {city:'París',country:'Francia',emoji:'🗼',note:'La ciudad de la luz'},
+    {city:'Londres',country:'Inglaterra',emoji:'🎡',note:'Cultura y modernidad'},
+    {city:'Gante',country:'Bélgica',emoji:'🍺',note:'Ciudad medieval'},
+    {city:'Ámsterdam',country:'Países Bajos',emoji:'🌷',note:'Canales y museos'},
+  ];
+  europeData.forEach(d=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.cssText='display:flex;align-items:center;gap:16px;padding:16px 20px;';
+    card.innerHTML=`<span style="font-size:2rem">${d.emoji}</span><div><div style="font-weight:600">${d.city}, <span style="color:var(--sol)">${d.country}</span></div><div style="font-size:.78rem;color:var(--muted);margin-top:3px">${d.note}</div></div>`;
+    grid.appendChild(card);
+  });
+})();
+
+// ===== VIZ 15 LARA =====
+(function(){
+  const excl=[
+    {name:'Grecia 🏛️',note:'Mykonos y Santorini — única del grupo'},
+    {name:'Patagonia 🏔️',note:'Río Negro 12 veces — récord absoluto'},
+    {name:'Mallorca 🌊',note:'La isla española que solo Lara conoce'},
+    {name:'Mendoza 🍷',note:'La capital del vino argentino'},
+    {name:'Bahía, Brasil 🎵',note:'La costa más colorida de Brasil'},
+  ];
+  const container=document.getElementById('lara-excl');
+  excl.forEach(e=>{
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)';
+    div.innerHTML=`<div style="width:6px;height:6px;background:var(--lara);border-radius:50%;margin-top:8px;flex-shrink:0"></div><div><div style="font-size:.9rem;font-weight:600">${e.name}</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">${e.note}</div></div>`;
+    container.appendChild(div);
+  });
+
+  // patagonia visual
+  const left=document.getElementById('lara-unique');
+  left.innerHTML=`
+    <div class="stat-card" style="text-align:center;padding:40px 24px">
+      <div style="font-size:4rem;margin-bottom:12px">🏔️</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--lara)">12×</div>
+      <div style="font-size:.9rem;color:var(--muted);margin-top:8px">Río Negro, Patagonia argentina</div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--lara)">11</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:4px">países visitados en total</div>
+      </div>
+      <div style="margin-top:16px">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--lara)">4</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:4px">continentes</div>
+      </div>
+    </div>`;
+})();
+
+// ===== VIZ 16 FACTS POR PAÍS =====
+(function(){
+  const facts=[
+    {country:'Uruguay',flag:'🇺🇾',lang:'Español',coin:'Peso uruguayo',curio:'Tiene más vacas que personas: casi 4 por habitante.',who:['fausto','sol','lara']},
+    {country:'Brasil',flag:'🇧🇷',lang:'Portugués',coin:'Real',curio:'Es el país más extenso de Sudamérica y limita con casi todos sus vecinos.',who:['fausto','sol','lara']},
+    {country:'Estados Unidos',flag:'🇺🇸',lang:'Inglés',coin:'Dólar',curio:'Florida recibe más de 130 millones de turistas por año.',who:['fausto','sol','lara']},
+    {country:'España',flag:'🇪🇸',lang:'Español',coin:'Euro',curio:'Es el país con más bares per cápita de toda la Unión Europea.',who:['fausto','lara']},
+    {country:'Italia',flag:'🇮🇹',lang:'Italiano',coin:'Euro',curio:'Tiene 60 sitios declarados Patrimonio de la Humanidad, el récord mundial.',who:['sol']},
+    {country:'Israel',flag:'🇮🇱',lang:'Hebreo',coin:'Séquel',curio:'Tel Aviv nunca duerme: es famosa por su vida nocturna sobre el Mediterráneo.',who:['sol','lara']},
+    {country:'Grecia',flag:'🇬🇷',lang:'Griego',coin:'Euro',curio:'Tiene unas 6.000 islas, pero solo 227 están habitadas.',who:['lara']},
+    {country:'Rep. Dominicana',flag:'🇩🇴',lang:'Español',coin:'Peso dominicano',curio:'Santo Domingo es la ciudad europea más antigua de América.',who:['fausto','sol']},
+  ];
+  const grid=document.getElementById('facts-grid');
+  if(!grid) return;
+  facts.forEach(f=>{
+    const dots=f.who.map(t=>`<div class="fw-dot" style="background:${TRAVELERS[t].color}"></div>`).join('');
+    const card=document.createElement('div'); card.className='fact-card';
+    card.innerHTML=`
+      <div class="fact-who">${dots}</div>
+      <div class="fact-flag">${f.flag}</div>
+      <div class="fact-country">${f.country}</div>
+      <div class="fact-rows">
+        <div class="fact-row"><span class="fk">Idioma</span><span class="fv">${f.lang}</span></div>
+        <div class="fact-row"><span class="fk">Moneda</span><span class="fv">${f.coin}</span></div>
+      </div>
+      <div class="fact-curio">${f.curio}</div>`;
+    grid.appendChild(card);
+  });
+})();
+
+// ===== VIZ 17 DISTANCIAS DESDE BUENOS AIRES =====
+(function(){
+  // distancia aproximada en km en línea recta desde Buenos Aires
+  const dests=[
+    {city:'Tel Aviv',country:'Israel',km:12100,color:'#a78bfa'},
+    {city:'Ámsterdam',country:'Países Bajos',km:11400,color:'#a78bfa'},
+    {city:'Milán',country:'Italia',km:11100,color:'#a78bfa'},
+    {city:'Madrid',country:'España',km:10050,color:'#a78bfa'},
+    {city:'Mykonos',country:'Grecia',km:11900,color:'#a78bfa'},
+    {city:'Orlando',country:'EE.UU.',km:7100,color:'#f97316'},
+    {city:'Punta Cana',country:'Rep. Dom.',km:6300,color:'#f97316'},
+    {city:'Río de Janeiro',country:'Brasil',km:1980,color:'#10b981'},
+    {city:'Santiago',country:'Chile',km:1140,color:'#10b981'},
+    {city:'Punta del Este',country:'Uruguay',km:220,color:'#10b981'},
+  ].sort((a,b)=>b.km-a.km);
+  const max=Math.max(...dests.map(d=>d.km));
+  const chart=document.getElementById('dist-chart');
+  if(!chart) return;
+  dests.forEach(d=>{
+    const row=document.createElement('div'); row.className='dist-row';
+    row.innerHTML=`
+      <div class="dist-city">${d.city}<small>${d.country}</small></div>
+      <div class="dist-bar-track"><div class="dist-bar-fill" style="--w:${(d.km/max*100).toFixed(1)}%;background:linear-gradient(90deg, ${d.color}, ${d.color}aa)"></div></div>
+      <div class="dist-km">${d.km.toLocaleString('es-AR')} km</div>`;
+    chart.appendChild(row);
   });
 })();
 
