@@ -26,3 +26,6 @@ Características
 * Narrativa visual enfocada en exploración de datos
 * Diseño centrado en experiencia de usuario
 * Adaptación a distintos dispositivos
+
+
+EL PROYECTO SE PUEDE VER ACÁ: https://datavis-grupo-5.vercel.app/
