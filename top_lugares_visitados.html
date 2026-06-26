@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lugares más visitados de Japón</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root{
+      --ink:#181512;
+      --red:#d94141;
+      --paper:#fffaf4;            /* texto claro sobre la foto */
+      --muted:rgba(255,250,244,.62);
+      --line:rgba(255,250,244,.18);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html, body{
+      width:100%;
+      background:#12100e;
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      color:var(--paper);
+      /* clip (no 'hidden') para no romper position: sticky */
+      overflow-x:clip;
+    }
+
+    /* la altura se setea por JS = cantidad de lugares × 100vh */
+    .scrolly{position:relative}
+
+    /* escenario fijo a pantalla completa */
+    .sticky-stage{
+      position:sticky;
+      top:0;
+      height:100vh;
+      width:100%;
+      overflow:hidden;
+      background:#12100e;
+      display:flex;
+      align-items:flex-end;
+      padding:clamp(28px,4vw,80px);
+    }
+
+    /* --- FOTOS DE FONDO --- */
+    .bg-gradient{
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      opacity:0;
+      transform:scale(1.06);
+      /* baja la luminosidad para que el texto siempre se lea */
+      filter:brightness(0.55) saturate(1.05);
+      transition:opacity .9s ease, transform 1.4s cubic-bezier(.25,1,.5,1);
+      z-index:1;
+    }
+    .bg-gradient.active{opacity:1;transform:scale(1)}
+
+    #art-tokyo{background-image:url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1600&q=80')}
+    #art-kyoto{background-image:url('https://images.unsplash.com/photo-1581894158358-5ecd2c518883?auto=format&fit=crop&w=1600&q=80')}
+    #art-fuji{background-image:url('https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?auto=format&fit=crop&w=1600&q=80')}
+    #art-osaka{background-image:url('https://images.unsplash.com/photo-1571536802807-30451e3955d8?auto=format&fit=crop&w=1600&q=80')}
+    .bg-gradient{background-position:center;background-size:cover;background-repeat:no-repeat}
+
+    .viewer-overlay{
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:
+        linear-gradient(to top, rgba(18,16,14,0.97) 0%, rgba(18,16,14,0.55) 48%, rgba(18,16,14,0.25) 100%),
+        linear-gradient(to bottom, rgba(18,16,14,0.6) 0%, rgba(18,16,14,0) 28%);
+      z-index:2;
+    }
+
+    /* --- ENCABEZADO (misma estética que el diccionario) --- */
+    .stage-head{
+      position:absolute;
+      top:clamp(28px,4vw,80px);
+      left:clamp(28px,4vw,80px);
+      right:clamp(28px,4vw,80px);
+      z-index:4;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:24px;
+    }
+    .stage-head .head-label{
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--red);
+      margin-bottom:8px;
+    }
+    .stage-head h2{
+      margin:0;
+      font-size:clamp(34px,5vw,72px);
+      line-height:1;
+      letter-spacing:-.055em;
+      font-weight:900;
+      color:var(--paper);
+    }
+
+    .stage-counter{
+      text-align:right;
+      flex-shrink:0;
+    }
+    .stage-counter .count-now{
+      font-size:clamp(30px,3.4vw,52px);
+      font-weight:900;
+      letter-spacing:-.055em;
+      line-height:1;
+      color:var(--paper);
+    }
+    .stage-counter .count-total{
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:.06em;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    /* --- PUNTOS DE PROGRESO --- */
+    .progress-dots{
+      position:absolute;
+      right:clamp(18px,2.4vw,40px);
+      top:50%;
+      transform:translateY(-50%);
+      z-index:4;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .progress-dots .dot{
+      width:9px;height:9px;
+      border-radius:50%;
+      border:none;padding:0;
+      cursor:pointer;
+      background:rgba(255,250,244,.3);
+      transition:all .3s ease;
+    }
+    .progress-dots .dot.active{background:var(--red);transform:scale(1.5)}
+
+    /* --- TARJETA DE INFORMACIÓN --- */
+    .display-card{
+      position:relative;
+      z-index:3;
+      width:100%;
+      max-width:660px;
+      transform:translateY(15px);
+      opacity:0;
+      transition:transform .5s cubic-bezier(.25,1,.5,1), opacity .5s ease;
+    }
+    .display-card.active{transform:translateY(0);opacity:1}
+
+    .panel-kana{
+      display:block;
+      font-size:clamp(13px,1.1vw,16px);
+      color:var(--muted);
+      font-weight:500;
+      letter-spacing:.03em;
+      margin-bottom:8px;
+    }
+
+    .panel-romaji-row{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-bottom:16px;
+    }
+    .panel-romaji{
+      font-size:clamp(34px,4.6vw,60px);
+      font-weight:900;
+      letter-spacing:-.055em;
+      line-height:1;
+      color:var(--paper);
+    }
+
+    .audio-btn{
+      background-color:rgba(255,250,244,.1);
+      border:1px solid rgba(255,250,244,.16);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:13px;
+      border-radius:50%;
+      color:var(--paper);
+      flex-shrink:0;
+      transition:color .2s ease, background-color .2s ease, border-color .2s ease, transform .1s ease;
+    }
+    .audio-btn:hover{background-color:var(--red);border-color:var(--red)}
+    .audio-btn:active{transform:scale(.9)}
+    .audio-btn svg{width:22px;height:22px;fill:currentColor}
+
+    .panel-label{
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--red);
+      margin:0 0 6px;
+    }
+    .panel-context{
+      font-size:clamp(15px,1.2vw,18px);
+      color:rgba(255,250,244,.82);
+      line-height:1.5;
+      margin:0 0 26px;
+      max-width:580px;
+    }
+
+    /* --- METADATOS LADO A LADO --- */
+    .display-meta-stack{
+      display:flex;
+      flex-direction:row;
+      gap:36px;
+      border-top:1px solid var(--line);
+      padding-top:20px;
+    }
+    .meta-group{display:flex;flex-direction:column;gap:8px}
+    .meta-group.imperdible-group{flex:1.3}
+    .meta-group.season-group{flex:1}
+
+    .panel-season{
+      font-size:clamp(18px,2vw,24px);
+      font-weight:900;
+      letter-spacing:-.03em;
+      color:var(--paper);
+      line-height:1.1;
+    }
+
+    .meta-list{
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .meta-list li{
+      font-size:clamp(14px,1.1vw,16px);
+      font-weight:500;
+      color:rgba(255,250,244,.92);
+      position:relative;
+      padding-left:16px;
+      line-height:1.4;
+    }
+    .meta-list li::before{
+      content:"•";
+      position:absolute;
+      left:0;
+      color:var(--red);
+      font-size:16px;
+      line-height:1.2;
+    }
+
+    /* --- PISTA DE SCROLL --- */
+    .scroll-hint{
+      position:absolute;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:4;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted);
+      animation:hintPulse 2s infinite ease-in-out;
+      transition:opacity .4s ease;
+    }
+    @keyframes hintPulse{
+      0%,100%{opacity:.5;transform:translate(-50%,0)}
+      50%{opacity:1;transform:translate(-50%,4px)}
+    }
+
+    @media(max-width:768px){
+      .display-meta-stack{flex-direction:column;gap:16px;padding-top:14px}
+      .progress-dots{right:14px;gap:11px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="scrolly">
+  <div class="sticky-stage">
+
+    <!-- Fotos de fondo -->
+    <div id="art-tokyo" class="bg-gradient active"></div>
+    <div id="art-kyoto" class="bg-gradient"></div>
+    <div id="art-fuji" class="bg-gradient"></div>
+    <div id="art-osaka" class="bg-gradient"></div>
+
+    <div class="viewer-overlay"></div>
+
+    <!-- Encabezado -->
+    <div class="stage-head">
+      <div>
+        <p class="head-label">Ranking de Visitas</p>
+        <h2>Destinos Imperdibles</h2>
+      </div>
+      <div class="stage-counter">
+        <div class="count-now" id="countNow">01</div>
+        <div class="count-total" id="countTotal">/ 04</div>
+      </div>
+    </div>
+
+    <!-- Puntos de progreso (clickeables) -->
+    <div class="progress-dots" id="progressDots"></div>
+
+    <!-- Tarjeta de información del lugar activo -->
+    <div class="display-card active" id="displayCard">
+      <span class="panel-kana" id="cardKana">とうきょう / TOKYO</span>
+      <div class="panel-romaji-row">
+        <div class="panel-romaji" id="cardTitle">Shibuya</div>
+        <button class="audio-btn" id="speakBtn" title="Escuchar el nombre del lugar">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+      </div>
+      <p class="panel-context" id="cardDesc">El epicentro de la modernidad urbana global. Un cruce peatonal icónico por el que caminan hasta 3.000 personas en cada luz verde, rodeado de rascacielos ciberpunk y pantallas masivas.</p>
+
+      <div class="display-meta-stack">
+        <div class="meta-group imperdible-group">
+          <p class="panel-label">Imperdible</p>
+          <ul class="meta-list" id="cardBest"></ul>
+        </div>
+        <div class="meta-group season-group">
+          <p class="panel-label">Temporada ideal</p>
+          <div class="panel-season" id="cardSeason">Todo el año (Otoño/Primavera)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pista de scroll -->
+    <div class="scroll-hint" id="scrollHint">Scrolleá para recorrer</div>
+
+  </div>
+</div>
+
+<script>
+  const ORDER = ['tokyo', 'kyoto', 'fuji', 'osaka'];
+
+  const destinationData = {
+    tokyo: {
+      kana: "とうきょう / TOKYO",
+      title: "Shibuya",
+      desc: "El epicentro de la modernidad urbana global. Un cruce peatonal icónico por el que caminan hasta 3.000 personas en cada luz verde, rodeado de rascacielos ciberpunk y pantallas masivas.",
+      best: ["Cruzar el famoso paso de Shibuya", "Subir al mirador Shibuya Sky", "Fotografiar la estatua de Hachiko"],
+      season: "Todo el año (Otoño/Primavera)",
+      audio: "しぶや" // Shibuya (el lugar, no la ciudad)
+    },
+    kyoto: {
+      kana: "きょうと / KYOTO",
+      title: "Templos de Kioto",
+      desc: "El corazón tradicional e histórico del país. Alberga miles de templos budistas clásicos, santuarios sintoístas, jardines zen perfectos y los barrios tradicionales de geishas intactos.",
+      best: ["Caminar bajo los toriis de Fushimi Inari", "Admirar el templo dorado Kinkaku-ji", "Recorrer el bosque de bambú de Arashiyama"],
+      season: "Noviembre (Momiji) / Abril",
+      audio: "ふしみいなり" // Fushimi Inari (el lugar imperdible, no la ciudad)
+    },
+    fuji: {
+      kana: "ふじさん / MT. FUJI",
+      title: "Monte Fuji",
+      desc: "El símbolo sagrado e indiscutible de Japón. Un cono volcánico perfectamente simétrico rodeado por cinco lagos majestuosos que reflejan su imponente silueta nevada.",
+      best: ["Fotografiar la Pagoda Chureito", "Pasear en bote por el Lago Kawaguchiko", "Relajarse en un onsen con vistas al volcán"],
+      season: "Visibilidad óptima en Invierno",
+      audio: "ふじさん" // Monte Fuji (el lugar)
+    },
+    osaka: {
+      kana: "おおさか / OSAKA",
+      title: "Dotonbori",
+      desc: "Conocida popularmente como la capital de la comida callejera. Un distrito vibrante atravesado por canales y famoso por su cartelería extravagante tridimensional y su energía nocturna inigualable.",
+      best: ["Posar junto al letrero de Glico Man", "Probar Takoyaki y Okonomiyaki locales", "Explorar el movido distrito de Namba"],
+      season: "Todo el año (Ideal de noche)",
+      audio: "どうとんぼり" // Dotonbori (el lugar, no la ciudad)
+    }
+  };
+
+  const layers = {
+    tokyo: document.getElementById('art-tokyo'),
+    kyoto: document.getElementById('art-kyoto'),
+    fuji: document.getElementById('art-fuji'),
+    osaka: document.getElementById('art-osaka')
+  };
+
+  const displayCard = document.getElementById('displayCard');
+  const cardKana = document.getElementById('cardKana');
+  const cardTitle = document.getElementById('cardTitle');
+  const cardDesc = document.getElementById('cardDesc');
+  const cardBest = document.getElementById('cardBest');
+  const cardSeason = document.getElementById('cardSeason');
+  const speakBtn = document.getElementById('speakBtn');
+  const countNow = document.getElementById('countNow');
+  const countTotal = document.getElementById('countTotal');
+  const scrollHint = document.getElementById('scrollHint');
+  const dotsWrap = document.getElementById('progressDots');
+
+  let currentIndex = -1;
+  let currentAudioText = destinationData.tokyo.audio;
+
+  countTotal.textContent = '/ ' + String(ORDER.length).padStart(2, '0');
+
+  // --- ALTURA SCROLLEABLE: un tramo de pantalla por cada lugar ---
+  const scrolly = document.querySelector('.scrolly');
+  scrolly.style.height = (ORDER.length * 100) + 'vh';
+
+  // --- PUNTOS DE PROGRESO ---
+  ORDER.forEach((key, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.title = destinationData[key].title;
+    dot.addEventListener('click', () => scrollToIndex(i));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = dotsWrap.querySelectorAll('.dot');
+
+  function renderBestList(itemsArray) {
+    cardBest.innerHTML = '';
+    itemsArray.forEach(itemText => {
+      const li = document.createElement('li');
+      li.innerText = itemText;
+      cardBest.appendChild(li);
+    });
+  }
+
+  function setActive(index) {
+    if (index === currentIndex) return;
+    currentIndex = index;
+    const key = ORDER[index];
+    const data = destinationData[key];
+
+    // fondo
+    Object.values(layers).forEach(l => l.classList.remove('active'));
+    layers[key].classList.add('active');
+
+    // contador + puntos
+    countNow.textContent = String(index + 1).padStart(2, '0');
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+    // audio = nombre del lugar
+    currentAudioText = data.audio;
+
+    // animación de cambio de tarjeta
+    displayCard.classList.remove('active');
+    setTimeout(() => {
+      cardKana.innerText = data.kana;
+      cardTitle.innerText = data.title;
+      cardDesc.innerText = data.desc;
+      cardSeason.innerText = data.season;
+      renderBestList(data.best);
+      displayCard.classList.add('active');
+    }, 200);
+  }
+
+  // --- SCROLL → ÍNDICE ---
+  function onScroll() {
+    const rect = scrolly.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = scrolly.offsetHeight - vh;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const progress = total > 0 ? scrolled / total : 0;
+    // banda pareja por destino
+    let index = Math.floor(progress * ORDER.length);
+    index = Math.min(Math.max(index, 0), ORDER.length - 1);
+    setActive(index);
+
+    scrollHint.style.opacity = scrolled > 40 ? '0' : '';
+  }
+
+  function scrollToIndex(index) {
+    const vh = window.innerHeight;
+    const total = scrolly.offsetHeight - vh;
+    const targetProgress = (index + 0.5) / ORDER.length;
+    const top = scrolly.offsetTop + targetProgress * total;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  // estado inicial
+  renderBestList(destinationData.tokyo.best);
+  setActive(0);
+  onScroll();
+
+  // --- AUDIO: dice el NOMBRE DEL LUGAR ---
+  function speakPlace(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 0.75;
+    const voices = window.speechSynthesis.getVoices();
+    const jpVoice = voices.find(voice => voice.lang && (voice.lang.toLowerCase().startsWith('ja') || voice.lang.includes('JP')));
+    if (jpVoice) utterance.voice = jpVoice;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  speakBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    speakPlace(currentAudioText);
+  });
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+  }
+</script>
+
+</body>
+</html>

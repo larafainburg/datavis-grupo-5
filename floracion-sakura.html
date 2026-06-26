@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floración del Sakura · Estudio de Japonés</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root{
+      --bg:#f6efe7;
+      --ink:#181512;
+      --muted:rgba(24,21,18,.62);
+      --red:#d94141;
+      --soft:#eadfd3;
+      --line:rgba(24,21,18,.18);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      background:var(--bg);
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      overflow-x:hidden;
+    }
+
+    /* ===== BANNER DE TÍTULO (mismo lenguaje que los chapters de la guía) ===== */
+    .sakura-banner{
+      position:relative;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:80px 22px;
+      background:linear-gradient(180deg,#f9f4ee,#efe3d6);
+      overflow:hidden;
+    }
+    .sakura-banner .act-num{
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      font-size:clamp(280px,52vw,720px);
+      font-weight:900; letter-spacing:-.08em; line-height:1;
+      color:var(--red); opacity:.07; pointer-events:none; z-index:1;
+    }
+    .sakura-banner .banner-inner{position:relative;z-index:2;max-width:880px}
+    .sakura-banner .kicker{
+      display:block; font-size:12px; font-weight:800;
+      letter-spacing:.24em; text-transform:uppercase;
+      color:var(--red); margin-bottom:18px;
+    }
+    .sakura-banner h2{
+      font-size:clamp(46px,8vw,118px);
+      line-height:.9; letter-spacing:-.06em; font-weight:900; margin-bottom:24px;
+    }
+    .sakura-banner p{
+      max-width:620px; margin:0 auto;
+      font-size:clamp(17px,1.9vw,23px); line-height:1.5; color:#52504C;
+    }
+
+    /* ===== VISUALIZACIÓN EN 4 CUADRANTES (cabe completa en 100vh) ===== */
+    .scrolly{position:relative}
+
+    .sticky-stage{
+      position:sticky;
+      top:0;
+      z-index:2;
+      height:100vh;
+      padding:clamp(16px,2.5vh,28px) clamp(24px,4vw,80px);
+      display:flex;
+      align-items:center;
+    }
+
+    /* grilla 2x2 segun cuadrantes cartesianos:
+       Cuadrante II = arriba-izq (imagen) · Cuadrante I = arriba-der (grafico)
+       Cuadrante III = abajo-izq (texto)  · Cuadrante IV = abajo-der (panel) */
+    .quad-grid{
+      width:100%;
+      height:100%;
+      max-height:calc(100vh - clamp(32px,5vh,56px));
+      display:grid;
+      grid-template-columns:0.85fr 1.15fr;
+      grid-template-rows:1fr auto;
+      gap:clamp(16px,2vw,28px);
+      align-items:stretch;
+    }
+
+    /* Cuadrante II — imagen, arriba izquierda, bordes redondeados radio 20 */
+    .q2{grid-column:1;grid-row:1}
+    .photo-frame{
+      position:relative;
+      width:100%;
+      height:100%;
+      min-height:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:var(--soft);
+    }
+    .photo-frame img{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover; opacity:0;
+      transition:opacity .6s cubic-bezier(.22,1,.36,1);
+    }
+    .photo-frame img.active{opacity:1}
+
+    /* Cuadrante I — grafico, arriba derecha */
+    .q1{grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:center}
+    .chart-frame{width:100%}
+    .chart-frame svg{width:100%;height:auto;display:block;max-height:46vh}
+
+    /* Cuadrante III — texto (antes arriba), abajo izquierda */
+    .q3{grid-column:1;grid-row:2;display:flex;flex-direction:column;justify-content:flex-start}
+    .q3 h2{
+      margin:0 0 10px 0;
+      font-size:clamp(26px,3.2vw,46px);
+      line-height:1; letter-spacing:-.055em; font-weight:900;
+    }
+    .q3 p{
+      margin:0;
+      font-size:clamp(13px,1.05vw,16px);
+      line-height:1.4; color:var(--muted);
+    }
+
+    /* Cuadrante IV — panel que cambia de titulo, abajo derecha */
+    .q4{grid-column:2;grid-row:2}
+    .data-panel{
+      width:100%; height:100%;
+      background:var(--soft);
+      border:1px solid var(--line);
+      padding:16px clamp(16px,2vw,24px);
+    }
+    .data-panel .panel-label{
+      font-size:11px; font-weight:800; text-transform:uppercase;
+      letter-spacing:.14em; color:var(--muted); margin:0 0 6px;
+    }
+    .data-panel .panel-stat{
+      font-size:clamp(20px,2.4vw,28px); font-weight:900;
+      letter-spacing:-.03em; color:var(--red); line-height:1; margin:0 0 10px;
+    }
+    .data-panel .panel-context{
+      font-size:clamp(13px,1.1vw,16px); line-height:1.5; color:var(--ink); margin:0;
+    }
+
+    /* steps invisibles que dan altura scrolleable */
+    .steps{position:relative;z-index:1;margin-top:-100vh;pointer-events:none;}
+    .step{height:80vh}
+    .step:first-child{height:60vh}
+    .step:last-child{height:90vh}
+
+    @media(max-width:880px){
+      .quad-grid{
+        grid-template-columns:1fr;
+        grid-template-rows:auto auto auto auto;
+        max-height:none;
+      }
+      .q2{grid-column:1;grid-row:1}
+      .q1{grid-column:1;grid-row:2}
+      .q3{grid-column:1;grid-row:3}
+      .q4{grid-column:1;grid-row:4}
+      .sticky-stage{height:auto;min-height:100vh}
+      .photo-frame{height:34vh}
+      .chart-frame svg{max-height:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== BANNER DE TITULO ===== -->
+<section class="sakura-banner">
+  <span class="act-num" aria-hidden="true">04</span>
+  <div class="banner-inner">
+    <span class="kicker">¿Cuándo florece?</span>
+    <h2>Floración del sakura</h2>
+    <p>El cerezo japonés florece apenas una o dos semanas al año y marca la temporada más esperada de Japón. Scrolleá para recorrer, ciudad por ciudad, cuándo llegó ese momento en los últimos quince años.</p>
+  </div>
+</section>
+
+<div class="scrolly">
+  <div class="sticky-stage">
+
+    <div class="quad-grid">
+      <!-- Cuadrante II: imagen -->
+      <div class="q2">
+        <div class="photo-frame" id="photoFrame"></div>
+      </div>
+
+      <!-- Cuadrante I: grafico -->
+      <div class="q1">
+        <div class="chart-frame">
+          <svg id="sakuraChart" viewBox="0 0 600 240"></svg>
+        </div>
+      </div>
+
+      <!-- Cuadrante III: texto que antes iba arriba -->
+      <div class="q3">
+        <h2>Floración del sakura</h2>
+        <p>El sakura es el cerezo japonés: en primavera se cubre de flores rosadas y blancas durante apenas una o dos semanas. Acá podés ver, ciudad por ciudad, cuándo llegó ese momento en los últimos quince años — scrolleá para recorrerlo.</p>
+      </div>
+
+      <!-- Cuadrante IV: panel que cambia de titulo -->
+      <div class="q4">
+        <div class="data-panel">
+          <p class="panel-label" id="panelLabel">Set de floración</p>
+          <div class="panel-stat" id="panelStat">15 años · 5 ciudades</div>
+          <p class="panel-context" id="panelContext">Recorré la floración del sakura ciudad por ciudad, de norte a sur, entre 2011 y 2025.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="steps" id="steps"></div>
+</div>
+
+<script>
+  const DATA = {
+    Sapporo:{vals:[132,123,137,121,116,122,123,119,119,123,117,115,111,115,117],normal:127},
+    Tokio:{vals:[96,97,81,89,88,91,92,83,86,82,81,86,81,95,89],normal:91},
+    Kioto:{vals:[97,100,89,92,91,93,97,87,96,90,85,89,83,96,95],normal:95},
+    Hiroshima:{vals:[100,100,88,89,89,93,97,87,93,94,84,88,87,96,92],normal:94},
+    Fukuoka:{vals:[92,92,81,86,88,90,95,86,88,93,81,86,85,93,87],normal:91}
+  };
+  const YEARS = Array.from({length:15},(_,i)=>2011+i);
+
+  const CITY_COLORS = {
+    Sapporo:'#3e6b89',
+    Tokio:'#d94141',
+    Kioto:'#b9772e',
+    Hiroshima:'#4f7a4a',
+    Fukuoka:'#8a5a99'
+  };
+
+  const PHASES = [
+    {
+      photo:'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80',
+      label:'Qué es esto',
+      stat:'15 años · 5 ciudades',
+      context:'Este gráfico muestra, año por año, el día exacto en que los cerezos de cada ciudad llegaron a su mejor momento, entre 2011 y 2025.'
+    },
+    {
+      photo:'https://images.unsplash.com/photo-1525635569544-610f9540664a?auto=format&fit=crop&w=1200&q=80',
+      label:'El extremo norte',
+      stat:'La última en florecer',
+      context:'Sapporo está en el norte, donde hace más frío. Por eso sus cerezos siempre son los últimos en florecer: recién a fines de abril o principios de mayo.'
+    },
+    {
+      photo:'https://images.unsplash.com/photo-1598957232485-fab51e0ed7e8?auto=format&fit=crop&w=1200&q=80',
+      label:'El centro de Japón',
+      stat:'Ventana de 10 días',
+      context:'Tokio, Kioto, Hiroshima y Fukuoka están más al centro y al sur. Ahí los cerezos florecen casi todos juntos, en apenas diez días a fines de marzo.'
+    },
+    {
+      photo:'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1200&q=80',
+      label:'La tendencia',
+      stat:'Cada vez más temprano',
+      context:'Mirando los quince años juntos se nota algo más: cada vez los cerezos florecen un poquito antes que en los años anteriores.'
+    },
+    {
+      photo:'https://images.unsplash.com/photo-1522547902298-51566e4fb383?auto=format&fit=crop&w=1200&q=80',
+      label:'El balance',
+      stat:'+12 días en Sapporo',
+      context:'Sapporo es la ciudad donde más cambió: hoy florece, en promedio, 12 días antes que años atrás. En las demás ciudades el cambio fue más chico, de 4 a 5 días.'
+    }
+  ];
+
+  const photoFrame = document.getElementById('photoFrame');
+  const photos = PHASES.map((p,i) => {
+    const img = document.createElement('img');
+    img.src = p.photo;
+    img.alt = '';
+    if(i===0) img.classList.add('active');
+    photoFrame.appendChild(img);
+    return img;
+  });
+
+  const NS = "http://www.w3.org/2000/svg";
+  const W=600,H=240,ML=34,MR=86,MT=14,MB=24;
+  const PW=W-ML-MR,PH=H-MT-MB,yMin=68,yMax=140;
+  function xPos(i){return ML+i*(PW/(YEARS.length-1));}
+  function yPos(day){return MT+(day-yMin)/(yMax-yMin)*PH;}
+  function svgEl(tag,attrs){const el=document.createElementNS(NS,tag);for(const k in attrs)el.setAttribute(k,attrs[k]);return el;}
+
+  const svg = document.getElementById('sakuraChart');
+
+  [{day:74,label:'15 mar'},{day:91,label:'1 abr'},{day:121,label:'1 may'}].forEach(r=>{
+    const y=yPos(r.day);
+    svg.appendChild(svgEl('line',{x1:ML,x2:ML+PW,y1:y,y2:y,stroke:'rgba(24,21,18,.12)','stroke-width':1}));
+    const t=svgEl('text',{x:2,y:y+3,'font-size':8.5,fill:'rgba(24,21,18,.45)'});
+    t.textContent=r.label;svg.appendChild(t);
+  });
+  YEARS.forEach((yr,i)=>{
+    const t=svgEl('text',{x:xPos(i),y:H-6,'font-size':8,fill:'rgba(24,21,18,.45)','text-anchor':'middle'});
+    t.textContent="'"+String(yr).slice(2);svg.appendChild(t);
+  });
+
+  const shade=svgEl('rect',{id:'shade-rect',x:xPos(10),y:MT,width:xPos(14)-xPos(10),height:PH,fill:'#eadfd3',opacity:0});
+  shade.style.transition='opacity .5s ease';
+  svg.appendChild(shade);
+
+  const lengths = {};
+  Object.keys(DATA).forEach(city=>{
+    const d=DATA[city];
+    let dStr='';
+    d.vals.forEach((v,i)=>{const x=xPos(i),y=yPos(v);dStr+=(i===0?'M':'L')+x+','+y+' ';});
+    const path=svgEl('path',{id:'line-'+city,d:dStr,fill:'none',stroke:'#181512','stroke-width':2,'stroke-opacity':0,'stroke-linecap':'round','stroke-linejoin':'round'});
+    path.style.transition='stroke .35s ease, stroke-opacity .25s ease, stroke-width .35s ease';
+    svg.appendChild(path);
+    const len = path.getTotalLength();
+    path.setAttribute('stroke-dasharray', len);
+    path.setAttribute('stroke-dashoffset', len);
+    lengths[city] = len;
+
+    const ny=yPos(d.normal);
+    const nl=svgEl('line',{id:'normal-'+city,x1:ML,x2:ML+PW,y1:ny,y2:ny,stroke:CITY_COLORS[city],'stroke-width':1,'stroke-dasharray':'3 3',opacity:0});
+    nl.style.transition='opacity .45s ease';
+    svg.appendChild(nl);
+
+    const lx=xPos(d.vals.length-1),ly=yPos(d.vals[d.vals.length-1]);
+    const label=svgEl('text',{id:'label-'+city,x:lx+6,y:ly+3,'font-size':10,fill:CITY_COLORS[city],opacity:0});
+    label.textContent=city;
+    label.style.transition='opacity .45s ease, fill .45s ease';
+    svg.appendChild(label);
+  });
+
+  const annoG=svgEl('g',{id:'annotations',opacity:0});
+  annoG.style.transition='opacity .45s ease';
+  const a1=svgEl('text',{x:xPos(11),y:yPos(112)-10,'font-size':9.5,fill:CITY_COLORS.Sapporo,'text-anchor':'middle'});
+  a1.textContent='+12 días';
+  const a2=svgEl('text',{x:xPos(11),y:yPos(84)-10,'font-size':9.5,fill:'rgba(24,21,18,.55)','text-anchor':'middle'});
+  a2.textContent='+4–5 días';
+  annoG.appendChild(a1);annoG.appendChild(a2);
+  svg.appendChild(annoG);
+
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+  function setLineDraw(city, frac, opacity, width, labelOpacity){
+    const line=document.getElementById('line-'+city), label=document.getElementById('label-'+city);
+    const len=lengths[city], color=CITY_COLORS[city];
+    line.style.stroke=color;
+    line.style.strokeWidth=width;
+    line.style.strokeOpacity= frac>0 ? opacity : 0;
+    line.style.strokeDashoffset = len*(1-frac);
+    if(label){
+      label.style.fill=color;
+      label.style.opacity = frac>=0.98 ? labelOpacity : 0;
+    }
+  }
+
+  function updateDraw(segPos, idx){
+    const sapFrac = clamp(segPos, 0, 1);
+    const centralFrac = clamp(segPos - 1, 0, 1);
+
+    if(idx<=1){
+      setLineDraw('Sapporo', sapFrac, 1, 2.5, 1);
+    }else{
+      setLineDraw('Sapporo', sapFrac, .45, 1.5, .6);
+    }
+    ['Tokio','Kioto','Hiroshima','Fukuoka'].forEach(city=>{
+      setLineDraw(city, centralFrac, 1, 2.5, 1);
+    });
+  }
+
+  function renderChart(idx){
+    Object.keys(DATA).forEach(city=>{
+      document.getElementById('normal-'+city).style.opacity = idx===4 ? .6 : 0;
+    });
+    document.getElementById('shade-rect').style.opacity = idx>=3 ? 1 : 0;
+    document.getElementById('annotations').style.opacity = idx===4 ? 1 : 0;
+  }
+
+  const panelLabel = document.getElementById('panelLabel');
+  const panelStat = document.getElementById('panelStat');
+  const panelContext = document.getElementById('panelContext');
+
+  let currentIndex = -1;
+  function setActive(index){
+    photos.forEach((img,i) => img.classList.toggle('active', i===index));
+    if(index === currentIndex) return;
+    currentIndex = index;
+    const p = PHASES[index];
+    panelLabel.textContent = p.label;
+    panelStat.textContent = p.stat;
+    panelContext.textContent = p.context;
+    renderChart(index);
+  }
+
+  const scrolly = document.querySelector('.scrolly');
+  const stepsEl = document.getElementById('steps');
+  PHASES.forEach(() => {
+    const st = document.createElement('div');
+    st.className = 'step';
+    stepsEl.appendChild(st);
+  });
+
+  function onScroll(){
+    const rect = scrolly.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = scrolly.offsetHeight - vh;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const progress = total > 0 ? scrolled / total : 0;
+    const segPos = progress * (PHASES.length - 1);
+    const index = clamp(Math.round(segPos), 0, PHASES.length - 1);
+    setActive(index);
+    updateDraw(segPos, index);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', onScroll);
+
+  setActive(0);
+  onScroll();
+</script>
+
+</body>
+</html>

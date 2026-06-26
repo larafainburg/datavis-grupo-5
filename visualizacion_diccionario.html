@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diccionario · Estudio de Japonés</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root{
+      --bg:#f6efe7;
+      --ink:#181512;
+      --muted:rgba(24,21,18,.62);
+      --red:#d94141;
+      --soft:#eadfd3;
+      --line:rgba(24,21,18,.18);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      background:var(--bg);
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      overflow-x:hidden;
+    }
+
+    .scrolly{position:relative}
+
+    .sticky-stage{
+      position:sticky;
+      top:0;
+      z-index:2;
+      min-height:100vh;
+      padding:12px clamp(24px,4vw,80px);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    /* --- ENCABEZADO (mismo formato que la sección de viaje) --- */
+    .stage-head{
+      width:100%;
+      margin-bottom:20px;
+    }
+    .stage-head h2{
+      margin:0 0 10px 0;
+      font-size:clamp(40px,5.4vw,82px);
+      line-height:1;
+      letter-spacing:-.055em;
+      font-weight:900;
+    }
+    .stage-head p{
+      max-width:1100px;
+      margin:0;
+      font-size:clamp(18px,1.5vw,22px);
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    /* --- CARRUSEL VERTICAL --- */
+    .carousel{
+      position:relative;
+      width:100%;
+      height:62vh;
+      overflow:hidden;
+      /* difumina los bordes superior e inferior para dar sensación de carrusel */
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 16%, #000 84%, transparent 100%);
+      mask-image:linear-gradient(to bottom, transparent 0, #000 16%, #000 84%, transparent 100%);
+    }
+    .carousel-track{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+      transition:transform .55s cubic-bezier(.22,1,.36,1);
+      will-change:transform;
+    }
+
+    /* --- PANEL DE DATOS (igual que el cal-tooltip) --- */
+    .word-panel{
+      width:min(100%, 920px);
+      background:var(--soft);
+      border:1px solid var(--line);
+      padding:24px clamp(20px,3vw,36px);
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px 36px;
+      opacity:.32;
+      transform:scale(.9);
+      transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1);
+    }
+    .word-panel.active{
+      opacity:1;
+      transform:scale(1);
+    }
+    .word-panel .full{grid-column:1/-1}
+
+    .panel-romaji-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .panel-romaji{
+      font-size:clamp(30px,4.4vw,56px);
+      font-weight:900;
+      letter-spacing:-.055em;
+      line-height:1;
+    }
+    .panel-kana{
+      display:block;
+      font-size:clamp(12px,1.05vw,15px);
+      color:var(--muted);
+      font-weight:500;
+      letter-spacing:.03em;
+      margin-top:10px;
+    }
+    .audio-btn{
+      background-color:rgba(24,21,18,.06);
+      border:none;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:13px;
+      border-radius:50%;
+      color:rgba(24,21,18,.45);
+      flex-shrink:0;
+      transition:color .2s ease, background-color .2s ease, transform .1s ease;
+    }
+    .audio-btn:hover{color:var(--red);background-color:rgba(217,65,65,.12)}
+    .audio-btn:active{transform:scale(.9)}
+    .audio-btn svg{width:24px;height:24px;fill:currentColor}
+
+    .panel-label{
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--muted);
+      margin:0 0 6px;
+    }
+    .panel-translation{
+      font-size:clamp(20px,2.4vw,28px);
+      font-weight:900;
+      letter-spacing:-.03em;
+      color:var(--red);
+      line-height:1;
+    }
+    .panel-context{
+      font-size:clamp(15px,1.25vw,19px);
+      color:var(--ink);
+      line-height:1.4;
+      margin:0;
+    }
+
+    /* steps invisibles que dan altura scrolleable */
+    .steps{
+      position:relative;
+      z-index:1;
+      margin-top:-100vh;
+      pointer-events:none;
+    }
+    .step{height:80vh}
+    .step:first-child{height:60vh}
+    .step:last-child{height:90vh}
+
+    @media(max-width:768px){
+      .word-panel{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="scrolly">
+  <div class="sticky-stage">
+
+    <div class="stage-head">
+      <h2>Set de Memorización</h2>
+      <p>Recorré las palabras scrolleando. Tocá el megáfono para escuchar la pronunciación nativa de cada término.</p>
+    </div>
+
+    <!-- Carrusel vertical de palabras -->
+    <div class="carousel" id="carousel">
+      <div class="carousel-track" id="track"></div>
+    </div>
+
+  </div>
+
+  <div class="steps" id="steps"></div>
+</div>
+
+<script>
+  // --- DATOS ---
+  const WORDS = [
+    {
+      kana:'ありがとう ございます',
+      romaji:'Arigatou gozaimasu',
+      short:'Gracias',
+      translation:'Muchas gracias',
+      context:'Es la forma educada estándar para agradecer absolutamente todo. Usalo al recibir atención en tiendas locales o restaurantes.',
+      audio:'ありがとう ございます'
+    },
+    {
+      kana:'すみません',
+      romaji:'Sumimasen',
+      short:'Disculpe',
+      translation:'Disculpe / Permiso',
+      context:'Funciona de forma comodín: sirve para llamar al mozo, pedir paso en el subte o pedir perdón si empujás a alguien sin querer.',
+      audio:'すみません'
+    },
+    {
+      kana:'... は どこ ですか',
+      romaji:'... wa doko desu ka?',
+      short:'Dónde',
+      translation:'¿Dónde está...?',
+      context:'Completá el espacio con lo que estés buscando. Ej: "Toire wa doko desu ka?" para preguntar de forma directa por el baño.',
+      audio:'どこ ですか'
+    },
+    {
+      kana:'これ を ください',
+      romaji:'Kore wo kudasai',
+      short:'Esto',
+      translation:'Esto, por favor',
+      context:'La solución rápida para ordenar comida o comprar algo apuntando con el dedo directo al producto o al menú impreso.',
+      audio:'これ を ください'
+    },
+    {
+      kana:'おかんじょう を おねがいします',
+      romaji:'Okanjou wo onegaishimasu',
+      short:'La cuenta',
+      translation:'La cuenta, por favor',
+      context:'Se usa al terminar de comer. Recordá que en Japón la cuenta habitualmente se abona directo en la caja de cobro de la salida.',
+      audio:'おかんじょう を おねがいします'
+    }
+  ];
+
+  let currentIndex = -1;
+
+  const AUDIO_SVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+
+  // --- CONSTRUIR LAS CARDS DEL CARRUSEL ---
+  const track = document.getElementById('track');
+  const carousel = document.getElementById('carousel');
+  const cards = [];
+
+  WORDS.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'word-panel';
+    card.innerHTML =
+      '<div class="full panel-romaji-row">' +
+        '<div>' +
+          '<div class="panel-romaji">' + w.romaji + '</div>' +
+          '<span class="panel-kana">' + w.kana + '</span>' +
+        '</div>' +
+        '<button class="audio-btn" title="Escuchar">' + AUDIO_SVG + '</button>' +
+      '</div>' +
+      '<div>' +
+        '<p class="panel-label">Significado</p>' +
+        '<div class="panel-translation">' + w.translation + '</div>' +
+      '</div>' +
+      '<div>' +
+        '<p class="panel-label">Cuándo usarlo</p>' +
+        '<p class="panel-context">' + w.context + '</p>' +
+      '</div>';
+
+    const btn = card.querySelector('.audio-btn');
+    function audioHandler(e){
+      e.stopPropagation();
+      e.preventDefault();
+      speakWord(WORDS[i].audio);
+    }
+    btn.addEventListener('click', audioHandler);
+    btn.addEventListener('touchend', audioHandler, { passive:false });
+
+    track.appendChild(card);
+    cards.push(card);
+  });
+
+  // --- CONSTRUIR STEPS (dan altura scrolleable) ---
+  const stepsEl = document.getElementById('steps');
+
+  WORDS.forEach(() => {
+    const st = document.createElement('div');
+    st.className = 'step';
+    stepsEl.appendChild(st);
+  });
+
+  // centra la card activa dentro del viewport del carrusel
+  function centerCard(index){
+    const card = cards[index];
+    if(!card) return;
+    const offset = carousel.clientHeight / 2 - (card.offsetTop + card.offsetHeight / 2);
+    track.style.transform = 'translateY(' + offset + 'px)';
+  }
+
+  function setActive(index){
+    cards.forEach((c, i) => c.classList.toggle('active', i === index));
+    centerCard(index);
+    if(index === currentIndex) return;
+    currentIndex = index;
+  }
+
+  // --- ACTIVAR PALABRA SEGÚN POSICIÓN DE SCROLL ---
+  const scrolly = document.querySelector('.scrolly');
+
+  function onScroll(){
+    const rect = scrolly.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = scrolly.offsetHeight - vh;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const progress = total > 0 ? scrolled / total : 0;
+    let index = Math.round(progress * (WORDS.length - 1));
+    index = Math.min(Math.max(index, 0), WORDS.length - 1);
+    setActive(index);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', onScroll);
+
+  setActive(0);
+  onScroll();
+
+  // --- SISTEMA DE AUDIO ROBUSTO ---
+  let cachedVoices = [];
+  function loadVoices(){ cachedVoices = window.speechSynthesis.getVoices(); }
+  if('speechSynthesis' in window){
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  function pickJapaneseVoice(){
+    if(!cachedVoices.length) cachedVoices = window.speechSynthesis.getVoices();
+    return cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith('ja')) || null;
+  }
+  function doSpeak(text){
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    u.rate = 0.8;
+    const jp = pickJapaneseVoice();
+    if(jp) u.voice = jp;
+    window.speechSynthesis.speak(u);
+  }
+  function speakWord(text){
+    if(!('speechSynthesis' in window)){
+      alert("Este navegador no soporta síntesis de voz nativa.");
+      return;
+    }
+    if(!window.speechSynthesis.getVoices().length){
+      const onReady = () => {
+        loadVoices(); doSpeak(text);
+        window.speechSynthesis.removeEventListener('voiceschanged', onReady);
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', onReady);
+      setTimeout(() => doSpeak(text), 250);
+    } else {
+      doSpeak(text);
+    }
+  }
+</script>
+
+</body>
+</html>

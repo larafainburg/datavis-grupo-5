@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Japón: datos, cultura y futuro</title>
+  <style>
+    :root{
+      --bg:#f6efe7;
+      --ink:#181512;
+      --muted:rgba(24,21,18,.62);
+      --red:#d94141;
+      --dark:#111827;
+      --soft:#eadfd3;
+      --line:rgba(24,21,18,.18);
+      --blue:#1f6feb;
+      --pink:#ff6b9a;
+      --gold:#c99700;
+      --green:#2f9e44;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      overflow-x:hidden;
+    }
+
+    .hero{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:40px 22px 24px;
+      position:relative;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(217,65,65,.23) 0 12%, transparent 13%),
+        linear-gradient(180deg,#f9f4ee,#f2e7dc);
+    }
+    .hero h1{
+      font-size:clamp(54px,10vw,140px);
+      line-height:.88;
+      margin:0;
+      letter-spacing:-.07em;
+      font-weight:900;
+    }
+    .hero p{
+      max-width:780px;
+      margin:28px auto 0;
+      font-size:clamp(18px,2.4vw,28px);
+      line-height:1.25;
+      color:var(--muted);
+    }
+    .scroll-hint{
+      position:absolute;
+      bottom:28px;
+      left:50%;transform:translateX(-50%);
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    section{
+      min-height:100vh;
+      padding:96px clamp(22px,6vw,90px);
+      display:grid;
+      align-items:center;
+      gap:42px;
+      position:relative;
+    }
+    .split{
+      grid-template-columns:minmax(280px, .75fr) minmax(320px, 1.25fr);
+    }
+    .split.reverse{
+      grid-template-columns:minmax(320px, 1.25fr) minmax(280px, .75fr);
+    }
+    .kicker{
+      color:var(--red);
+      text-transform:uppercase;
+      font-size:13px;
+      letter-spacing:.16em;
+      font-weight:800;
+      margin-bottom:14px;
+    }
+    h2{
+      font-size:clamp(38px,5.4vw,78px);
+      line-height:.92;
+      margin:0 0 22px;
+      letter-spacing:-.055em;
+    }
+    .text p{
+      font-size:clamp(17px,1.6vw,22px);
+      line-height:1.45;
+      color:var(--muted);
+      max-width:660px;
+    }
+    .viz{
+      min-height:520px;
+      position:relative;
+      width:100%;
+    }
+    .tooltip{
+      position:fixed;
+      pointer-events:none;
+      background:rgba(17,24,39,.94);
+      color:white;
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:13px;
+      line-height:1.35;
+      max-width:250px;
+      opacity:0;
+      transform:translate(-50%,-120%);
+      transition:opacity .12s ease;
+      z-index:99;
+      box-shadow:0 16px 40px rgba(0,0,0,.18);
+    }
+    .tooltip b{color:#fff}
+
+    /* 1 timeline */
+    .timeline{
+      position:absolute; inset:10% 0 10% 0;
+      display:flex; align-items:center;
+    }
+    .timeline:before{
+      content:""; position:absolute; left:0; right:0; top:50%; height:2px; background:var(--line);
+    }
+    .era{
+      position:relative; flex:1; text-align:center; cursor:pointer;
+    }
+    .era-dot{
+      width:20px;height:20px;border-radius:50%;background:var(--red);margin:0 auto 18px;position:relative;z-index:2;
+      box-shadow:0 0 0 12px rgba(217,65,65,.08);
+    }
+    .era span{font-weight:900;font-size:clamp(18px,2.2vw,30px)}
+    .era small{display:block;color:var(--muted);margin-top:8px}
+
+    /* 2 population */
+    .pyramid{height:520px;display:flex;align-items:end;justify-content:center;gap:14px}
+    .py-col{width:min(7vw,58px);display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+    .py-bar{width:100%;border-radius:999px 999px 0 0;background:linear-gradient(180deg,var(--red),#f5aaa0);transition:.2s;}
+    .py-col:hover .py-bar{filter:saturate(1.3);transform:translateY(-8px)}
+    .py-col small{color:var(--muted);font-weight:700}
+
+    /* 3 density */
+    .japan-map{height:560px;position:relative;}
+    .island{position:absolute;background:linear-gradient(135deg,#222,#555);border-radius:50% 45% 60% 40%;transform:rotate(-25deg);opacity:.9}
+    .h{width:150px;height:360px;left:46%;top:10%}
+    .k{width:86px;height:190px;left:58%;top:44%}
+    .s{width:58px;height:120px;left:48%;top:55%}
+    .q{width:82px;height:130px;left:35%;top:63%}
+    .city-dot{position:absolute;width:18px;height:18px;background:var(--red);border-radius:50%;cursor:pointer;box-shadow:0 0 0 12px rgba(217,65,65,.15)}
+    .tokyo{left:59%;top:47%}.osaka{left:49%;top:55%}.sapporo{left:49%;top:13%}.fukuoka{left:35%;top:72%}
+    .city-label{position:absolute;font-weight:900;font-size:16px}
+
+    /* 4 shinkansen */
+    .rail{height:560px;position:relative;}
+    .rail svg{width:100%;height:100%}
+    .train{position:absolute;width:72px;height:22px;border-radius:999px;background:#fff;border:3px solid var(--blue);top:250px;left:8%;animation:moveTrain 6s linear infinite;box-shadow:0 12px 30px rgba(0,0,0,.12)}
+    .train:after{content:"";position:absolute;right:-12px;top:3px;border-left:16px solid var(--blue);border-top:6px solid transparent;border-bottom:6px solid transparent}
+    @keyframes moveTrain{0%{left:6%;top:360px}35%{left:42%;top:255px}70%{left:70%;top:170px}100%{left:90%;top:105px}}
+
+    /* 5 earthquakes */
+    .quake-viz{height:560px;position:relative;background:radial-gradient(circle at 55% 45%,rgba(217,65,65,.08),transparent 44%)}
+    .ring{position:absolute;border:2px solid var(--red);border-radius:50%;opacity:.5;animation:pulse 2.2s infinite;cursor:pointer}
+    @keyframes pulse{50%{transform:scale(1.15);opacity:.18}}
+
+    /* 6 anime */
+    .anime-cloud{height:560px;position:relative;}
+    .bubble{position:absolute;border-radius:50%;display:grid;place-items:center;text-align:center;font-weight:900;cursor:pointer;background:rgba(255,107,154,.18);border:2px solid rgba(255,107,154,.38);transition:.18s;padding:16px}
+    .bubble:hover{transform:scale(1.08);background:rgba(255,107,154,.28)}
+
+    /* 7 vending */
+    .vending{height:560px;display:flex;align-items:end;justify-content:space-around;gap:8px}
+    .machine{width:56px;background:linear-gradient(180deg,#d94141,#8e1f1f);border-radius:18px 18px 6px 6px;position:relative;cursor:pointer;box-shadow:0 20px 40px rgba(0,0,0,.13)}
+    .machine:before{content:"";position:absolute;left:10px;right:10px;top:14px;height:40%;background:rgba(255,255,255,.22);border-radius:10px}
+    .machine:after{content:"";position:absolute;width:18px;height:28px;background:#111;right:9px;bottom:22px;border-radius:5px}
+
+    /* 8 tokyo 24 */
+    .clockviz{height:560px;display:grid;place-items:center;position:relative}
+    .clock{width:min(72vw,520px);height:min(72vw,520px);border-radius:50%;position:relative;background:conic-gradient(from -90deg,#0f172a 0 25%,#f7d66b 25% 54%,#ff9966 54% 70%,#0f172a 70% 100%);box-shadow:inset 0 0 0 2px rgba(0,0,0,.08)}
+    .hour{position:absolute;left:50%;top:50%;width:9px;height:44%;background:#fff;border-radius:999px;transform-origin:bottom;animation:spin 12s linear infinite;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .clock-note{position:absolute;font-weight:900;font-size:clamp(20px,3vw,42px);text-align:center}
+
+    /* 9 food carousel */
+    .food-carousel{
+      height:620px;
+      position:relative;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      cursor:grab;
+      padding:34px 0 72px;
+      scrollbar-width:none;
+    }
+    .food-carousel::-webkit-scrollbar{display:none}
+    .food-carousel.dragging{cursor:grabbing;scroll-snap-type:none}
+    .food-track{
+      height:100%;
+      display:flex;
+      align-items:center;
+      gap:clamp(18px,3vw,34px);
+      padding:0 clamp(24px,8vw,110px);
+    }
+    .food-slide{
+      flex:0 0 min(78vw,520px);
+      height:100%;
+      position:relative;
+      scroll-snap-align:center;
+      cursor:grab;
+      overflow:hidden;
+      background:transparent;
+    }
+    .food-slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.03) contrast(1.02);
+      transition:transform .45s ease, filter .45s ease;
+      user-select:none;
+      pointer-events:none;
+    }
+    .food-slide:hover img{transform:scale(1.035);filter:saturate(1.08) contrast(1.04)}
+    .food-slide::after{
+      content:attr(data-tip);
+      position:absolute;
+      left:24px;
+      top:24px;
+      max-width:min(78%,420px);
+      background:rgba(18,24,38,.88);
+      color:#fffaf4;
+      padding:12px 15px;
+      font-size:15px;
+      line-height:1.28;
+      font-weight:700;
+      letter-spacing:-.01em;
+      opacity:0;
+      transform:translateY(8px);
+      transition:opacity .22s ease, transform .22s ease;
+      pointer-events:none;
+      z-index:3;
+    }
+    .food-slide:hover::after{opacity:1;transform:translateY(0)}
+    .food-name{
+      position:absolute;
+      left:22px;
+      bottom:54px;
+      color:#fff;
+      font-size:clamp(36px,5vw,72px);
+      font-weight:950;
+      letter-spacing:-.07em;
+      text-shadow:0 8px 30px rgba(0,0,0,.55);
+    }
+    .food-meta{
+      position:absolute;
+      left:24px;
+      bottom:24px;
+      color:rgba(255,255,255,.86);
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      text-shadow:0 6px 20px rgba(0,0,0,.6);
+    }
+    .food-hint{display:none}
+    .food-dots{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;gap:12px;pointer-events:auto}
+    .food-dot{width:10px;height:10px;border-radius:999px;background:rgba(24,21,18,.22);cursor:pointer;transition:.2s;border:0;padding:0}
+    .food-dot.active{width:34px;background:var(--red)}
+
+    .future{height:560px;position:relative;overflow:hidden}
+    .orbit{position:absolute;border:1px solid rgba(24,21,18,.18);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+    .o1{width:180px;height:180px}.o2{width:320px;height:320px}.o3{width:470px;height:470px}.o4{width:620px;height:620px}
+    .future-node{position:absolute;border-radius:50%;background:var(--dark);color:#fff;display:grid;place-items:center;text-align:center;font-weight:900;padding:14px;cursor:pointer;box-shadow:0 20px 40px rgba(0,0,0,.16)}
+    .fn1{width:96px;height:96px;left:48%;top:6%;background:var(--blue)}
+    .fn2{width:120px;height:120px;right:8%;top:40%;background:var(--pink)}
+    .fn3{width:110px;height:110px;left:13%;top:48%;background:var(--green)}
+    .fn4{width:92px;height:92px;left:48%;bottom:8%;background:var(--gold)}
+
+    footer{padding:70px 22px;text-align:center;color:var(--muted);border-top:1px solid var(--line)}
+
+    @media(max-width:850px){
+      .split,.split.reverse{grid-template-columns:1fr}
+      section{padding:70px 20px}
+      .viz{min-height:460px}
+      .timeline{display:block;position:relative;inset:auto}
+      .timeline:before{display:none}
+      .era{margin:30px 0}
+      .era-dot{margin-bottom:10px}
+    }
+  
+.video-tokyo-wrap{height:560px;display:flex;align-items:center;justify-content:center}
+.video-tokyo-wrap video{width:100%;height:100%;object-fit:cover;border-radius:0}
+
+
+/* --- MODIFICACIONES PEDIDAS --- */
+.hero{
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.52)),
+    url('https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat !important;
+  color:#fff;
+}
+.hero p,.hero .scroll-hint{color:rgba(255,255,255,.82)}
+
+.timeline-vertical{
+  min-height:620px;
+  position:relative;
+  padding-left:74px;
+}
+.timeline-vertical:before{
+  content:"";
+  position:absolute;
+  left:34px;
+  top:18px;
+  bottom:18px;
+  width:3px;
+  background:linear-gradient(180deg, var(--red), rgba(217,65,65,.15));
+}
+.v-era{
+  position:relative;
+  margin:0 0 38px;
+  cursor:pointer;
+}
+.v-era:before{
+  content:"";
+  position:absolute;
+  left:-51px;
+  top:7px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 12px rgba(217,65,65,.10);
+}
+.v-year{
+  display:block;
+  color:var(--red);
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:.08em;
+}
+.v-title{
+  display:block;
+  font-size:clamp(26px,3.4vw,48px);
+  line-height:1;
+  letter-spacing:-.055em;
+  font-weight:950;
+  margin-top:5px;
+}
+.v-sub{
+  display:block;
+  color:var(--muted);
+  font-size:16px;
+  margin-top:7px;
+}
+
+.age-viz{
+  height:560px;
+  display:flex;
+  align-items:end;
+  justify-content:center;
+  gap:clamp(16px,2.5vw,34px);
+  padding-bottom:62px;
+  position:relative;
+}
+.age-col{
+  width:min(13vw,90px);
+  position:relative;
+  text-align:center;
+  cursor:pointer;
+}
+.age-bar{
+  width:100%;
+  border-radius:999px 999px 0 0;
+  background:linear-gradient(180deg,#d94141,#f0a39a);
+  transition:.22s ease;
+}
+.age-col:hover .age-bar{transform:translateY(-10px);filter:saturate(1.25)}
+.age-num{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:calc(100% + 10px);
+  font-size:24px;
+  font-weight:950;
+}
+.age-year{
+  margin-top:12px;
+  color:var(--muted);
+  font-weight:850;
+}
+.age-note{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+  width:100%;
+}
+
+.metro-viz{
+  height:590px;
+  position:relative;
+  overflow:hidden;
+}
+.metro-line{
+  position:absolute;
+  height:10px;
+  border-radius:999px;
+  background:var(--red);
+  opacity:.88;
+  transform-origin:left center;
+}
+.metro-node{
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#fff;
+  border:8px solid var(--red);
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.12);
+}
+.metro-node.big{width:68px;height:68px;border-width:12px}
+.metro-label{
+  position:absolute;
+  font-weight:950;
+  font-size:clamp(18px,2.2vw,28px);
+  letter-spacing:-.04em;
+}
+.metro-pulse{
+  position:absolute;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--blue);
+  animation:metroMove 7s linear infinite;
+  box-shadow:0 0 0 10px rgba(31,111,235,.10);
+}
+@keyframes metroMove{
+  0%{left:12%;top:69%}
+  30%{left:42%;top:51%}
+  62%{left:59%;top:36%}
+  100%{left:78%;top:20%}
+}
+
+.train-photo{
+  position:absolute;
+  right:2%;
+  bottom:4%;
+  width:min(31vw,260px);
+  opacity:.95;
+  filter:drop-shadow(0 22px 30px rgba(0,0,0,.18));
+}
+.rail-stat{
+  position:absolute;
+  left:4%;
+  top:8%;
+  font-size:clamp(28px,4vw,56px);
+  font-weight:950;
+  letter-spacing:-.06em;
+}
+.rail-stat small{display:block;color:var(--muted);font-size:16px;letter-spacing:0;font-weight:700;margin-top:6px}
+
+.quake-board{
+  height:590px;
+  position:relative;
+}
+.quake-scale{
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:42%;
+  height:5px;
+  background:linear-gradient(90deg,#f5c6c6,#d94141,#681313);
+}
+.quake-event{
+  position:absolute;
+  bottom:50%;
+  width:22px;
+  border-radius:999px 999px 0 0;
+  background:var(--red);
+  cursor:pointer;
+  transform:translateX(-50%);
+}
+.quake-event:after{
+  content:attr(data-year);
+  position:absolute;
+  top:calc(100% + 14px);
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:950;
+  color:var(--ink);
+}
+.quake-event:before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:100%;
+  transform:translateX(-50%);
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#111827;
+}
+.quake-title{
+  position:absolute;
+  left:8%;
+  top:8%;
+  font-size:clamp(34px,5vw,74px);
+  font-weight:950;
+  letter-spacing:-.07em;
+  line-height:.9;
+}
+.quake-sub{position:absolute;left:8%;top:32%;color:var(--muted);font-size:18px;max-width:520px}
+
+.anime-cloud .bubble{
+  overflow:hidden;
+  background:rgba(255,255,255,.65) !important;
+}
+.anime-cloud .bubble img{
+  width:76%;
+  height:76%;
+  object-fit:contain;
+  display:block;
+  margin:auto;
+  pointer-events:none;
+  filter:drop-shadow(0 14px 18px rgba(0,0,0,.14));
+}
+.anime-cloud .bubble .bname{
+  position:absolute;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  background:rgba(17,24,39,.88);
+  color:#fff;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.vending-city{
+  height:590px;
+  position:relative;
+  overflow:hidden;
+}
+.vend-block{
+  position:absolute;
+  bottom:0;
+  width:15%;
+  background:linear-gradient(180deg,#efe2d5,#d8c8b6);
+  border-radius:12px 12px 0 0;
+}
+.vend-mini{
+  position:absolute;
+  width:26px;
+  height:54px;
+  border-radius:7px 7px 2px 2px;
+  background:linear-gradient(180deg,#d94141,#8e1f1f);
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(0,0,0,.16);
+}
+.vend-mini:before{
+  content:"";
+  position:absolute;
+  left:5px;right:5px;top:7px;height:18px;
+  border-radius:4px;
+  background:rgba(255,255,255,.28);
+}
+.vend-street{
+  position:absolute;
+  left:0;right:0;bottom:0;height:68px;
+  background:rgba(24,21,18,.12);
+}
+.vend-caption{
+  position:absolute;
+  left:7%;
+  top:8%;
+  font-size:clamp(32px,5vw,72px);
+  line-height:.92;
+  letter-spacing:-.07em;
+  font-weight:950;
+}
+.vend-caption small{display:block;color:var(--muted);font-size:18px;letter-spacing:0;line-height:1.3;margin-top:12px;max-width:480px}
+
+.future-radar{
+  height:590px;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+.radar-core{
+  width:min(64vw,420px);
+  height:min(64vw,420px);
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(217,65,65,.24), rgba(217,65,65,.08) 42%, transparent 43%),
+             repeating-radial-gradient(circle, transparent 0 68px, rgba(24,21,18,.18) 69px 70px);
+  position:relative;
+}
+.future-chip{
+  position:absolute;
+  width:128px;height:128px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  text-align:center;
+  background:#111827;
+  color:#fff;
+  font-weight:950;
+  cursor:pointer;
+  padding:14px;
+  box-shadow:0 22px 44px rgba(0,0,0,.18);
+}
+.future-chip:nth-child(1){left:50%;top:2%;transform:translate(-50%,-10%);background:var(--blue)}
+.future-chip:nth-child(2){right:4%;top:48%;transform:translate(12%,-50%);background:var(--pink)}
+.future-chip:nth-child(3){left:50%;bottom:2%;transform:translate(-50%,10%);background:var(--green)}
+.future-chip:nth-child(4){left:4%;top:48%;transform:translate(-12%,-50%);background:var(--gold)}
+
+</style>
+</head>
+<body>
+  <div class="tooltip" id="tooltip"></div>
+
+  <header class="hero">
+    <div>
+      <h1>Japón<br>en scroll</h1>
+      <p>Una narrativa visual sobre el país donde conviven templos, trenes bala, terremotos, anime, tecnología y una población que envejece.</p>
+    </div>
+    <div class="scroll-hint">scroll para empezar ↓</div>
+  </header>
+
+  <!-- NUEVA SECCIÓN: CALENDARIO DE TEMPORADAS -->
+<section style="min-height:100vh; padding:12px clamp(22px,6vw,90px); display:grid; align-items:start; gap:0; position:relative;">
+  <div
+  class="text"
+  style="
+    grid-column:1/-1;
+    width:100%;
+    margin-bottom:0;
+  "
+
+><!-- ============================================================
+     VISUALIZACIÓN 0 · CUÁNDO VIAJAR A JAPÓN
+     ============================================================ -->
+<section style="
+  width:100vw;
+  position:relative;
+  left:50%;
+  right:50%;
+  margin-left:-50vw;
+  margin-right:-50vw;
+  min-height:100vh;
+  padding:12px 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  box-sizing:border-box;
+">
+  <div
+  class="text"
+  style="
+    width:100%;
+    margin-bottom:20px;
+    padding:0 clamp(24px,4vw,80px);
+    box-sizing:border-box;
+  "
+>
+  <div class="kicker" style="display:none;"></div>
+
+  <h2
+    style="
+      margin:0 0 10px 0;
+      font-size:clamp(40px,5.4vw,82px);
+      line-height:1;
+    "
+  >
+    Planificá tu viaje según la época del año
+  </h2>
+
+  <p
+    style="
+      max-width:1100px;
+      margin:0;
+      font-size:clamp(18px,1.5vw,22px);
+      line-height:1.45;
+    "
+  >
+    Cada mes de Japón tiene su propia personalidad. Pasá el cursor por el calendario para ver temperatura, nivel de turistas, ventajas y desventajas de cada temporada.
+  </p>
+</div>
+
+  <div style="width:100%; padding:0 clamp(24px,4vw,80px); box-sizing:border-box;">
+
+    <!-- Leyenda -->
+    <div id="cal-legend" style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:10px;"></div>
+
+    <!-- Grilla de meses -->
+    <div id="cal-grid" style="display:grid; grid-template-columns:repeat(12,1fr); gap:6px; margin-bottom:12px;"></div>
+
+    <!-- Tooltip -->
+    <div id="cal-tooltip" style="
+      background:var(--soft);
+      border:1px solid var(--line);
+      padding:12px 16px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px 32px;
+      opacity:0;
+      transition:opacity .22s ease;
+    ">
+      <div style="grid-column:1/-1;">
+        <span id="cal-tt-mes" style="font-size:clamp(24px,3.2vw,40px); font-weight:900; letter-spacing:-.055em; line-height:1;"></span>
+      </div>
+      <div>
+        <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin:0 0 4px;">Temperatura</p>
+        <div id="cal-tt-temp" style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;"></div>
+      </div>
+      <div>
+        <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin:0 0 4px;">Turistas</p>
+        <div id="cal-tt-crowd" style="display:flex; gap:4px; align-items:center;"></div>
+      </div>
+      <div>
+        <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin:0 0 4px;">Ventaja</p>
+        <p id="cal-tt-pro" style="font-size:clamp(15px,1.25vw,19px); color:var(--ink); line-height:1.35; margin:0;"></p>
+      </div>
+      <div>
+        <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin:0 0 4px;">Desventaja</p>
+        <p id="cal-tt-con" style="font-size:clamp(15px,1.25vw,19px); color:var(--ink); line-height:1.35; margin:0;"></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+
+  const SEASONS = {
+    primavera:{
+      label:'Primavera',
+      color:'#e87fa0',
+      bg:'rgba(232,127,160,.28)',
+      months:[2,3,4]
+    },
+    verano:{
+      label:'Verano',
+      color:'#c99700',
+      bg:'rgba(201,151,0,.24)',
+      months:[5,6,7,8]
+    },
+    otono:{
+      label:'Otoño',
+      color:'#d94141',
+      bg:'rgba(217,65,65,.24)',
+      months:[9,10]
+    },
+    invierno:{
+      label:'Invierno',
+      color:'#1f6feb',
+      bg:'rgba(31,111,235,.24)',
+      months:[11,0,1]
+    }
+  };
+
+  const DATA = [
+    { mes:'Enero',      temp:'3–8 °C',   crowd:'Bajo',      pro:'Pocos turistas, precios bajos, onsens perfectos',      con:'Frío intenso, días cortos', season:'invierno' },
+    { mes:'Febrero',    temp:'4–10 °C',  crowd:'Bajo',      pro:'Festivales de nieve en Hokkaido, ambiente tranquilo',  con:'Aún frío, algunos lugares cerrados', season:'invierno' },
+    { mes:'Marzo',      temp:'8–15 °C',  crowd:'Alto',      pro:'Primeros cerezos, energía primaveral',                 con:'Empieza temporada alta, precios suben', season:'primavera' },
+    { mes:'Abril',      temp:'14–20 °C', crowd:'Muy alto',  pro:'Sakura pleno, clima ideal para caminar',               con:'Masificación, hoteles difíciles y caros', season:'primavera' },
+    { mes:'Mayo',       temp:'18–25 °C', crowd:'Alto',      pro:'Verde intenso, festivales de primavera',               con:'Semana Dorada muy concurrida', season:'primavera' },
+    { mes:'Junio',      temp:'22–28 °C', crowd:'Moderado',  pro:'Hortensias, paisajes verdes, menos turistas',          con:'Temporada de lluvias (tsuyu), humedad', season:'verano' },
+    { mes:'Julio',      temp:'26–32 °C', crowd:'Moderado',  pro:'Festivales de verano, fuegos artificiales',            con:'Calor y humedad intensos', season:'verano' },
+    { mes:'Agosto',     temp:'27–33 °C', crowd:'Alto',      pro:'Obon, montañas, playas',                               con:'Época más calurosa del año', season:'verano' },
+    { mes:'Septiembre', temp:'22–28 °C', crowd:'Moderado',  pro:'Calor aminora, naturaleza exuberante',                 con:'Temporada de tifones', season:'verano' },
+    { mes:'Octubre',    temp:'15–22 °C', crowd:'Alto',      pro:'Colores del otoño, clima fresco ideal',                con:'Segunda temporada alta, reservas con anticipación', season:'otono' },
+    { mes:'Noviembre',  temp:'9–16 °C',  crowd:'Alto',      pro:'Koyo (hojas rojas) en su apogeo',                     con:'Zonas turísticas muy concurridas', season:'otono' },
+    { mes:'Diciembre',  temp:'4–10 °C',  crowd:'Moderado',  pro:'Iluminaciones navideñas, onsens, calma',              con:'Frío, días muy cortos', season:'invierno' }
+  ];
+
+  const MONTHS_SHORT = [
+    'ene','feb','mar','abr','may','jun',
+    'jul','ago','sep','oct','nov','dic'
+  ];
+
+  function getSeasonFor(idx){
+    for(const [k,s] of Object.entries(SEASONS)){
+      if(s.months.includes(idx)) return {key:k,...s};
+    }
+  }
+
+  const legendEl = document.getElementById('cal-legend');
+
+  for(const [k,s] of Object.entries(SEASONS)){
+    const d = document.createElement('div');
+
+    d.style.cssText =
+      'display:flex;align-items:center;gap:8px;font-family:Inter,Helvetica,Arial,sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;';
+
+    d.innerHTML = `
+      <span style="width:14px;height:14px;border-radius:50%;background:${s.color};display:inline-block;"></span>
+      <span style="color:${s.color}">${s.label}</span>
+    `;
+
+    legendEl.appendChild(d);
+  }
+
+  const gridEl = document.getElementById('cal-grid');
+
+  DATA.forEach((m,i)=>{
+
+    const s = getSeasonFor(i);
+
+    const col = document.createElement('div');
+
+    col.style.cssText =
+      'display:flex;flex-direction:column;align-items:center;cursor:pointer;';
+
+    const bar = document.createElement('div');
+
+    bar.style.cssText = `
+      width:100%;
+      height:88px;
+      background:${s.bg};
+      border-bottom:3px solid ${s.color};
+      transition:all .25s ease;
+      position:relative;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    `;
+
+    bar.id = 'cal-bar-'+i;
+
+    const nameEl = document.createElement('div');
+
+    nameEl.style.cssText = `
+      writing-mode:vertical-rl;
+      transform:rotate(180deg);
+      font-family:Inter,Helvetica,Arial,sans-serif;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      color:${s.color};
+      text-transform:uppercase;
+      line-height:1;
+      user-select:none;
+    `;
+
+    nameEl.textContent = MONTHS_SHORT[i];
+
+    bar.appendChild(nameEl);
+    col.appendChild(bar);
+
+    col.addEventListener('mouseenter', ()=>showTT(i));
+    col.addEventListener('click', ()=>showTT(i));
+
+    gridEl.appendChild(col);
+  });
+
+  function renderTemp(tempStr, color){
+    const nums = (tempStr.match(/\d+/g)||[]).map(Number);
+    const maxT = nums.length ? Math.max(...nums) : 0;
+    // escala 0–35 °C sobre 10 solcitos
+    const filled = Math.max(0, Math.min(10, Math.round(maxT/35*10)));
+    const cont = document.getElementById('cal-tt-temp');
+    cont.innerHTML = '';
+
+    for(let i=0;i<10;i++){
+      const on = i < filled;
+      const c = on?color:'none';
+      let rays='';
+      for(let r=0;r<8;r++){
+        const a = r*45*Math.PI/180;
+        const x1=11+Math.cos(a)*6.5, y1=11+Math.sin(a)*6.5;
+        const x2=11+Math.cos(a)*9.5, y2=11+Math.sin(a)*9.5;
+        rays+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/>`;
+      }
+      const svg = `
+        <svg width="20" height="20" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          ${rays}
+          <circle cx="11" cy="11" r="4.5" fill="${c}" stroke="${color}" stroke-width="1.6"/>
+        </svg>`;
+      cont.insertAdjacentHTML('beforeend', svg);
+    }
+  }
+
+  function renderCrowd(level, color){
+    const map = {
+      'Bajo':0,
+      'Moderado':5,
+      'Alto':10,
+      'Muy alto':10
+    };
+    const filled = map[level] ?? 0;
+    const cont = document.getElementById('cal-tt-crowd');
+    cont.innerHTML = '';
+
+    for(let i=0;i<10;i++){
+      const on = i < filled;
+      const svg = `
+        <svg width="16" height="22" viewBox="0 0 16 22" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="5" r="4"
+            fill="${on?color:'none'}" stroke="${color}" stroke-width="1.6"/>
+          <path d="M2 21 C2 13, 14 13, 14 21 Z"
+            fill="${on?color:'none'}" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>`;
+      cont.insertAdjacentHTML('beforeend', svg);
+    }
+  }
+
+  function showTT(idx){
+
+    DATA.forEach((_,i)=>{
+      document.getElementById('cal-bar-'+i).style.opacity='0.3';
+    });
+
+    document.getElementById('cal-bar-'+idx).style.opacity='1';
+
+    const m = DATA[idx];
+    const s = getSeasonFor(idx);
+
+    const tooltip = document.getElementById('cal-tooltip');
+
+    tooltip.style.background = s.bg;
+    tooltip.style.borderColor = s.color;
+    tooltip.style.borderTop = `6px solid ${s.color}`;
+
+    document.getElementById('cal-tt-mes').textContent = m.mes;
+
+    renderTemp(m.temp, s.color);
+    renderCrowd(m.crowd, s.color);
+    document.getElementById('cal-tt-pro').textContent = m.pro;
+    document.getElementById('cal-tt-con').textContent = m.con;
+
+    tooltip.style.opacity='1';
+  }
+
+  showTT(3);
+
+})();
+</script>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recorridos por Japón con USD 3.400 · Estudio de Japonés</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+:root{--bg:#f6efe7;--ink:#181512;--muted:rgba(24,21,18,.62);--red:#d94141;--soft:#eadfd3;--line:rgba(24,21,18,.18);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:Inter,Helvetica,Arial,sans-serif;color:var(--ink);overflow-x:hidden;}
+
+.city-banner{position:relative;min-height:100vh;display:grid;place-items:center;text-align:center;padding:80px 22px;background:linear-gradient(180deg,#f9f4ee,#efe3d6);overflow:hidden;}
+.city-banner .act-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(280px,52vw,720px);font-weight:900;letter-spacing:-.08em;line-height:1;color:var(--red);opacity:.07;pointer-events:none;z-index:1;}
+.city-banner .banner-inner{position:relative;z-index:2;max-width:920px}
+.city-banner .kicker{display:block;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:18px;}
+.city-banner h2{font-size:clamp(42px,7.5vw,108px);line-height:.92;letter-spacing:-.06em;font-weight:900;margin-bottom:24px;}
+.city-banner p{max-width:660px;margin:0 auto;font-size:clamp(17px,1.9vw,23px);line-height:1.5;color:#52504C;}
+
+.scrolly{position:relative}
+.sticky-stage{position:sticky;top:0;z-index:2;height:100vh;padding:clamp(14px,2.2vh,24px) clamp(16px,2.5vw,44px);display:flex;align-items:center;}
+.stage-grid{width:100%;height:100%;max-height:calc(100vh - clamp(28px,4vh,48px));display:grid;grid-template-columns:4fr 1fr;grid-template-rows:auto auto 1fr;gap:clamp(12px,1.6vw,28px) clamp(16px,2vw,32px);align-items:stretch;}
+
+/* fila 1: encabezado + dropdown */
+.stage-head{grid-column:1;grid-row:1;align-self:end}
+.stage-head h2{margin:0 0 6px 0;font-size:clamp(22px,2.7vw,38px);line-height:1;letter-spacing:-.055em;font-weight:900;}
+.stage-head p{margin:0;max-width:760px;font-size:clamp(12.5px,1vw,15px);line-height:1.4;color:var(--muted);}
+
+.route-picker{grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
+.route-picker label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);}
+.select-wrap{position:relative}
+.select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--red);font-size:13px;pointer-events:none;}
+#routeSelect{width:100%;appearance:none;-webkit-appearance:none;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:11px 36px 11px 14px;font-family:inherit;font-size:clamp(13px,1.1vw,15px);font-weight:800;letter-spacing:-.02em;color:var(--ink);cursor:pointer;transition:border-color .2s ease;}
+#routeSelect:hover,#routeSelect:focus{outline:none;border-color:var(--red);}
+
+/* fila 2: resumen del recorrido (full width) */
+.route-summary{grid-column:1 / -1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;}
+.route-summary .rs-title{font-size:clamp(13px,1.2vw,16px);font-weight:900;letter-spacing:-.03em;}
+.route-summary .rs-title b{color:var(--red)}
+.route-summary .rs-chips{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;}
+.rs-chip{display:flex;align-items:baseline;gap:6px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:11.5px;}
+.rs-chip .k{font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;}
+.rs-chip .v{font-weight:900;letter-spacing:-.02em;}
+.rs-chip.budget .v{color:var(--red)}
+
+/* fila 3: mapa (3/4) + ficha (1/4) */
+.map-col{grid-column:1;grid-row:3;display:flex;align-items:center;justify-content:center;min-height:0}
+.map-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.map-frame svg{width:100%;height:100%;max-height:calc(100vh - 150px);min-height:0;display:block}
+.jp-land{fill:#e7dccd;stroke:rgba(24,21,18,.30);stroke-width:.6;stroke-linejoin:round;}
+.city-dot{fill:#fff;stroke:var(--red);stroke-width:3;cursor:pointer;transition:r .4s cubic-bezier(.22,1,.36,1),fill .4s ease,stroke-width .4s ease,opacity .4s ease;}
+.city-dot.active{fill:var(--red);stroke:var(--red);stroke-width:4;}
+.city-dot.dim{opacity:.18}
+.city-pulse{fill:var(--red);opacity:0;transition:opacity .4s ease;}
+.city-pulse.active{opacity:.16}
+.city-name{font-size:17px;font-weight:700;letter-spacing:-.02em;fill:var(--muted);transition:fill .4s ease,font-weight .4s ease,opacity .4s ease;pointer-events:none;}
+.city-name.active{fill:var(--ink);font-weight:800}
+.city-name.dim{opacity:.2}
+.map-link{stroke:rgba(217,65,65,.45);stroke-width:1.6;stroke-dasharray:5 5;fill:none;transition:opacity .4s ease;}
+
+.city-col{grid-column:2;grid-row:3;display:flex;min-height:0}
+.city-card{width:100%;height:100%;display:grid;grid-template-rows:1fr auto;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--soft);}
+.city-photo{position:relative;width:100%;height:100%;min-height:0;overflow:hidden;background:var(--soft);}
+.city-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s cubic-bezier(.22,1,.36,1);}
+.city-photo img.active{opacity:1}
+.city-photo .rank-badge{position:absolute;top:14px;left:14px;z-index:2;background:var(--red);color:#fff;font-size:12px;font-weight:800;letter-spacing:.08em;padding:6px 12px;border-radius:999px;}
+.city-info{padding:14px clamp(12px,1.4vw,18px) 16px;background:var(--bg);border-top:1px solid var(--line);}
+.city-info .c-label{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 4px;}
+.city-info .c-name{font-size:clamp(20px,2.1vw,28px);font-weight:900;letter-spacing:-.04em;line-height:1;margin:0 0 8px;}
+.c-chips{display:flex;flex-direction:column;gap:8px;margin:0 0 10px;}
+.c-chip{display:flex;flex-direction:column;gap:1px;border:1px solid var(--line);border-radius:12px;padding:7px 11px;background:var(--soft);}
+.c-chip .ck{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+.c-chip .cv{font-size:clamp(14px,1.3vw,17px);font-weight:900;letter-spacing:-.03em;color:var(--red);line-height:1.05;}
+.city-info .c-context{font-size:clamp(12.5px,1vw,15px);line-height:1.5;color:var(--ink);margin:0;}
+
+@keyframes popIn{0%{opacity:0;transform:translateY(18px) scale(.94);}60%{opacity:1;transform:translateY(-3px) scale(1.012);}100%{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes badgePop{0%{opacity:0;transform:scale(.4);}70%{opacity:1;transform:scale(1.15);}100%{opacity:1;transform:scale(1);}}
+.city-photo .rank-badge{animation:badgePop .5s cubic-bezier(.34,1.56,.64,1) both;}
+.pop > *{opacity:0;}
+.pop.run > *{animation:popIn .55s cubic-bezier(.34,1.56,.64,1) both;}
+.pop.run .c-label{animation-delay:.02s}.pop.run .c-name{animation-delay:.10s}.pop.run .c-chips{animation-delay:.18s}.pop.run .c-context{animation-delay:.26s}
+@media (prefers-reduced-motion:reduce){.pop.run > *,.city-photo .rank-badge{animation:none!important;opacity:1!important;transform:none!important;}}
+
+.steps{position:relative;z-index:1;margin-top:-100vh;pointer-events:none;}
+.step{height:80vh}.step:first-child{height:60vh}.step:last-child{height:90vh}
+
+@media(max-width:880px){
+ .stage-grid{grid-template-columns:1fr;grid-template-rows:auto auto auto auto auto;max-height:none;}
+ .stage-head{grid-column:1;grid-row:1}
+ .route-picker{grid-column:1;grid-row:2}
+ .route-summary{grid-column:1;grid-row:3}
+ .map-col{grid-column:1;grid-row:4}
+ .city-col{grid-column:1;grid-row:5}
+ .sticky-stage{height:auto;min-height:100vh}
+ .map-frame svg{max-height:46vh}
+ .city-photo{height:30vh}
+ .route-summary .rs-chips{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<section class="city-banner">
+ <span class="act-num" aria-hidden="true">06</span>
+ <div class="banner-inner">
+  <span class="kicker">El itinerario</span>
+  <h2>Ahora… veamos qué<br>visitar con ese presupuesto</h2>
+  <p>Con los mismos USD 3.400 de la semana anterior se pueden armar viajes muy distintos. Elegí uno de los cinco recorridos y scrolleá para recorrer sus ciudades sobre el mapa.</p>
+ </div>
+</section>
+
+<div class="scrolly">
+ <div class="sticky-stage">
+  <div class="stage-grid">
+
+   <div class="stage-head">
+    <h2>Cinco recorridos, un presupuesto</h2>
+    <p>Cada recorrido dura 7 días y entra dentro de los USD 3.400 por persona. Cambiá el recorrido en el menú; el mapa y las fichas se actualizan solos.</p>
+   </div>
+
+   <div class="route-picker">
+    <label for="routeSelect">Elegí tu recorrido</label>
+    <div class="select-wrap">
+     <select id="routeSelect"></select>
+    </div>
+   </div>
+
+   <div class="route-summary">
+    <span class="rs-title" id="rsTitle"></span>
+    <div class="rs-chips">
+     <span class="rs-chip"><span class="k">Días</span><span class="v" id="rsDays">7</span></span>
+     <span class="rs-chip"><span class="k">Ciudades</span><span class="v" id="rsCities">4</span></span>
+     <span class="rs-chip budget"><span class="k">Total est.</span><span class="v" id="rsTotal">$3.400</span></span>
+    </div>
+   </div>
+
+   <div class="map-col">
+    <div class="map-frame">
+     <svg id="japanMap" viewBox="0 0 460 537" xmlns="http://www.w3.org/2000/svg" aria-label="Mapa de Japón"></svg>
+    </div>
+   </div>
+
+   <div class="city-col">
+    <div class="city-card">
+     <div class="city-photo" id="cityPhoto"><div class="rank-badge" id="rankBadge">1 / 4</div></div>
+     <div class="city-info pop" id="cityInfo">
+      <p class="c-label" id="cLabel"></p>
+      <h3 class="c-name" id="cName"></h3>
+      <div class="c-chips">
+       <div class="c-chip"><span class="ck">Días acá</span><span class="cv" id="cDays"></span></div>
+       <div class="c-chip"><span class="ck">Gasto aprox.</span><span class="cv" id="cBudget"></span></div>
+      </div>
+      <p class="c-context" id="cContext"></p>
+     </div>
+    </div>
+   </div>
+
+  </div>
+ </div>
+ <div class="steps" id="steps"></div>
+</div>
+
+<script>
+const VBW=460, VBH=537;
+const JAPAN_PATH="M298.0,215.5 L296.2,215.5 L295.8,215.3 L296.9,214.7 L297.0,213.7 L297.6,211.9 L297.6,211.4 L296.2,211.3 L296.2,209.3 L297.3,207.3 L300.2,204.2 L301.0,203.6 L301.2,205.0 L300.3,208.2 L300.1,209.4 L302.4,209.6 L300.9,213.5 L298.0,215.5 Z M233.3,298.4 L231.3,300.3 L229.5,300.2 L228.6,299.3 L228.3,298.2 L230.0,296.5 L231.5,294.1 L232.8,293.1 L233.9,292.5 L234.7,292.5 L232.8,295.8 L233.3,298.4 Z M158.0,385.7 L156.4,386.0 L156.3,384.7 L157.6,381.8 L157.8,379.7 L159.0,377.0 L159.5,376.4 L159.9,376.2 L160.3,377.1 L159.9,380.3 L158.6,382.8 L158.0,385.7 Z M141.4,345.1 L139.9,345.9 L139.7,345.1 L139.1,344.7 L140.2,343.7 L140.1,343.2 L139.4,342.4 L140.2,339.7 L140.0,338.5 L143.0,338.1 L143.6,339.2 L143.6,342.6 L141.4,345.1 Z M128.2,296.9 L127.8,298.0 L126.5,297.2 L125.9,296.5 L127.1,293.0 L127.0,291.7 L127.0,291.0 L129.4,289.2 L129.8,289.6 L130.0,290.1 L129.8,290.9 L129.9,292.6 L128.1,295.4 L128.2,296.9 Z M114.5,332.6 L115.3,333.2 L116.3,332.9 L117.2,332.8 L117.8,333.1 L118.6,334.6 L118.9,335.6 L117.5,335.7 L116.9,335.9 L116.1,337.0 L115.0,336.6 L114.4,336.1 L114.2,335.3 L114.5,332.6 Z M222.3,293.9 L222.0,294.3 L221.6,294.2 L220.4,295.3 L220.2,294.3 L219.2,293.6 L219.1,293.1 L221.8,292.7 L222.7,293.0 L222.3,293.9 Z M122.3,331.3 L121.9,331.6 L121.2,329.5 L120.8,328.8 L121.5,328.4 L122.9,324.7 L123.2,326.2 L123.8,327.6 L124.3,327.9 L123.8,328.9 L123.0,329.3 L122.3,331.3 Z M130.2,322.7 L128.9,323.7 L127.9,323.7 L128.8,322.5 L128.9,321.9 L129.6,320.2 L131.1,319.6 L131.7,319.5 L130.5,321.3 L130.2,322.7 Z M182.8,306.2 L183.7,307.1 L185.9,306.7 L186.2,307.0 L185.5,307.7 L184.6,308.5 L182.8,307.9 L181.7,307.9 L181.5,306.6 L181.7,306.2 L182.8,306.2 Z M401.9,57.2 L404.3,57.4 L405.4,57.2 L407.2,57.6 L414.4,61.6 L416.6,62.1 L418.8,62.2 L420.4,61.9 L421.8,60.8 L426.1,55.9 L430.7,51.5 L431.2,51.7 L431.2,52.9 L430.9,54.2 L428.9,58.3 L426.6,63.7 L426.1,66.5 L426.9,69.2 L428.3,71.4 L429.4,74.4 L430.7,78.6 L432.5,79.1 L433.5,79.2 L435.3,77.9 L437.0,76.3 L438.5,76.1 L440.0,76.4 L438.0,77.5 L436.0,78.9 L434.4,81.4 L433.8,81.9 L431.9,81.8 L430.8,81.9 L428.6,82.9 L426.6,84.1 L424.8,85.6 L422.7,86.4 L420.6,86.6 L417.2,87.8 L415.0,87.9 L411.0,86.8 L409.0,87.1 L404.7,89.5 L400.7,93.0 L397.3,96.8 L394.4,101.4 L393.3,103.8 L392.6,106.5 L392.5,108.3 L392.2,110.0 L391.6,111.2 L390.8,112.2 L388.4,111.6 L384.5,109.1 L377.0,105.6 L369.0,100.1 L364.5,97.3 L356.1,98.1 L348.1,103.4 L347.4,103.0 L344.3,99.4 L342.9,97.9 L341.1,97.5 L339.8,97.6 L338.5,97.8 L336.7,99.7 L336.1,101.0 L335.5,102.5 L335.4,103.6 L335.6,104.7 L337.3,107.0 L339.4,108.8 L340.4,109.1 L342.4,109.0 L343.3,109.2 L346.7,112.7 L350.4,116.0 L351.2,117.1 L349.9,118.3 L348.4,118.8 L346.6,118.7 L344.9,118.3 L341.9,116.9 L340.7,118.1 L338.7,120.5 L337.6,123.2 L336.7,124.4 L334.5,126.0 L332.2,126.8 L331.0,126.5 L330.1,125.5 L329.6,124.3 L329.3,122.9 L329.8,119.9 L331.0,117.2 L331.5,114.4 L330.5,110.4 L329.9,109.6 L327.4,107.3 L326.3,105.0 L326.0,102.2 L326.2,100.7 L326.8,97.2 L327.3,95.5 L328.5,94.9 L329.7,94.6 L331.6,93.3 L333.7,91.7 L335.6,89.9 L337.6,87.6 L338.6,85.1 L336.9,82.1 L336.6,80.3 L336.9,78.6 L338.6,77.7 L340.5,78.3 L344.2,80.9 L344.9,81.1 L347.5,81.2 L351.0,81.8 L353.0,81.6 L354.0,81.3 L355.5,79.2 L356.2,76.5 L355.9,73.1 L355.9,69.7 L356.8,66.9 L359.8,62.4 L360.6,59.8 L360.9,53.3 L362.0,50.5 L362.8,47.5 L363.2,41.3 L362.0,35.3 L360.8,32.3 L359.4,29.5 L359.6,26.8 L360.7,24.3 L360.8,23.6 L361.0,22.9 L363.1,22.4 L364.1,21.9 L365.0,20.7 L366.1,20.0 L367.0,20.7 L367.6,21.9 L370.6,25.0 L375.2,30.4 L380.7,38.6 L384.1,42.5 L387.7,46.1 L391.8,49.8 L396.0,53.0 L398.7,54.5 L400.7,56.8 L401.9,57.2 Z M162.1,314.0 L164.6,314.7 L165.7,314.8 L166.7,314.5 L168.2,313.6 L169.8,312.9 L171.0,313.2 L172.0,314.0 L172.5,315.2 L172.3,316.3 L170.5,318.8 L169.0,321.5 L172.4,322.0 L175.8,322.0 L175.0,323.6 L174.9,325.0 L175.9,325.7 L176.8,326.7 L176.6,327.5 L176.0,328.3 L177.9,329.5 L177.8,330.4 L177.3,331.2 L172.7,336.9 L171.3,339.8 L170.4,342.9 L169.5,345.2 L168.9,347.6 L168.4,350.2 L167.5,352.8 L167.8,355.1 L167.5,357.5 L165.2,363.5 L163.5,363.4 L161.4,362.6 L160.1,362.7 L159.4,364.1 L160.6,366.8 L156.9,370.0 L152.8,372.1 L152.8,371.1 L153.2,370.3 L153.8,369.7 L154.2,369.0 L154.8,366.5 L154.5,363.9 L153.3,360.8 L153.2,359.6 L154.0,359.2 L154.6,359.0 L154.9,358.6 L154.9,357.5 L154.5,356.8 L153.4,356.5 L152.2,356.5 L151.5,357.7 L150.4,359.9 L149.8,362.2 L150.1,363.5 L150.6,364.6 L152.0,366.5 L151.6,367.6 L151.0,368.5 L145.7,366.5 L144.6,366.4 L143.6,366.0 L142.6,363.4 L144.8,362.8 L145.4,362.4 L145.6,361.6 L145.9,359.1 L144.9,357.0 L144.1,356.2 L143.4,355.4 L143.8,353.6 L143.5,351.3 L143.5,348.2 L143.9,347.6 L145.9,347.0 L147.3,345.3 L148.6,343.4 L150.4,340.0 L152.0,336.3 L150.5,336.1 L149.3,335.5 L150.6,333.7 L150.2,331.5 L148.2,328.8 L147.1,325.6 L145.3,324.2 L144.3,323.7 L143.2,324.4 L142.2,325.3 L143.1,327.4 L143.0,329.3 L143.1,331.1 L144.0,331.2 L145.1,330.7 L146.0,331.0 L146.5,332.0 L146.7,333.2 L146.3,334.4 L145.5,335.0 L144.5,335.0 L143.5,334.3 L142.7,333.4 L140.8,332.9 L138.9,334.0 L137.0,336.2 L135.4,337.4 L136.2,335.7 L136.5,333.9 L135.8,332.6 L133.9,330.5 L133.5,329.3 L133.4,327.8 L133.7,326.4 L135.6,328.0 L136.6,330.1 L137.9,331.1 L139.7,331.1 L138.3,328.0 L137.9,327.2 L136.0,325.8 L133.5,323.5 L131.9,322.4 L132.4,319.9 L133.4,319.4 L134.2,319.6 L136.9,320.4 L137.1,319.2 L136.7,318.6 L136.5,317.8 L138.3,316.8 L141.2,315.9 L141.8,315.5 L142.3,314.6 L143.0,314.1 L145.0,314.2 L146.7,313.3 L148.2,311.0 L148.5,309.8 L149.0,308.8 L152.5,306.9 L153.4,306.6 L155.7,306.9 L157.9,307.9 L159.0,310.1 L159.9,312.4 L162.1,314.0 Z M222.4,299.1 L225.1,300.1 L227.7,299.8 L227.7,304.0 L228.1,305.4 L228.8,306.6 L228.5,308.5 L229.7,309.1 L226.1,311.2 L222.8,313.9 L221.5,315.8 L220.3,317.8 L219.6,319.9 L219.1,322.1 L218.0,321.2 L214.9,317.6 L212.9,316.5 L209.7,316.0 L208.7,316.1 L202.1,319.6 L201.2,322.1 L199.5,325.8 L198.6,327.1 L197.7,327.4 L197.0,328.1 L196.3,331.3 L194.2,333.3 L193.0,333.3 L190.9,332.8 L189.9,333.1 L191.2,329.9 L189.2,329.5 L187.1,329.6 L187.1,327.5 L185.9,326.4 L186.8,324.9 L186.8,323.6 L187.3,322.9 L187.5,321.9 L187.4,321.1 L186.2,320.8 L185.4,320.2 L185.6,318.0 L184.8,317.9 L183.1,318.3 L179.4,320.0 L178.4,320.0 L179.9,318.8 L183.2,317.1 L184.7,316.1 L187.9,313.4 L189.9,312.1 L191.0,309.8 L191.3,308.4 L192.0,307.1 L192.6,305.2 L193.7,304.5 L195.5,302.8 L196.5,303.0 L197.7,305.0 L199.2,306.6 L200.4,306.5 L202.4,305.7 L203.3,305.5 L205.7,305.6 L207.7,304.6 L208.6,303.4 L208.9,301.9 L208.1,299.4 L209.1,299.6 L210.1,299.5 L212.4,297.9 L214.7,297.0 L217.1,296.8 L219.8,297.7 L222.4,299.1 Z M352.7,128.1 L353.5,128.6 L357.0,127.3 L356.3,131.2 L356.0,135.1 L356.2,141.5 L356.5,144.4 L357.1,147.2 L358.7,149.2 L360.6,150.6 L363.5,155.2 L365.0,160.7 L366.1,163.4 L366.9,166.3 L367.2,167.5 L367.2,168.8 L366.9,170.6 L367.2,172.0 L366.9,176.5 L365.6,181.6 L365.4,184.3 L364.3,184.8 L363.7,186.0 L363.1,186.6 L362.4,187.0 L361.5,187.1 L360.9,187.6 L360.6,189.0 L360.2,190.3 L359.4,191.4 L358.7,192.8 L358.2,195.9 L358.0,199.2 L357.2,201.5 L355.4,202.0 L353.2,202.0 L350.4,203.1 L349.8,203.7 L347.7,207.6 L347.0,209.9 L347.0,212.4 L347.6,215.5 L348.4,218.4 L349.1,224.0 L348.4,232.4 L347.8,235.1 L346.4,236.9 L345.3,237.7 L344.4,238.7 L343.3,241.5 L341.3,246.9 L341.1,248.2 L341.2,249.6 L340.6,251.5 L340.3,253.3 L340.6,255.3 L341.2,257.3 L343.8,262.3 L344.8,263.8 L346.0,265.1 L341.5,266.6 L340.7,267.3 L338.1,270.1 L337.2,272.8 L337.3,275.8 L336.9,276.8 L336.1,277.8 L335.4,278.4 L332.4,279.7 L330.5,281.1 L328.6,283.2 L327.9,284.3 L326.5,283.9 L325.6,283.0 L326.4,281.7 L326.2,280.3 L326.6,276.6 L326.1,275.1 L327.6,274.0 L328.4,272.2 L329.9,270.7 L331.0,269.4 L331.2,268.4 L330.2,267.3 L329.2,266.4 L327.7,266.4 L326.3,266.7 L325.4,267.8 L325.1,269.2 L325.1,269.9 L325.0,270.5 L322.8,272.5 L323.1,274.6 L323.7,275.6 L324.6,276.1 L324.3,276.8 L323.3,278.5 L322.5,278.7 L321.1,276.3 L319.4,275.1 L317.3,275.1 L315.2,275.5 L313.5,277.1 L313.0,278.4 L312.6,279.7 L312.8,283.0 L312.1,285.7 L310.8,288.1 L310.1,288.9 L308.5,290.6 L307.4,290.8 L306.6,290.0 L305.9,288.9 L306.7,284.8 L306.7,282.6 L308.6,281.4 L307.1,279.8 L305.1,279.1 L302.4,280.0 L301.7,281.0 L301.2,282.3 L299.7,283.9 L298.1,285.5 L296.3,288.2 L295.1,291.3 L291.1,290.3 L288.9,290.0 L286.7,290.1 L282.8,289.7 L278.6,290.4 L273.7,291.6 L274.0,290.7 L278.0,288.8 L278.1,288.3 L277.8,287.2 L276.8,287.2 L274.4,287.5 L273.1,287.4 L272.6,286.3 L271.8,285.8 L271.3,286.2 L271.5,288.4 L270.9,288.7 L270.1,288.1 L270.3,286.5 L269.8,284.0 L269.7,282.5 L270.6,281.2 L269.7,280.6 L268.8,280.8 L267.7,281.4 L266.7,282.3 L264.5,286.8 L263.7,289.4 L265.3,291.5 L269.5,294.3 L270.3,295.0 L270.3,296.3 L269.8,297.6 L268.6,298.1 L263.9,299.1 L259.8,300.9 L258.7,302.8 L255.0,310.0 L252.0,315.0 L247.8,316.7 L243.2,315.2 L242.1,313.5 L241.2,311.3 L239.5,309.4 L237.9,307.3 L237.0,304.8 L237.2,300.8 L236.5,298.4 L237.1,297.7 L239.7,296.3 L240.5,295.4 L241.9,293.5 L242.4,292.4 L242.5,290.8 L241.4,290.0 L238.4,290.0 L235.4,290.5 L233.3,289.8 L230.5,287.8 L229.7,287.4 L226.7,287.3 L224.6,287.6 L222.5,288.4 L220.3,288.6 L219.6,289.0 L217.1,291.4 L215.1,292.9 L213.3,293.6 L209.6,293.8 L207.7,294.3 L205.7,295.1 L205.1,295.0 L203.1,296.1 L200.7,297.1 L199.4,298.1 L197.1,297.4 L192.4,299.1 L190.2,299.3 L187.9,298.4 L185.7,296.9 L183.7,297.5 L182.3,299.8 L181.6,304.2 L180.8,306.3 L180.5,308.7 L179.5,308.3 L173.3,303.9 L172.8,303.8 L167.8,304.5 L166.5,304.9 L164.9,305.8 L163.2,306.2 L161.6,305.5 L160.1,304.5 L158.7,304.8 L157.2,305.5 L156.7,299.0 L157.0,298.1 L157.9,297.0 L158.9,296.0 L161.3,295.6 L163.7,296.0 L165.5,295.5 L167.0,294.2 L168.5,292.4 L170.3,290.9 L172.7,289.7 L175.0,288.3 L177.0,286.4 L179.0,284.3 L180.7,282.7 L182.7,281.5 L185.6,278.4 L189.5,274.9 L191.0,272.3 L191.9,271.6 L195.2,270.1 L199.7,269.0 L201.8,269.0 L203.8,271.3 L205.0,271.0 L206.1,270.4 L208.4,270.1 L210.7,270.5 L213.0,270.5 L215.3,270.2 L219.7,269.5 L222.0,268.6 L224.3,267.4 L232.4,266.6 L237.9,264.6 L238.8,264.7 L239.7,265.2 L239.7,266.6 L239.0,268.2 L239.7,269.2 L240.8,269.8 L246.0,270.0 L247.5,270.3 L249.7,269.2 L251.7,267.9 L253.9,266.1 L255.4,264.1 L254.0,261.6 L253.7,258.9 L254.9,255.9 L256.5,253.4 L258.5,251.9 L260.4,250.2 L264.1,245.2 L266.8,241.2 L267.8,236.3 L267.2,230.4 L269.6,226.0 L271.8,225.3 L276.3,223.3 L278.7,222.7 L279.0,223.5 L278.9,224.7 L275.4,228.4 L273.4,229.9 L272.2,230.3 L271.1,231.0 L270.6,232.3 L272.4,234.5 L272.9,236.1 L272.8,237.6 L272.9,239.0 L274.9,240.5 L277.2,240.9 L278.2,240.9 L279.0,240.5 L281.7,236.9 L282.3,236.2 L289.8,233.6 L293.6,231.5 L295.6,231.0 L297.6,229.9 L301.9,225.8 L303.5,223.9 L304.9,221.7 L306.1,219.3 L307.0,216.6 L308.3,215.0 L315.1,211.0 L317.4,208.8 L318.1,207.8 L318.9,204.7 L319.5,201.6 L320.3,199.1 L321.5,196.7 L323.0,194.4 L324.7,192.1 L325.7,189.9 L327.1,184.4 L327.8,181.4 L328.2,180.3 L329.0,179.4 L329.6,178.2 L330.1,176.9 L330.3,175.6 L330.6,171.7 L330.4,168.6 L329.3,166.0 L328.4,165.2 L327.4,165.2 L325.8,165.4 L324.5,164.4 L324.8,163.4 L326.1,163.2 L327.0,162.8 L327.7,161.9 L328.9,159.0 L329.6,155.9 L329.7,154.6 L328.7,152.1 L328.0,149.1 L328.0,147.5 L328.8,145.7 L330.0,144.2 L331.0,143.8 L332.2,143.7 L333.2,143.1 L334.2,142.3 L334.7,141.3 L335.6,138.8 L335.9,137.3 L335.4,133.4 L335.9,132.4 L336.7,131.7 L337.8,132.2 L338.9,132.3 L340.1,132.1 L341.3,132.6 L341.5,133.6 L342.3,140.2 L342.7,141.0 L343.6,141.7 L344.6,141.6 L345.4,140.6 L346.0,139.2 L347.2,139.0 L350.6,140.4 L351.8,139.4 L352.6,137.8 L353.3,134.9 L353.0,132.3 L352.2,131.3 L351.3,131.5 L350.6,132.2 L349.7,132.6 L344.6,134.0 L344.6,131.1 L345.7,126.8 L346.3,125.4 L347.2,124.7 L349.3,125.5 L350.4,126.0 L352.7,128.1 Z M31.6,511.5 L30.5,514.8 L29.6,515.2 L28.6,515.0 L27.7,513.1 L28.4,512.4 L29.3,512.8 L30.1,512.7 L31.8,510.0 L32.2,510.4 L31.6,511.5 Z M24.0,516.4 L22.8,516.7 L21.3,516.3 L20.0,516.2 L20.0,515.6 L21.4,515.0 L21.4,514.1 L21.7,513.6 L24.8,514.7 L24.7,515.5 L24.0,516.4 Z M106.8,466.5 L105.0,467.5 L104.3,468.7 L102.6,469.1 L101.0,470.7 L99.4,471.0 L99.4,472.3 L100.1,473.4 L99.0,473.6 L97.9,475.0 L97.8,475.9 L98.2,476.7 L98.2,477.1 L96.8,478.3 L95.3,478.4 L95.3,477.1 L95.4,476.1 L96.7,473.8 L96.8,471.2 L98.0,470.9 L98.5,470.5 L100.5,468.6 L100.9,467.8 L99.8,467.0 L99.9,466.1 L100.1,465.7 L101.8,466.0 L102.5,466.7 L102.8,466.7 L103.8,466.2 L104.2,465.3 L106.0,463.5 L106.7,461.7 L108.2,463.2 L107.8,465.1 L106.8,466.5 Z M129.4,433.3 L127.8,435.0 L126.1,433.5 L124.0,432.4 L125.0,432.1 L125.6,431.7 L125.6,431.0 L127.0,430.1 L129.7,429.3 L130.5,429.2 L131.5,428.5 L131.8,427.9 L132.2,427.6 L133.9,426.7 L134.4,427.7 L134.3,428.5 L133.0,428.9 L131.8,430.0 L130.6,431.4 L129.5,431.9 L129.2,432.3 L129.4,433.3 Z";
+const D={"CITY": {"Tokio": {"region": "Kantō · Centro-este", "context": "El corazón de Japón: Shibuya, Shinjuku, Asakusa y la mezcla de tecnología y tradición.", "perDay": 210, "photo": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80", "x": 323.6, "y": 265.9}, "Kioto": {"region": "Kansai · Centro-oeste", "context": "La antigua capital imperial: templos, Arashiyama, Gion y los torii rojos de Fushimi Inari.", "perDay": 195, "photo": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80", "x": 249.2, "y": 281.7}, "Osaka": {"region": "Kansai · Centro-oeste", "context": "La cocina de Japón: Dotonbori, el castillo de Osaka, takoyaki y okonomiyaki. Enérgica y nocturna.", "perDay": 185, "photo": "https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&w=1200&q=80", "x": 244.1, "y": 289.0}, "Nara": {"region": "Kansai · Centro-oeste", "context": "Ciudad de los ciervos libres y el Gran Buda de Tōdai-ji. Una excursión de medio día desde Kioto u Osaka.", "perDay": 150, "photo": "https://images.unsplash.com/photo-1624601573012-efb68931cc8f?auto=format&fit=crop&w=1200&q=80", "x": 249.9, "y": 289.2}, "Hiroshima": {"region": "Chūgoku · Suroeste", "context": "Memoria y paz, con el Parque Memorial y la Cúpula Genbaku. Cerca, el torii flotante de Miyajima.", "perDay": 180, "photo": "https://images.unsplash.com/photo-1567604130959-7ea7ab2a7807?auto=format&fit=crop&w=1200&q=80", "x": 186.4, "y": 296.1}, "Fukuoka": {"region": "Kyūshū · Sur", "context": "La gran ciudad del sur: yatai callejeros y la cuna del ramen tonkotsu. Relajada y gastronómica.", "perDay": 175, "photo": "https://images.unsplash.com/photo-1624253321171-1be53e12f5f4?auto=format&fit=crop&w=1200&q=80", "x": 147.4, "y": 314.3}, "Sapporo": {"region": "Hokkaidō · Norte", "context": "La gran ciudad del norte: el Festival de la Nieve, ramen de miso y la puerta a la naturaleza de Hokkaidō.", "perDay": 215, "photo": "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1200&q=80", "x": 355.1, "y": 84.8}, "Kanazawa": {"region": "Chūbu · Costa oeste", "context": "Joya menos turística: el jardín Kenroku-en, barrios de geishas y samuráis intactos y arte contemporáneo.", "perDay": 185, "photo": "https://images.unsplash.com/photo-1612277795421-9bc7706a4a34?auto=format&fit=crop&w=1200&q=80", "x": 265.4, "y": 245.5}, "Nikko": {"region": "Kantō · Norte", "context": "Santuarios ornamentados entre montañas y bosques, Patrimonio de la Humanidad. Excursión desde Tokio.", "perDay": 165, "photo": "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1200&q=80", "x": 321.8, "y": 241.7}, "Hakone": {"region": "Kantō · Sur", "context": "Aguas termales (onsen), vistas del Monte Fuji y museos al aire libre. El escape de montaña clásico.", "perDay": 230, "photo": "https://images.unsplash.com/photo-1570459027562-4a916cc6113f?auto=format&fit=crop&w=1200&q=80", "x": 310.9, "y": 276.6}, "Nagoya": {"region": "Chūbu · Centro", "context": "Ciudad industrial con castillo, gran gastronomía propia (hitsumabushi) y museos de Toyota.", "perDay": 175, "photo": "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80", "x": 270.8, "y": 277.8}, "Takayama": {"region": "Chūbu · Alpes", "context": "Casco antiguo de madera en los Alpes japoneses, mercados matinales y sake artesanal.", "perDay": 170, "photo": "https://images.unsplash.com/photo-1578469645742-46cae010e5d4?auto=format&fit=crop&w=1200&q=80", "x": 277.3, "y": 255.4}}, "ROUTES": [{"code": "Recorrido 1", "subtitle": "Clásico imprescindible", "days": 7, "stay": 1400, "transport": 380, "total": 3280, "under": true, "stops": [{"city": "Tokio", "days": 3}, {"city": "Hakone", "days": 1}, {"city": "Kioto", "days": 2}, {"city": "Nara", "days": 1}], "flight": 1500}, {"code": "Recorrido 2", "subtitle": "Kansai a fondo + sur", "days": 7, "stay": 1295, "transport": 520, "total": 3315, "under": true, "stops": [{"city": "Osaka", "days": 2}, {"city": "Kioto", "days": 2}, {"city": "Hiroshima", "days": 2}, {"city": "Fukuoka", "days": 1}], "flight": 1500}, {"code": "Recorrido 3", "subtitle": "Norte y montaña", "days": 7, "stay": 1390, "transport": 480, "total": 3370, "under": true, "stops": [{"city": "Sapporo", "days": 2}, {"city": "Tokio", "days": 3}, {"city": "Nikko", "days": 2}], "flight": 1500}, {"code": "Recorrido 4", "subtitle": "Ruta de los Alpes", "days": 7, "stay": 1305, "transport": 470, "total": 3275, "under": true, "stops": [{"city": "Tokio", "days": 2}, {"city": "Takayama", "days": 2}, {"city": "Kanazawa", "days": 2}, {"city": "Nagoya", "days": 1}], "flight": 1500}, {"code": "Recorrido 5", "subtitle": "Gran travesía sur", "days": 7, "stay": 1230, "transport": 540, "total": 3270, "under": true, "stops": [{"city": "Osaka", "days": 2}, {"city": "Nara", "days": 1}, {"city": "Hiroshima", "days": 2}, {"city": "Fukuoka", "days": 2}], "flight": 1500}], "BUDGET": 3400, "FLIGHT": 1500};
+const {CITY,ROUTES,BUDGET}=D;
+
+const NS="http://www.w3.org/2000/svg";
+function svgEl(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function money(n){return '$'+n.toLocaleString('es-AR');}
+const map=document.getElementById('japanMap');
+map.appendChild(svgEl('path',{d:JAPAN_PATH,class:'jp-land','fill-rule':'evenodd'}));
+const routeLink=svgEl('path',{d:'',class:'map-link'}); map.appendChild(routeLink);
+
+// crear todos los dots/nombres una vez (todas las ciudades del catálogo)
+const dotEls={}, pulseEls={}, nameEls={};
+Object.keys(CITY).forEach(key=>{
+ const c=CITY[key];
+ const pulse=svgEl('circle',{cx:c.x,cy:c.y,r:22,class:'city-pulse'}); map.appendChild(pulse); pulseEls[key]=pulse;
+ const dot=svgEl('circle',{cx:c.x,cy:c.y,r:7.5,class:'city-dot'}); map.appendChild(dot); dotEls[key]=dot;
+ const onR=c.x>235; const tx=onR?c.x+12:c.x-12;
+ const nm=svgEl('text',{x:tx,y:c.y+4,class:'city-name','text-anchor':onR?'start':'end'}); nm.textContent=key; map.appendChild(nm); nameEls[key]=nm;
+ dot.addEventListener('click',()=>{const i=currentRoute.stops.findIndex(s=>s.city===key); if(i>=0) document.getElementById('step-'+i).scrollIntoView({behavior:'smooth',block:'center'});});
+});
+
+// dropdown
+const sel=document.getElementById('routeSelect');
+ROUTES.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=r.code+' — '+r.subtitle;sel.appendChild(o);});
+
+// foto pool
+const cityPhoto=document.getElementById('cityPhoto');
+const rankBadge=document.getElementById('rankBadge');
+const imgEls={};
+Object.keys(CITY).forEach(key=>{const img=document.createElement('img');img.alt=key;img.onerror=function(){this.onerror=null;this.src='https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1200&q=80';};img.src=CITY[key].photo;cityPhoto.insertBefore(img,rankBadge);imgEls[key]=img;});
+
+const cityInfo=document.getElementById('cityInfo');
+const cLabel=document.getElementById('cLabel'),cName=document.getElementById('cName');
+const cDays=document.getElementById('cDays'),cBudget=document.getElementById('cBudget'),cContext=document.getElementById('cContext');
+const rsTitle=document.getElementById('rsTitle'),rsDays=document.getElementById('rsDays'),rsCities=document.getElementById('rsCities'),rsTotal=document.getElementById('rsTotal');
+const scrolly=document.querySelector('.scrolly'),stepsEl=document.getElementById('steps');
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+let currentRoute=ROUTES[0], routeIndex=0, cur=-1;
+
+function buildSteps(){
+ stepsEl.innerHTML='';
+ currentRoute.stops.forEach((_,i)=>{const s=document.createElement('div');s.className='step';s.id='step-'+i;stepsEl.appendChild(s);});
+}
+
+function drawRouteMap(){
+ const cities=currentRoute.stops.map(s=>s.city);
+ const set=new Set(cities);
+ let dd='';
+ cities.forEach((city,i)=>{const c=CITY[city];dd+=(i===0?'M':'L')+c.x+','+c.y+' ';});
+ routeLink.setAttribute('d',dd);
+ Object.keys(CITY).forEach(key=>{
+  const inRoute=set.has(key);
+  dotEls[key].classList.toggle('dim',!inRoute);
+  nameEls[key].classList.toggle('dim',!inRoute);
+ });
+}
+
+function setSummary(){
+ rsTitle.innerHTML=currentRoute.code+' · <b>'+currentRoute.subtitle+'</b>';
+ rsDays.textContent=currentRoute.days;
+ rsCities.textContent=currentRoute.stops.length;
+ rsTotal.textContent=money(currentRoute.total);
+}
+
+function setActive(i){
+ const stops=currentRoute.stops;
+ i=clamp(i,0,stops.length-1);
+ const city=stops[i].city;
+ Object.keys(imgEls).forEach(k=>imgEls[k].classList.toggle('active',k===city));
+ Object.keys(CITY).forEach(k=>{
+  const on=(k===city);
+  dotEls[k].classList.toggle('active',on);
+  pulseEls[k].classList.toggle('active',on);
+  nameEls[k].classList.toggle('active',on);
+ });
+ if(i===cur)return; cur=i;
+ const c=CITY[city];
+ rankBadge.textContent=(i+1)+' / '+stops.length;
+ cLabel.textContent=c.region; cName.textContent=city;
+ cDays.textContent=stops[i].days+(stops[i].days>1?' días':' día');
+ cBudget.textContent='~'+money(c.perDay)+' / día';
+ cContext.textContent=c.context;
+ cityInfo.classList.remove('run'); rankBadge.style.animation='none';
+ void cityInfo.offsetWidth; rankBadge.style.animation='';
+ cityInfo.classList.add('run');
+}
+
+function loadRoute(idx){
+ routeIndex=idx; currentRoute=ROUTES[idx]; cur=-1;
+ buildSteps(); drawRouteMap(); setSummary();
+ setActive(0);
+ window.scrollTo({top:scrolly.offsetTop, behavior:'instant' in window?'instant':'auto'});
+ onScroll();
+}
+
+function onScroll(){
+ const rect=scrolly.getBoundingClientRect();const vh=window.innerHeight;
+ const total=scrolly.offsetHeight-vh;
+ const scrolled=Math.min(Math.max(-rect.top,0),total);
+ const progress=total>0?scrolled/total:0;
+ const segPos=progress*(currentRoute.stops.length-1);
+ setActive(Math.round(segPos));
+}
+
+sel.addEventListener('change',e=>loadRoute(+e.target.value));
+window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('resize',onScroll);
+loadRoute(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!-- ============================================================
+     TIPO DE CAMBIO DEL YEN — estética "Estudio de Japonés"
+     Cotización de hoy: ExchangeRate-API open access (incluye ARS), sin key, CORS.
+     Histórico: Frankfurter (BCE), sin key, CORS. Solo monedas del BCE.
+     Pegá este bloque dentro de tu guía. Hereda las variables :root si ya existen.
+     ============================================================ -->
+<style>
+  /* Wrapper a todo el ancho real de la ventana: pinta el fondo de lado a lado,
+     ignorando el margen por defecto del <body> que dejaba franjas blancas */
+  .yfx-wrap{
+    --bg:#f6efe7; --ink:#181512; --muted:rgba(24,21,18,.62);
+    --red:#d94141; --soft:#eadfd3; --line:rgba(24,21,18,.18);
+    background:var(--bg);
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    font-family:Inter,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    padding:clamp(24px,4vw,56px) clamp(20px,4vw,64px);
+  }
+  /* Contenido centrado por dentro */
+  .yfx-inner{ max-width:920px; margin:0 auto; }
+
+  .yfx-wrap .yfx-head .yfx-subtitle{
+    display:block;
+    font-size:12px; font-weight:800; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--red); margin:0 0 14px;
+  }
+  .yfx-wrap .yfx-head h2{
+    margin:0 0 10px;
+    font-size:clamp(34px,4.6vw,64px);
+    line-height:1; letter-spacing:-.055em; font-weight:900;
+  }
+  .yfx-wrap .yfx-head p{
+    max-width:620px; margin:0 0 28px;
+    font-size:clamp(15px,1.2vw,18px);
+    line-height:1.45; color:var(--muted);
+  }
+  .yfx-wrap .yfx-controls{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:24px;
+  }
+  .yfx-wrap .yfx-controls label{
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.14em; color:var(--muted);
+  }
+  .yfx-wrap select{
+    font-family:inherit; font-size:14px; font-weight:600; color:var(--ink);
+    background:var(--soft); border:1px solid var(--line); border-radius:0;
+    padding:9px 14px; cursor:pointer;
+  }
+  .yfx-wrap .yfx-row{
+    display:grid; grid-template-columns:0.55fr 1.45fr;
+    gap:clamp(18px,2.4vw,32px); align-items:start;
+  }
+  .yfx-wrap .data-panel{
+    background:var(--soft); border:1px solid var(--line);
+    padding:18px clamp(14px,1.6vw,20px);
+  }
+  .yfx-wrap .panel-label{
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.14em; color:var(--muted); margin:0 0 6px;
+  }
+  .yfx-wrap .panel-stat{
+    font-size:clamp(20px,2.1vw,26px); font-weight:900;
+    letter-spacing:-.03em; color:var(--red); line-height:1.05; margin:0 0 14px;
+  }
+  .yfx-wrap .panel-context{
+    font-size:clamp(14px,1.15vw,16px); line-height:1.7; color:var(--ink); margin:0;
+  }
+  .yfx-wrap .chart-frame{width:100%}
+  .yfx-wrap .chart-frame svg{width:100%; height:auto; display:block}
+  .yfx-wrap .yfx-chart-label{
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.14em; color:var(--muted); margin:0 0 8px;
+  }
+  /* Caja de aviso cuando no hay histórico (mismo lenguaje que data-panel) */
+  .yfx-wrap .yfx-source{
+    font-size:10px; color:var(--muted); margin:18px 0 0; letter-spacing:.02em;
+  }
+  .yfx-wrap .yfx-source + .yfx-source{ margin-top:5px; }
+  .yfx-wrap .yfx-source a{color:var(--muted)}
+  @media(max-width:820px){
+    .yfx-wrap .yfx-row{grid-template-columns:1fr}
+  }
+
+  /* ===== BANNER DE TITULO (mismo lenguaje que los demas) ===== */
+  .yfx-banner{
+    --bg:#f6efe7; --red:#d94141;
+    position:relative;
+    min-height:100vh;
+    display:grid; place-items:center; text-align:center;
+    padding:80px 22px;
+    background:linear-gradient(180deg,#f9f4ee,#efe3d6);
+    overflow:hidden;
+    width:100vw; left:50%; right:50%; margin-left:-50vw; margin-right:-50vw;
+    font-family:Inter,Helvetica,Arial,sans-serif;
+  }
+  .yfx-banner .act-num{
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:clamp(280px,52vw,720px);
+    font-weight:900; letter-spacing:-.08em; line-height:1;
+    color:var(--red); opacity:.07; pointer-events:none; z-index:1;
+  }
+  .yfx-banner .banner-inner{position:relative;z-index:2;max-width:880px}
+  .yfx-banner .kicker{
+    display:block; font-size:12px; font-weight:800;
+    letter-spacing:.24em; text-transform:uppercase;
+    color:var(--red); margin-bottom:18px;
+  }
+  .yfx-banner h2{
+    font-size:clamp(46px,8vw,118px);
+    line-height:.9; letter-spacing:-.06em; font-weight:900; margin-bottom:24px;
+    color:#181512;
+  }
+  .yfx-banner p{
+    max-width:620px; margin:0 auto;
+    font-size:clamp(17px,1.9vw,23px); line-height:1.5; color:#52504C;
+  }
+</style>
+
+<!-- ===== BANNER DE TITULO ===== -->
+<section class="yfx-banner">
+  <span class="act-num" aria-hidden="true">05</span>
+  <div class="banner-inner">
+    <span class="kicker">El yen japonés</span>
+    <h2>¿Cuánta plata llevo?</h2>
+    <p>Antes de viajar conviene saber cuánto vale tu moneda en yenes. Mirá la cotización de hoy y cómo se movió en la última década.</p>
+  </div>
+</section>
+
+<div class="yfx-wrap">
+ <div class="yfx-inner" id="yen-fx">
+  <div class="yfx-head">
+    <span class="yfx-subtitle">El yen japonés</span>
+    <h2>¿Cuánta plata llevo?</h2>
+    <p>El yen es la moneda de Japón. Acá podés ver cuánto vale hoy en tu moneda, y cómo se fue moviendo a lo largo de la última década.</p>
+  </div>
+
+  <div class="yfx-controls">
+    <label for="yfx-cur">Tu moneda</label>
+    <select id="yfx-cur">
+      <option value="USD">Dólar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="ARS">Peso argentino (ARS)</option>
+      <option value="GBP">Libra (GBP)</option>
+      <option value="BRL">Real (BRL)</option>
+      <option value="AUD">Dólar australiano (AUD)</option>
+      <option value="CNY">Yuan (CNY)</option>
+      <option value="MXN">Peso mexicano (MXN)</option>
+    </select>
+  </div>
+
+  <div class="yfx-row">
+    <div class="data-panel">
+      <p class="panel-label" id="yfx-panel-label">Cotización de hoy</p>
+      <div class="panel-stat" id="yfx-panel-stat">Cargando…</div>
+      <p class="panel-context" id="yfx-panel-context"></p>
+    </div>
+
+    <div class="chart-frame">
+      <p class="yfx-chart-label" id="yfx-chart-label">Yen por dólar · últimos 10 años</p>
+      <svg id="yfx-chart" viewBox="0 0 640 300"></svg>
+    </div>
+  </div>
+
+  <p class="yfx-source">
+    Cotización: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> ·
+    Histórico monedas mayores: <a href="https://frankfurter.dev" target="_blank" rel="noopener">Frankfurter / BCE</a> ·
+    Serie del peso: estimación propia con datos públicos
+  </p>
+  <p class="yfx-source">
+    La cotización de hoy y el gráfico provienen de proveedores distintos, por eso el último valor puede diferir levemente.
+  </p>
+ </div>
+</div>
+
+<script>
+(function(){
+  const ERAPI = "https://open.er-api.com/v6/latest";
+  const FRANK = "https://api.frankfurter.dev/v1";
+  const NS = "http://www.w3.org/2000/svg";
+
+  // Monedas con histórico vía API (Frankfurter/BCE). El ARS no lo publica ningún banco central abierto,
+  // así que va con una serie embebida (pesos por yen), anclada en datos reales por año.
+  const HIST_OK = ["USD","EUR","GBP","AUD","CNY","BRL","MXN"];
+  const CUR_NAME = {USD:"dólar",EUR:"euro",GBP:"libra",AUD:"dólar australiano",CNY:"yuan",
+                    ARS:"peso argentino",BRL:"real",MXN:"peso mexicano"};
+
+  // ARS: cuántos PESOS vale 1 YEN, mensual aprox. Anclado en promedios reales:
+  // 2016 ~0,13 · 2018 ~0,25 · 2020 ~0,68 · 2022 ~1,1 · fin 2023 salto fuerte (deval. dic-23)
+  // 2024 prom ~6,05 · oct-25 ~9,7 · 2026 ~8,8-9,0 (fuentes: exchange-rates.org, investing.com, wise)
+  const ARS_PER_JPY = [
+    ["2016-06",0.13],["2016-12",0.15],
+    ["2017-06",0.16],["2017-12",0.17],
+    ["2018-06",0.21],["2018-12",0.27],
+    ["2019-06",0.40],["2019-12",0.55],
+    ["2020-06",0.64],["2020-12",0.72],
+    ["2021-06",0.86],["2021-12",0.93],
+    ["2022-06",1.00],["2022-12",1.28],
+    ["2023-06",1.85],["2023-10",2.55],["2023-12",4.55],
+    ["2024-03",5.60],["2024-06",6.05],["2024-09",6.20],["2024-12",6.80],
+    ["2025-03",7.90],["2025-06",8.60],["2025-09",9.40],["2025-12",9.10],
+    ["2026-03",8.80],["2026-06",8.90]
+  ];
+
+  const sel = document.getElementById("yfx-cur");
+  const pStat = document.getElementById("yfx-panel-stat");
+  const pContext = document.getElementById("yfx-panel-context");
+  const svg = document.getElementById("yfx-chart");
+  const chartLabel = document.getElementById("yfx-chart-label");
+
+  function fmt(n){ return n.toLocaleString("es-AR",{maximumFractionDigits:n<1?4:2}); }
+  function svgEl(tag,attrs){const el=document.createElementNS(NS,tag);for(const k in attrs)el.setAttribute(k,attrs[k]);return el;}
+
+  // -------- Cotización de hoy --------
+  async function loadToday(cur){
+    try{
+      const r = await fetch(`${ERAPI}/${cur}`);
+      const d = await r.json();
+      if(!d.rates || !d.rates.JPY) throw new Error("sin JPY");
+      const jpy = d.rates.JPY;
+      if(cur === "ARS"){
+        // como lo lee un argentino: cuántos pesos vale 1 yen (coincide con el gráfico)
+        pStat.textContent = `1 ¥ = ${fmt(1/jpy)} ARS`;
+      } else {
+        pStat.textContent = `1 ${cur} = ${fmt(jpy)} ¥`;
+      }
+      pContext.innerHTML =
+        `Un café cuesta ~500 ¥ (${fmt(500/jpy)} ${cur}).<br>` +
+        `Un ramen cuesta ~1.000 ¥ (${fmt(1000/jpy)} ${cur}).`;
+    }catch(e){
+      pStat.textContent = "Sin datos";
+      pContext.textContent = "No se pudo cargar la cotización. Reintentá más tarde.";
+    }
+  }
+
+  // -------- Histórico --------
+  const cache = {};  // cachea por moneda
+  async function loadHistory(cur){
+    svg.style.display = "block";
+    chartLabel.style.display = "block";
+
+    // ARS: serie embebida, en pesos por yen (como lo piensa un argentino)
+    if(cur === "ARS"){
+      chartLabel.textContent = "Pesos por yen · últimos 10 años";
+      drawChart(ARS_PER_JPY, true, " ARS");
+      return;
+    }
+
+    // Resto: histórico real vía Frankfurter, en yen por unidad
+    chartLabel.textContent = `Yen por ${CUR_NAME[cur]} · últimos 10 años`;
+    try{
+      let pts = cache[cur];
+      if(!pts){
+        const end = new Date();
+        const start = new Date(); start.setFullYear(start.getFullYear()-10);
+        const fmtDate = dt => dt.toISOString().slice(0,10);
+        const r = await fetch(`${FRANK}/${fmtDate(start)}..${fmtDate(end)}?base=${cur}&symbols=JPY`);
+        const d = await r.json();
+        const entries = Object.entries(d.rates).sort((a,b)=>a[0]<b[0]?-1:1);
+        const monthly = {};
+        entries.forEach(([date,v])=>{ monthly[date.slice(0,7)] = v.JPY; });
+        pts = Object.entries(monthly);
+        cache[cur] = pts;
+      }
+      drawChart(pts, true, " ¥");
+    }catch(e){
+      svg.innerHTML = `<text x="300" y="120" font-size="12" fill="rgba(24,21,18,.45)" text-anchor="middle">Histórico no disponible</text>`;
+    }
+  }
+
+  // -------- Gráfico, mismo lenguaje visual que el sakura --------
+  const W=640,H=300,ML=44,MR=22,MT=18,MB=28;
+  const PW=W-ML-MR, PH=H-MT-MB;
+
+  function drawChart(pts, animate, unit){
+    unit = unit || "";
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.innerHTML = "";
+    const vals = pts.map(p=>p[1]);
+    const max = Math.max(...vals);
+    // techo redondo según escala
+    const step = max>50 ? 20 : (max>20 ? 5 : (max>5 ? 2 : (max>1 ? 0.5 : 0.05)));
+    const yMax = Math.ceil(max/step)*step;
+    const yMin = 0;
+    const xPos = i => ML + i*(PW/(pts.length-1));
+    const yPos = v => MT + (1-(v-yMin)/(yMax-yMin))*PH;
+
+    [0, yMax/2, yMax].forEach(v=>{
+      const y=yPos(v);
+      svg.appendChild(svgEl('line',{x1:ML,x2:ML+PW,y1:y,y2:y,stroke:'rgba(24,21,18,.12)','stroke-width':1}));
+      const t=svgEl('text',{x:2,y:y+3,'font-size':9,fill:'rgba(24,21,18,.45)'});
+      t.textContent=fmt(v); svg.appendChild(t);
+    });
+
+    // Etiquetas de año: primer punto de cada año (sea el mes que sea), consistente
+    let lastYr="";
+    pts.forEach((p,i)=>{
+      const yr=p[0].slice(0,4);
+      if(yr!==lastYr){ lastYr=yr;
+        const t=svgEl('text',{x:xPos(i),y:H-7,'font-size':9,fill:'rgba(24,21,18,.45)','text-anchor':'middle'});
+        t.textContent="'"+yr.slice(2); svg.appendChild(t);
+      }
+    });
+
+    let dStr="";
+    pts.forEach((p,i)=>{ dStr += (i===0?'M':'L')+xPos(i).toFixed(1)+','+yPos(p[1]).toFixed(1)+' '; });
+    const areaStr = dStr + 'L'+xPos(pts.length-1).toFixed(1)+','+yPos(0).toFixed(1)+' L'+xPos(0).toFixed(1)+','+yPos(0).toFixed(1)+' Z';
+
+    const area = svgEl('path',{d:areaStr,fill:'#d94141','fill-opacity':0});
+    area.style.transition='fill-opacity 1.2s ease .6s';
+    svg.appendChild(area);
+
+    const line = svgEl('path',{d:dStr,fill:'none',stroke:'#d94141','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});
+    svg.appendChild(line);
+
+    // valor final como etiqueta sobre el último punto
+    const last = pts[pts.length-1];
+    const lbl = svgEl('text',{x:xPos(pts.length-1)-4,y:yPos(last[1])-8,'font-size':11,'font-weight':700,fill:'#d94141','text-anchor':'end'});
+    lbl.textContent = fmt(last[1])+unit;
+    lbl.style.opacity = 0;
+    lbl.style.transition = 'opacity .5s ease 1.4s';
+    svg.appendChild(lbl);
+    requestAnimationFrame(()=>{ lbl.style.opacity = 1; });
+
+    if(animate){
+      const len = line.getTotalLength();
+      line.setAttribute('stroke-dasharray', len);
+      line.setAttribute('stroke-dashoffset', len);
+      line.getBoundingClientRect();
+      line.style.transition='stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)';
+      line.style.strokeDashoffset='0';
+      requestAnimationFrame(()=>{ area.style.fillOpacity='0.12'; });
+    } else {
+      area.style.fillOpacity='0.12';
+    }
+  }
+
+  function refresh(){
+    const c = sel.value;
+    loadToday(c);
+    loadHistory(c);
+  }
+
+  sel.addEventListener("change", refresh);
+  refresh();
+})();
+</script>
